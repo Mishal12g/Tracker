@@ -4,7 +4,7 @@ class TrackersListViewController: UIViewController {
     let addTrackerButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        let image = UIImage(named: "add")
+        let image = UIImage(named: "YP_add")
         button.setImage(image, for: .normal)
         button.imageView?.contentMode = .scaleToFill
         
