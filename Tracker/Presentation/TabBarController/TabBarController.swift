@@ -4,7 +4,7 @@ class TabBarController: UITabBarController {
     override func viewDidLoad() {
         tabbarAppearance()
         
-        let trackersListVC = UINavigationController(rootViewController: TrackersListViewController())
+        let trackersListVC = UINavigationController(rootViewController: TrackersViewController())
         trackersListVC.tabBarItem = UITabBarItem(title: "Трекеры", image: UIImage(named: "tracker"), selectedImage: nil)
         
         let statisticVC = StatisticViewController()
