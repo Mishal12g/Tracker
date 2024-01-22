@@ -19,6 +19,14 @@
 		878A07BE2B555F050082BD0B /* Tracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 878A07BD2B555F050082BD0B /* Tracker.swift */; };
 		878A07C02B555F2F0082BD0B /* TrackerCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 878A07BF2B555F2F0082BD0B /* TrackerCategory.swift */; };
 		878A07C22B555F490082BD0B /* TrackerRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 878A07C12B555F490082BD0B /* TrackerRecord.swift */; };
+		87988B092B5E70D200342625 /* GeometricParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87988B082B5E70D200342625 /* GeometricParams.swift */; };
+		87988B0D2B5E77FD00342625 /* TrackerSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87988B0C2B5E77FD00342625 /* TrackerSelectionViewController.swift */; };
+		87988B102B5E84D600342625 /* HabitFormViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87988B0F2B5E84D600342625 /* HabitFormViewController.swift */; };
+		87988B132B5E91AB00342625 /* Button.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87988B122B5E91AB00342625 /* Button.swift */; };
+		87988B152B5E985800342625 /* TextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87988B142B5E985800342625 /* TextField.swift */; };
+		87988B182B5E98A700342625 /* TextField + extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87988B172B5E98A700342625 /* TextField + extension.swift */; };
+		87988B202B5EA93300342625 /* UITableViewCell + extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87988B1F2B5EA93300342625 /* UITableViewCell + extension.swift */; };
+		87988B222B5EAA7A00342625 /* UITableView + extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87988B212B5EAA7900342625 /* UITableView + extension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,6 +44,14 @@
 		878A07BD2B555F050082BD0B /* Tracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tracker.swift; sourceTree = "<group>"; };
 		878A07BF2B555F2F0082BD0B /* TrackerCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCategory.swift; sourceTree = "<group>"; };
 		878A07C12B555F490082BD0B /* TrackerRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerRecord.swift; sourceTree = "<group>"; };
+		87988B082B5E70D200342625 /* GeometricParams.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeometricParams.swift; sourceTree = "<group>"; };
+		87988B0C2B5E77FD00342625 /* TrackerSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerSelectionViewController.swift; sourceTree = "<group>"; };
+		87988B0F2B5E84D600342625 /* HabitFormViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitFormViewController.swift; sourceTree = "<group>"; };
+		87988B122B5E91AB00342625 /* Button.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Button.swift; sourceTree = "<group>"; };
+		87988B142B5E985800342625 /* TextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextField.swift; sourceTree = "<group>"; };
+		87988B172B5E98A700342625 /* TextField + extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TextField + extension.swift"; sourceTree = "<group>"; };
+		87988B1F2B5EA93300342625 /* UITableViewCell + extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableViewCell + extension.swift"; sourceTree = "<group>"; };
+		87988B212B5EAA7900342625 /* UITableView + extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableView + extension.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -52,6 +68,10 @@
 		872CAB222B4E863A00AE1F8A /* Presentation */ = {
 			isa = PBXGroup;
 			children = (
+				87988B112B5E917D00342625 /* Views */,
+				87988B0B2B5E77AC00342625 /* TrackerForm */,
+				87988B062B5E708800342625 /* TrackersViewController */,
+				87988B072B5E709800342625 /* StatisticViewController */,
 				872CAB232B4E864B00AE1F8A /* TabBarController */,
 			);
 			path = Presentation;
@@ -60,20 +80,9 @@
 		872CAB232B4E864B00AE1F8A /* TabBarController */ = {
 			isa = PBXGroup;
 			children = (
-				872CAB262B4E87E000AE1F8A /* Controllers */,
 				872CAB242B4E866500AE1F8A /* TabBarController.swift */,
-				8738D8EE2B57F02E00D6975E /* TrackerCell.swift */,
 			);
 			path = TabBarController;
-			sourceTree = "<group>";
-		};
-		872CAB262B4E87E000AE1F8A /* Controllers */ = {
-			isa = PBXGroup;
-			children = (
-				872CAB272B4E88F700AE1F8A /* TrackersViewController.swift */,
-				872CAB292B4E890F00AE1F8A /* StatisticViewController.swift */,
-			);
-			path = Controllers;
 			sourceTree = "<group>";
 		};
 		8772051E2B4BE87E0075D94F = {
@@ -97,6 +106,7 @@
 			children = (
 				878A07BC2B555EF00082BD0B /* Models */,
 				872CAB222B4E863A00AE1F8A /* Presentation */,
+				87988B162B5E988400342625 /* Helpers */,
 				8772052A2B4BE87E0075D94F /* AppDelegate.swift */,
 				8772052C2B4BE87E0075D94F /* SceneDelegate.swift */,
 				8772052E2B4BE87E0075D94F /* ViewController.swift */,
@@ -115,6 +125,60 @@
 				878A07C12B555F490082BD0B /* TrackerRecord.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		87988B062B5E708800342625 /* TrackersViewController */ = {
+			isa = PBXGroup;
+			children = (
+				872CAB272B4E88F700AE1F8A /* TrackersViewController.swift */,
+				8738D8EE2B57F02E00D6975E /* TrackerCell.swift */,
+				87988B082B5E70D200342625 /* GeometricParams.swift */,
+			);
+			path = TrackersViewController;
+			sourceTree = "<group>";
+		};
+		87988B072B5E709800342625 /* StatisticViewController */ = {
+			isa = PBXGroup;
+			children = (
+				872CAB292B4E890F00AE1F8A /* StatisticViewController.swift */,
+			);
+			path = StatisticViewController;
+			sourceTree = "<group>";
+		};
+		87988B0B2B5E77AC00342625 /* TrackerForm */ = {
+			isa = PBXGroup;
+			children = (
+				87988B0E2B5E84B100342625 /* HabitFormViewController */,
+				87988B0C2B5E77FD00342625 /* TrackerSelectionViewController.swift */,
+			);
+			path = TrackerForm;
+			sourceTree = "<group>";
+		};
+		87988B0E2B5E84B100342625 /* HabitFormViewController */ = {
+			isa = PBXGroup;
+			children = (
+				87988B0F2B5E84D600342625 /* HabitFormViewController.swift */,
+			);
+			path = HabitFormViewController;
+			sourceTree = "<group>";
+		};
+		87988B112B5E917D00342625 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				87988B122B5E91AB00342625 /* Button.swift */,
+				87988B142B5E985800342625 /* TextField.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		87988B162B5E988400342625 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				87988B172B5E98A700342625 /* TextField + extension.swift */,
+				87988B1F2B5EA93300342625 /* UITableViewCell + extension.swift */,
+				87988B212B5EAA7900342625 /* UITableView + extension.swift */,
+			);
+			path = Helpers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -187,13 +251,21 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				87988B102B5E84D600342625 /* HabitFormViewController.swift in Sources */,
 				8738D8EF2B57F02E00D6975E /* TrackerCell.swift in Sources */,
 				8772052F2B4BE87E0075D94F /* ViewController.swift in Sources */,
+				87988B222B5EAA7A00342625 /* UITableView + extension.swift in Sources */,
+				87988B152B5E985800342625 /* TextField.swift in Sources */,
 				872CAB252B4E866500AE1F8A /* TabBarController.swift in Sources */,
+				87988B202B5EA93300342625 /* UITableViewCell + extension.swift in Sources */,
 				878A07C02B555F2F0082BD0B /* TrackerCategory.swift in Sources */,
+				87988B092B5E70D200342625 /* GeometricParams.swift in Sources */,
+				87988B182B5E98A700342625 /* TextField + extension.swift in Sources */,
 				872CAB282B4E88F700AE1F8A /* TrackersViewController.swift in Sources */,
+				87988B132B5E91AB00342625 /* Button.swift in Sources */,
 				872CAB2A2B4E890F00AE1F8A /* StatisticViewController.swift in Sources */,
 				878A07C22B555F490082BD0B /* TrackerRecord.swift in Sources */,
+				87988B0D2B5E77FD00342625 /* TrackerSelectionViewController.swift in Sources */,
 				8772052B2B4BE87E0075D94F /* AppDelegate.swift in Sources */,
 				8772052D2B4BE87E0075D94F /* SceneDelegate.swift in Sources */,
 				878A07BE2B555F050082BD0B /* Tracker.swift in Sources */,

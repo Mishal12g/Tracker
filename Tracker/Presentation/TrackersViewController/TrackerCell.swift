@@ -41,6 +41,7 @@ class TrackerCell: UICollectionViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Полить цветы"
+        label.numberOfLines = 2
         label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
         label.textColor = .white
         
@@ -104,10 +105,11 @@ private extension TrackerCell {
             
             trackerNameLabel.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -12),
             trackerNameLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 12),
-            trackerNameLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 12),
+            trackerNameLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -12),
             
             countDaysLabel.topAnchor.constraint(equalTo: view.bottomAnchor, constant: 16),
             countDaysLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12),
+            countDaysLabel.trailingAnchor.constraint(equalTo: addButton.leadingAnchor, constant: -12),
             
             addButton.topAnchor.constraint(equalTo: view.bottomAnchor, constant: 8),
             addButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -12),

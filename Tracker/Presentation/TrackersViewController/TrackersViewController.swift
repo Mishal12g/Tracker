@@ -1,12 +1,13 @@
 import UIKit
 
 class TrackersViewController: UIViewController {
+    //MARK: - privates properties
     private var categories: [TrackerCategory] = []
     private var completedTrackers: [TrackerRecord] = []
     private let datePicker = UIDatePicker()
-    private let params = GeometricParams(cellCount: 2, leftInset: 16, rightInset: 16, cellSpacing: 0)
+    private let params = GeometricParams(cellCount: 2, leftInset: 16, rightInset: 16, cellSpacing: 9)
     
-    let collectionView: UICollectionView = {
+    private let collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         let collection = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collection.translatesAutoresizingMaskIntoConstraints = false
@@ -14,7 +15,7 @@ class TrackersViewController: UIViewController {
         return collection
     }()
     
-    let addTrackerButton: UIButton = {
+    private let addTrackerButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         let image = UIImage(named: "YP_add")
@@ -24,7 +25,7 @@ class TrackersViewController: UIViewController {
         return button
     }()
     
-    let imageView: UIImageView = {
+    private let emptyImageView: UIImageView = {
         let image = UIImage(named: "il_error_1")
         let imageView = UIImageView(image: image)
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -32,7 +33,7 @@ class TrackersViewController: UIViewController {
         return imageView
     }()
     
-    let emptyLabel: UILabel = {
+    private let emptyLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.systemFont(ofSize: 12)
@@ -42,8 +43,10 @@ class TrackersViewController: UIViewController {
         return label
     }()
     
+    //MARK: - Overrides methods
     override func viewDidLoad() {
         view.backgroundColor = .white
+        hideErrorViews()
         setupNavigationBar()
         addSubViews()
         addConstraint()
@@ -59,6 +62,21 @@ class TrackersViewController: UIViewController {
 
 //MARK: - For methods view
 private extension TrackersViewController {
+    
+    func hideErrorViews() {
+        guard !categories.isEmpty else {
+            hide(false)
+            return
+        }
+        
+        hide(true)
+        
+        func hide(_ isHide: Bool) {
+            emptyLabel.isHidden = isHide
+            emptyImageView.isHidden = isHide
+        }
+    }
+    
     @objc func datePickerValueChanged(_ sender: UIDatePicker) {
         let selectedDate = sender.date
         let dateFormatter = DateFormatter()
@@ -67,9 +85,17 @@ private extension TrackersViewController {
         print(formattedDate)
     }
     
+    @objc func addTrackerDidTap() {
+        let trackerSelectionVC = TrackerSelectionViewController()
+        trackerSelectionVC.title = "Создание трекера"
+        let vc = UINavigationController(rootViewController: trackerSelectionVC)
+        
+        self.present(vc, animated: true)
+    }
+    
     func setupNavigationBar() {
         navigationItem.title = "Трекеры"
-        
+        addTrackerButton.addTarget(self, action: #selector(addTrackerDidTap), for: .touchUpInside)
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: addTrackerButton)
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)
         navigationItem.searchController = UISearchController(searchResultsController: nil)
@@ -81,7 +107,7 @@ private extension TrackersViewController {
     func addSubViews() {
         
         view.addSubview(collectionView)
-        view.addSubview(imageView)
+        view.addSubview(emptyImageView)
         view.addSubview(emptyLabel)
     }
     
@@ -92,20 +118,21 @@ private extension TrackersViewController {
             collectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
             
-            imageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            imageView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            imageView.heightAnchor.constraint(equalToConstant: 80),
-            imageView.widthAnchor.constraint(equalToConstant: 80),
+            emptyImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            emptyImageView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            emptyImageView.heightAnchor.constraint(equalToConstant: 80),
+            emptyImageView.widthAnchor.constraint(equalToConstant: 80),
             
-            emptyLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 8),
-            emptyLabel.centerXAnchor.constraint(equalTo: imageView.centerXAnchor),
+            emptyLabel.topAnchor.constraint(equalTo: emptyImageView.bottomAnchor, constant: 8),
+            emptyLabel.centerXAnchor.constraint(equalTo: emptyImageView.centerXAnchor),
         ])
     }
 }
 
+//MARK: - UICollectionViewDataSource
 extension TrackersViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        1
+        3
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -115,13 +142,13 @@ extension TrackersViewController: UICollectionViewDataSource {
     }
 }
 
+//MARK: - UICollectionViewDelegateFlowLayout
 extension TrackersViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let availableWidth = collectionView.frame.width - params.paddingWidth
-        let minimumInteritemSpacingForSectionAt = CGFloat(9)
-        let cellWidth = availableWidth / CGFloat(params.cellCount) - minimumInteritemSpacingForSectionAt
+        let cellWidth = availableWidth / CGFloat(params.cellCount)
         
-        return CGSize(width: cellWidth, height: cellWidth * 2 / 3)
+        return CGSize(width: cellWidth, height: 148)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
@@ -129,22 +156,6 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return 9
-    }
-}
-
-struct GeometricParams {
-    let cellCount: Int
-    let leftInset: CGFloat
-    let rightInset: CGFloat
-    let cellSpacing: CGFloat
-    let paddingWidth: CGFloat
-    
-    init(cellCount: Int, leftInset: CGFloat, rightInset: CGFloat, cellSpacing: CGFloat) {
-        self.cellCount = cellCount
-        self.leftInset = leftInset
-        self.rightInset = rightInset
-        self.cellSpacing = cellSpacing
-        self.paddingWidth = leftInset + rightInset + CGFloat(cellCount - 1) * cellSpacing
+        return params.cellSpacing
     }
 }
