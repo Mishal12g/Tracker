@@ -12,5 +12,15 @@ struct Tracker {
     let name: UILabel
     let color: UIColor
     let emoji: UIImage
-    let schedule: Array<Any>
+    let schedule: Array<Schedule>
+    
+    enum Schedule {
+        case monday
+        case tuesday
+        case wednesday
+        case thursday
+        case friday
+        case saturday
+        case sunday
+    }
 }

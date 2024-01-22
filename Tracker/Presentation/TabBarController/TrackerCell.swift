@@ -18,10 +18,20 @@ class TrackerCell: UICollectionViewCell {
         return view
     }()
     
+    let emojiView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.layer.cornerRadius = 24 / 2
+        view.layer.masksToBounds = true
+        view.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.3)
+        
+        return view
+    }()
+    
     let emojiLabel: UILabel = {
         let label = UILabel(frame: CGRect(x: 0, y: 0, width: 24, height: 24))
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.backgroundColor = .systemGray
+        label.font = UIFont.systemFont(ofSize: 14)
         label.text = "🥲"
         
         return label
@@ -61,6 +71,7 @@ class TrackerCell: UICollectionViewCell {
         super.init(frame: frame)
         
         contentView.addSubview(view)
+        view.addSubview(emojiView)
         view.addSubview(emojiLabel)
         view.addSubview(trackerNameLabel)
         contentView.addSubview(countDaysLabel)
@@ -83,8 +94,13 @@ private extension TrackerCell {
             view.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             view.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             
-            emojiLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 12),
-            emojiLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 12),
+            emojiView.topAnchor.constraint(equalTo: view.topAnchor, constant: 12),
+            emojiView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 12),
+            emojiView.heightAnchor.constraint(equalToConstant: 24),
+            emojiView.widthAnchor.constraint(equalToConstant: 24),
+            
+            emojiLabel.centerXAnchor.constraint(equalTo: emojiView.centerXAnchor),
+            emojiLabel.centerYAnchor.constraint(equalTo: emojiView.centerYAnchor),
             
             trackerNameLabel.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -12),
             trackerNameLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 12),
