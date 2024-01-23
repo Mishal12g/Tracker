@@ -27,6 +27,9 @@
 		87988B182B5E98A700342625 /* TextField + extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87988B172B5E98A700342625 /* TextField + extension.swift */; };
 		87988B202B5EA93300342625 /* UITableViewCell + extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87988B1F2B5EA93300342625 /* UITableViewCell + extension.swift */; };
 		87988B222B5EAA7A00342625 /* UITableView + extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87988B212B5EAA7900342625 /* UITableView + extension.swift */; };
+		87988B262B5EB14200342625 /* ColorCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87988B252B5EB14200342625 /* ColorCell.swift */; };
+		87988B282B5FB14C00342625 /* EmojiCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87988B272B5FB14C00342625 /* EmojiCell.swift */; };
+		87988B2A2B5FB48900342625 /* SupplementaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87988B292B5FB48900342625 /* SupplementaryView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -52,6 +55,9 @@
 		87988B172B5E98A700342625 /* TextField + extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TextField + extension.swift"; sourceTree = "<group>"; };
 		87988B1F2B5EA93300342625 /* UITableViewCell + extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableViewCell + extension.swift"; sourceTree = "<group>"; };
 		87988B212B5EAA7900342625 /* UITableView + extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableView + extension.swift"; sourceTree = "<group>"; };
+		87988B252B5EB14200342625 /* ColorCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorCell.swift; sourceTree = "<group>"; };
+		87988B272B5FB14C00342625 /* EmojiCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiCell.swift; sourceTree = "<group>"; };
+		87988B292B5FB48900342625 /* SupplementaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupplementaryView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -167,6 +173,9 @@
 			children = (
 				87988B122B5E91AB00342625 /* Button.swift */,
 				87988B142B5E985800342625 /* TextField.swift */,
+				87988B252B5EB14200342625 /* ColorCell.swift */,
+				87988B272B5FB14C00342625 /* EmojiCell.swift */,
+				87988B292B5FB48900342625 /* SupplementaryView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -251,13 +260,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				87988B262B5EB14200342625 /* ColorCell.swift in Sources */,
 				87988B102B5E84D600342625 /* HabitFormViewController.swift in Sources */,
+				87988B282B5FB14C00342625 /* EmojiCell.swift in Sources */,
 				8738D8EF2B57F02E00D6975E /* TrackerCell.swift in Sources */,
 				8772052F2B4BE87E0075D94F /* ViewController.swift in Sources */,
 				87988B222B5EAA7A00342625 /* UITableView + extension.swift in Sources */,
 				87988B152B5E985800342625 /* TextField.swift in Sources */,
 				872CAB252B4E866500AE1F8A /* TabBarController.swift in Sources */,
 				87988B202B5EA93300342625 /* UITableViewCell + extension.swift in Sources */,
+				87988B2A2B5FB48900342625 /* SupplementaryView.swift in Sources */,
 				878A07C02B555F2F0082BD0B /* TrackerCategory.swift in Sources */,
 				87988B092B5E70D200342625 /* GeometricParams.swift in Sources */,
 				87988B182B5E98A700342625 /* TextField + extension.swift in Sources */,
