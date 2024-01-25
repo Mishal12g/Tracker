@@ -23,6 +23,10 @@
 		878A07BE2B555F050082BD0B /* Tracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 878A07BD2B555F050082BD0B /* Tracker.swift */; };
 		878A07C02B555F2F0082BD0B /* TrackerCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 878A07BF2B555F2F0082BD0B /* TrackerCategory.swift */; };
 		878A07C22B555F490082BD0B /* TrackerRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 878A07C12B555F490082BD0B /* TrackerRecord.swift */; };
+		8792E86B2B6265B200C4A4F8 /* CategoryFormViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8792E86A2B6265B200C4A4F8 /* CategoryFormViewController.swift */; };
+		8792E86D2B62673B00C4A4F8 /* CategoriesListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8792E86C2B62673B00C4A4F8 /* CategoriesListViewController.swift */; };
+		8792E86F2B6277EA00C4A4F8 /* CategoryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8792E86E2B6277EA00C4A4F8 /* CategoryCell.swift */; };
+		8792E8722B62923400C4A4F8 /* CategoriesStorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8792E8712B62923400C4A4F8 /* CategoriesStorageService.swift */; };
 		87988B092B5E70D200342625 /* GeometricParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87988B082B5E70D200342625 /* GeometricParams.swift */; };
 		87988B0D2B5E77FD00342625 /* CreatedTrackerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87988B0C2B5E77FD00342625 /* CreatedTrackerViewController.swift */; };
 		87988B102B5E84D600342625 /* HabitFormViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87988B0F2B5E84D600342625 /* HabitFormViewController.swift */; };
@@ -57,6 +61,10 @@
 		878A07BD2B555F050082BD0B /* Tracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tracker.swift; sourceTree = "<group>"; };
 		878A07BF2B555F2F0082BD0B /* TrackerCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCategory.swift; sourceTree = "<group>"; };
 		878A07C12B555F490082BD0B /* TrackerRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerRecord.swift; sourceTree = "<group>"; };
+		8792E86A2B6265B200C4A4F8 /* CategoryFormViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryFormViewController.swift; sourceTree = "<group>"; };
+		8792E86C2B62673B00C4A4F8 /* CategoriesListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoriesListViewController.swift; sourceTree = "<group>"; };
+		8792E86E2B6277EA00C4A4F8 /* CategoryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryCell.swift; sourceTree = "<group>"; };
+		8792E8712B62923400C4A4F8 /* CategoriesStorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoriesStorageService.swift; sourceTree = "<group>"; };
 		87988B082B5E70D200342625 /* GeometricParams.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeometricParams.swift; sourceTree = "<group>"; };
 		87988B0C2B5E77FD00342625 /* CreatedTrackerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatedTrackerViewController.swift; sourceTree = "<group>"; };
 		87988B0F2B5E84D600342625 /* HabitFormViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitFormViewController.swift; sourceTree = "<group>"; };
@@ -87,20 +95,21 @@
 			isa = PBXGroup;
 			children = (
 				87988B112B5E917D00342625 /* View */,
-				87988B0E2B5E84B100342625 /* HabitFormViewController */,
-				87988B062B5E708800342625 /* TrackersViewController */,
-				87988B072B5E709800342625 /* StatisticViewController */,
-				872CAB232B4E864B00AE1F8A /* TabBarController */,
+				8792E8692B62656700C4A4F8 /* Category */,
+				87988B0E2B5E84B100342625 /* HabitForm */,
+				87988B062B5E708800342625 /* Trackers */,
+				87988B072B5E709800342625 /* Statistic */,
+				872CAB232B4E864B00AE1F8A /* TabBar */,
 			);
 			path = Presentation;
 			sourceTree = "<group>";
 		};
-		872CAB232B4E864B00AE1F8A /* TabBarController */ = {
+		872CAB232B4E864B00AE1F8A /* TabBar */ = {
 			isa = PBXGroup;
 			children = (
 				872CAB242B4E866500AE1F8A /* TabBarController.swift */,
 			);
-			path = TabBarController;
+			path = TabBar;
 			sourceTree = "<group>";
 		};
 		874DFE072B610AF300C6AF5B /* EmojiCollectionView */ = {
@@ -131,6 +140,7 @@
 		877205292B4BE87E0075D94F /* Tracker */ = {
 			isa = PBXGroup;
 			children = (
+				8792E8702B62920900C4A4F8 /* Services */,
 				878A07BC2B555EF00082BD0B /* Models */,
 				872CAB222B4E863A00AE1F8A /* Presentation */,
 				8772052A2B4BE87E0075D94F /* AppDelegate.swift */,
@@ -162,31 +172,48 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
-		87988B062B5E708800342625 /* TrackersViewController */ = {
+		8792E8692B62656700C4A4F8 /* Category */ = {
+			isa = PBXGroup;
+			children = (
+				8792E86A2B6265B200C4A4F8 /* CategoryFormViewController.swift */,
+				8792E86C2B62673B00C4A4F8 /* CategoriesListViewController.swift */,
+			);
+			path = Category;
+			sourceTree = "<group>";
+		};
+		8792E8702B62920900C4A4F8 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				8792E8712B62923400C4A4F8 /* CategoriesStorageService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		87988B062B5E708800342625 /* Trackers */ = {
 			isa = PBXGroup;
 			children = (
 				872CAB272B4E88F700AE1F8A /* TrackersViewController.swift */,
 				8738D8EE2B57F02E00D6975E /* TrackerCell.swift */,
 				87988B082B5E70D200342625 /* GeometricParams.swift */,
 			);
-			path = TrackersViewController;
+			path = Trackers;
 			sourceTree = "<group>";
 		};
-		87988B072B5E709800342625 /* StatisticViewController */ = {
+		87988B072B5E709800342625 /* Statistic */ = {
 			isa = PBXGroup;
 			children = (
 				872CAB292B4E890F00AE1F8A /* StatisticViewController.swift */,
 			);
-			path = StatisticViewController;
+			path = Statistic;
 			sourceTree = "<group>";
 		};
-		87988B0E2B5E84B100342625 /* HabitFormViewController */ = {
+		87988B0E2B5E84B100342625 /* HabitForm */ = {
 			isa = PBXGroup;
 			children = (
 				87988B0F2B5E84D600342625 /* HabitFormViewController.swift */,
 				87988B0C2B5E77FD00342625 /* CreatedTrackerViewController.swift */,
 			);
-			path = HabitFormViewController;
+			path = HabitForm;
 			sourceTree = "<group>";
 		};
 		87988B112B5E917D00342625 /* View */ = {
@@ -202,6 +229,7 @@
 				87988B292B5FB48900342625 /* SupplementaryView.swift */,
 				87A334D52B61968500B4791D /* ButtonsCategoryAndSchedule */,
 				87A334CF2B61585300B4791D /* Button.swift */,
+				8792E86E2B6277EA00C4A4F8 /* CategoryCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -294,6 +322,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8792E86B2B6265B200C4A4F8 /* CategoryFormViewController.swift in Sources */,
 				87988B262B5EB14200342625 /* ColorCell.swift in Sources */,
 				87988B102B5E84D600342625 /* HabitFormViewController.swift in Sources */,
 				87988B282B5FB14C00342625 /* EmojiCell.swift in Sources */,
@@ -308,11 +337,14 @@
 				87988B092B5E70D200342625 /* GeometricParams.swift in Sources */,
 				874DFE0B2B610B1900C6AF5B /* HelperEmojiCollectionView.swift in Sources */,
 				874DFE092B610B0700C6AF5B /* EmojiCollectionView.swift in Sources */,
+				8792E86F2B6277EA00C4A4F8 /* CategoryCell.swift in Sources */,
+				8792E8722B62923400C4A4F8 /* CategoriesStorageService.swift in Sources */,
 				87A334DC2B6239CC00B4791D /* TwoButtonsDataSourceTableView.swift in Sources */,
 				872CAB282B4E88F700AE1F8A /* TrackersViewController.swift in Sources */,
 				87988B132B5E91AB00342625 /* ButtonForTextField.swift in Sources */,
 				87A334CE2B612A3B00B4791D /* TwoButtons.swift in Sources */,
 				872CAB2A2B4E890F00AE1F8A /* StatisticViewController.swift in Sources */,
+				8792E86D2B62673B00C4A4F8 /* CategoriesListViewController.swift in Sources */,
 				878A07C22B555F490082BD0B /* TrackerRecord.swift in Sources */,
 				87A334D02B61585300B4791D /* Button.swift in Sources */,
 				87988B0D2B5E77FD00342625 /* CreatedTrackerViewController.swift in Sources */,

@@ -6,9 +6,10 @@ protocol HabitFormViewControllerDelegate {
 
 final class HabitFormViewController: UIViewController {
     var delegate: HabitFormViewControllerDelegate?
-    var emoji: String?
-    var color: UIColor?
-    let category = "прыжок"
+    
+    private var emoji: String?
+    private var color: UIColor?
+    private var category: TrackerCategory?
     private let dataSource = TwoButtonsDataSourceTableView()
     
     private let label: UILabel = {
@@ -129,10 +130,11 @@ final class HabitFormViewController: UIViewController {
     @objc func didTapCreatedButton() {
         guard let text = textField.text,
               let color = color,
-              let emoji = emoji
+              let emoji = emoji,
+              let category = category
         else { return }
         let tracker = Tracker(id: UUID(), name: text, color: color, emoji: emoji, schedule: [])
-        delegate?.createTracker(tracker, category)
+        delegate?.createTracker(tracker, category.title)
         dismiss(animated: true)
     }
 }
@@ -140,12 +142,23 @@ final class HabitFormViewController: UIViewController {
 //MARK: - TableView Delegate
 extension HabitFormViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if indexPath.item == 0 {
+            let vc = CategoriesListViewController()
+            vc.delegate = self
+            present(vc, animated: true)
+        }
         tableView.deselectRow(at: indexPath, animated: true)
     }
 }
 
 //MARK: - HelpersDelegate
-extension HabitFormViewController: HelperColorsCollectionViewDelegate, HelperEmojiCollectionViewDelegate {
+extension HabitFormViewController: HelperColorsCollectionViewDelegate, HelperEmojiCollectionViewDelegate, CategoriesListViewControllerDelegate {
+    func selectedCategory(_ category: TrackerCategory) {
+        self.category = category
+        dataSource.text = category.title
+        twoButtonsVertical.reloadData()
+    }
+    
     func setEmoji(_ emoji: String) {
         self.emoji = emoji
     }

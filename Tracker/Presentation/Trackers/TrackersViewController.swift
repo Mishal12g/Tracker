@@ -2,55 +2,12 @@ import UIKit
 
 class TrackersViewController: UIViewController {
     //MARK: - privates properties
-    private var categories: [TrackerCategory] = [TrackerCategory(title: "Покушать", trackers: [
-        Tracker(id: UUID(),
-                name: "Мясo",
-                color: ._1,
-                emoji: "🙂",
-                schedule: []),
-        Tracker(id: UUID(),
-                name: "Суп",
-                color: ._2,
-                emoji: "🎸",
-                schedule: []),
-        Tracker(id: UUID(),
-                name: "Гречку",
-                color: ._3,
-                emoji: "😭",
-                schedule: []),
-        Tracker(id: UUID(),
-                name: "Окрошку",
-                color: ._4,
-                emoji: "🍔",
-                schedule: [])]),
-                                                 TrackerCategory(title: "Побегать", trackers: [
-                                                    Tracker(id: UUID(),
-                                                            name: "Мясo",
-                                                            color: ._1,
-                                                            emoji: "🙂",
-                                                            schedule: []),
-                                                    Tracker(id: UUID(),
-                                                            name: "Суп",
-                                                            color: ._2,
-                                                            emoji: "🎸",
-                                                            schedule: []),]),
-                                                 
-                                                 TrackerCategory(title: "прыжок", trackers: [
-                                                    Tracker(id: UUID(),
-                                                            name: "Мясo",
-                                                            color: ._1,
-                                                            emoji: "🙂",
-                                                            schedule: []),
-                                                    Tracker(id: UUID(),
-                                                            name: "Окрошку",
-                                                            color: ._4,
-                                                            emoji: "🍔",
-                                                            schedule: [])]),
-    ]
+    private var categories = CategoriesStorageService.shared.categories
     private var completedTrackers: [TrackerRecord] = []
     private let datePicker = UIDatePicker()
     private let params = GeometricParams(cellCount: 2, leftInset: 16, rightInset: 16, cellSpacing: 9)
-    
+    private var categoriesListObserver: NSObjectProtocol?
+
     private let collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         let collection = UICollectionView(frame: .zero, collectionViewLayout: layout)
@@ -102,11 +59,22 @@ class TrackersViewController: UIViewController {
         collectionView.delegate = self
         collectionView.register(TrackerCell.self, forCellWithReuseIdentifier: TrackerCell.identity)
         collectionView.register(SupplementaryView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "TrackerVCheader")
+        
+        categoriesListObserver = NotificationCenter.default.addObserver(forName: CategoriesStorageService.didChangeNotification,
+                                                                        object: nil,
+                                                                        queue: .main) { [weak self]_ in
+            guard let self = self else { return }
+            self.updatesCollectionView()
+        }
     }
 }
 
 //MARK: - For methods view
 private extension TrackersViewController {
+    func updatesCollectionView() {
+        self.categories = CategoriesStorageService.shared.categories
+        collectionView.reloadData()
+    }
     
     func hideErrorViews() {
         guard !categories.isEmpty else {
@@ -188,13 +156,7 @@ extension TrackersViewController: CreatedTrackerViewControllerDelegate {
 //MARK: - HabitFormViewControllerDelegate
 extension TrackersViewController: HabitFormViewControllerDelegate {
     func createTracker(_ tracker: Tracker, _ categoryName: String) {
-        if let i = categories.firstIndex(where: {
-            $0.title == categoryName
-        }) {
-            categories[i].trackers.append(tracker)
-        }
-        
-        collectionView.reloadData()
+        CategoriesStorageService.shared.addTracker(categoryName, tracker)
     }
 }
 
@@ -236,7 +198,7 @@ extension TrackersViewController: UICollectionViewDataSource {
             id = ""
             text = ""
         }
-        guard let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: id, for: indexPath) as? SupplementaryView else { return UICollectionReusableView()}
+        guard let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: id, for: indexPath) as? SupplementaryView, !categories[indexPath.section].trackers.isEmpty else { return UICollectionReusableView()}
         view.titleLabel.text = text
         return view
     }

@@ -8,6 +8,8 @@
 import UIKit
 
 final class TwoButtonsDataSourceTableView: NSObject, UITableViewDataSource {
+    var text: String?
+    
     private let words = ["Категория", "Расписание"]
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -15,7 +17,6 @@ final class TwoButtonsDataSourceTableView: NSObject, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-//        let cell = tableView.dequeueReusableCell(withIdentifier: "TwoButtonsCell", for: indexPath)
         var cell = tableView.dequeueReusableCell(withIdentifier: "TwoButtonsCell", for: indexPath)
         
         cell = UITableViewCell(style: .subtitle,
@@ -25,7 +26,7 @@ final class TwoButtonsDataSourceTableView: NSObject, UITableViewDataSource {
         cell.textLabel?.text = words[indexPath.row]
         cell.backgroundColor = .ypWhite
         cell.accessoryType = .disclosureIndicator
-        cell.detailTextLabel?.text = "Важное"
+        cell.detailTextLabel?.text = indexPath.row == 0 ? text : ""
         return cell
     }
 }
