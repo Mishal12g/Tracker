@@ -15,12 +15,17 @@ final class TwoButtonsDataSourceTableView: NSObject, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "TwoButtonsCell", for: indexPath)
+//        let cell = tableView.dequeueReusableCell(withIdentifier: "TwoButtonsCell", for: indexPath)
+        var cell = tableView.dequeueReusableCell(withIdentifier: "TwoButtonsCell", for: indexPath)
+        
+        cell = UITableViewCell(style: .subtitle,
+                        reuseIdentifier: "TwoButtonsCell")
+        
         
         cell.textLabel?.text = words[indexPath.row]
         cell.backgroundColor = .ypWhite
         cell.accessoryType = .disclosureIndicator
-        
+        cell.detailTextLabel?.text = "Важное"
         return cell
     }
 }

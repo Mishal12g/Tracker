@@ -1,6 +1,14 @@
 import UIKit
 
+protocol HabitFormViewControllerDelegate {
+    func createTracker(_ tracker: Tracker, _ categoryName: String)
+}
+
 final class HabitFormViewController: UIViewController {
+    var delegate: HabitFormViewControllerDelegate?
+    var emoji: String?
+    var color: UIColor?
+    let category = "прыжок"
     private let dataSource = TwoButtonsDataSourceTableView()
     
     private let label: UILabel = {
@@ -25,32 +33,35 @@ final class HabitFormViewController: UIViewController {
     
     lazy private var twoButtonsVertical: UITableView = {
         let table = TableView(dataSource: dataSource)
-      
+        
         return table
     }()
     
-    private let emojiCollection: EmojiCollectionView = {
+    lazy private var emojiCollection: EmojiCollectionView = {
         let collection = EmojiCollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+        collection.delegateAndDataSource.delegate = self
         
         return collection
     }()
     
-    private let colorsCollection: ColorsCollectionView = {
+    lazy private var colorsCollection: ColorsCollectionView = {
         let collection = ColorsCollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+        collection.delegateAndDataSource.delegate = self
         
         return collection
     }()
     
-    let cancelButton: Button = {
+    private let cancelButton: Button = {
         let button = Button(type: .system)
         button.setStyle(borderColor: .ypRed, tintColor: .ypRed, borderWidth: 1, title: "Отменить")
         
         return button
     }()
     
-    let doneButton: UIButton = {
+    lazy private var doneButton: UIButton = {
         let button = Button(type: .system)
         button.setStyle(color: .ypGray1, tintColor: .white, title: "Создать")
+        button.addTarget(self, action: #selector(didTapCreatedButton), for: .touchUpInside)
         
         return button
     }()
@@ -68,7 +79,6 @@ final class HabitFormViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         twoButtonsVertical.delegate = self
-
         twoButtonsVertical.register(UITableViewCell.self, forCellReuseIdentifier: "TwoButtonsCell")
         view.backgroundColor = .white
         view.addSubview(scrollView)
@@ -115,11 +125,32 @@ final class HabitFormViewController: UIViewController {
             stackH.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
         ])
     }
+    
+    @objc func didTapCreatedButton() {
+        guard let text = textField.text,
+              let color = color,
+              let emoji = emoji
+        else { return }
+        let tracker = Tracker(id: UUID(), name: text, color: color, emoji: emoji, schedule: [])
+        delegate?.createTracker(tracker, category)
+        dismiss(animated: true)
+    }
 }
 
 //MARK: - TableView Delegate
 extension HabitFormViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+    }
+}
+
+//MARK: - HelpersDelegate
+extension HabitFormViewController: HelperColorsCollectionViewDelegate, HelperEmojiCollectionViewDelegate {
+    func setEmoji(_ emoji: String) {
+        self.emoji = emoji
+    }
+    
+    func setColor(_ color: UIColor) {
+        self.color = color
     }
 }

@@ -1,7 +1,13 @@
 import UIKit
 
+protocol HelperEmojiCollectionViewDelegate {
+    func setEmoji(_ emoji: String)
+}
+
 final class HelperEmojiCollectionView: NSObject, UICollectionViewDataSource {
-    let emoji = ["🙂", "😻", "🌺", "🐶", "❤️", "😱", "😇", "😡", "🥶", "🤔", "🙌", "🍔", "🥦", "🏓", "🥇", "🎸", "🏝️", "😪"]
+    var delegate: HelperEmojiCollectionViewDelegate?
+    
+    private let emoji = ["🙂", "😻", "🌺", "🐶", "❤️", "😱", "😇", "😡", "🥶", "🤔", "🙌", "🍔", "🥦", "🏓", "🥇", "🎸", "🏝️", "😪"]
     private let params = GeometricParams(cellCount: 6, leftInset: 18.0, rightInset: 18.0, cellSpacing: 5.0)
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -46,6 +52,7 @@ extension HelperEmojiCollectionView: UICollectionViewDelegateFlowLayout {
         guard let cell = collectionView.cellForItem(at: indexPath) as? EmojiCell else { return }
         cell.layer.cornerRadius = 16
         cell.backgroundColor = .ypWhite
+        delegate?.setEmoji(emoji[indexPath.item])
     }
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {

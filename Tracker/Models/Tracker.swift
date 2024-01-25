@@ -9,9 +9,9 @@ import UIKit
 
 struct Tracker {
     let id: UUID
-    let name: UILabel
+    let name: String
     let color: UIColor
-    let emoji: UIImage
+    let emoji: String
     let schedule: Array<Schedule>
     
     enum Schedule {

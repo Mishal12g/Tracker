@@ -8,6 +8,6 @@
 import UIKit
 
 struct TrackerCategory {
-    let title: UILabel
-    let trackers: [Tracker]
+    let title: String
+    var trackers: [Tracker]
 }
