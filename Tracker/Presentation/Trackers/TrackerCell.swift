@@ -8,8 +8,10 @@
 import UIKit
 
 class TrackerCell: UICollectionViewCell {
+    //MARK: static properties
     static let identity = "TrackerCell"
     
+    //MARK: public properties
     let view: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -40,7 +42,6 @@ class TrackerCell: UICollectionViewCell {
     let trackerNameLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Полить цветы"
         label.numberOfLines = 2
         label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
         label.textColor = .white
@@ -68,16 +69,9 @@ class TrackerCell: UICollectionViewCell {
         return button
     }()
     
+    //MARK: overrides methods
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
-        contentView.addSubview(view)
-        view.addSubview(emojiView)
-        view.addSubview(emojiLabel)
-        view.addSubview(trackerNameLabel)
-        contentView.addSubview(countDaysLabel)
-        contentView.addSubview(addButton)
-        
         addContraints()
         view.layer.cornerRadius = 16
     }
@@ -87,8 +81,16 @@ class TrackerCell: UICollectionViewCell {
     }
 }
 
+//MARK: setup constraints
 private extension TrackerCell {
     func addContraints() {
+        contentView.addSubview(view)
+        view.addSubview(emojiView)
+        view.addSubview(emojiLabel)
+        view.addSubview(trackerNameLabel)
+        contentView.addSubview(countDaysLabel)
+        contentView.addSubview(addButton)
+       
         NSLayoutConstraint.activate([
             view.heightAnchor.constraint(equalToConstant: 90),
             view.topAnchor.constraint(equalTo: contentView.topAnchor),

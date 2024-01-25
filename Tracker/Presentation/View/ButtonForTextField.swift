@@ -8,6 +8,7 @@
 import UIKit
 
 final class ButtonForTextField: UIButton {
+    //MARK: - overrides methods
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.translatesAutoresizingMaskIntoConstraints = false
@@ -20,6 +21,7 @@ final class ButtonForTextField: UIButton {
         fatalError("init(coder:) has not been implemented")
     }
     
+    //MARK: - public methods
     func setColor(color: UIColor) {
         self.backgroundColor = color
     }

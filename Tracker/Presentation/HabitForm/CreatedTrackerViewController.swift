@@ -12,21 +12,25 @@ protocol CreatedTrackerViewControllerDelegate {
 }
 
 final class CreatedTrackerViewController: UIViewController {
+    //MARK: public properties
     var delegate: CreatedTrackerViewControllerDelegate?
     
+    //MARK: - Init Methods
     init(delegate: CreatedTrackerViewControllerDelegate?) {
-        self.delegate = delegate
         super.init(nibName: nil, bundle: nil)
+        self.delegate = delegate
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private let buttonOne: UIButton = {
+    //MARK: - privates properties
+    lazy private var buttonOne: UIButton = {
         let button = ButtonForTextField(type: .system)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         button.setTitle("Привычка", for: .normal)
+        button.addTarget(self, action: #selector(habitDidTapButton), for: .touchUpInside)
         
         return button
     }()
@@ -39,25 +43,33 @@ final class CreatedTrackerViewController: UIViewController {
         return button
     }()
     
+    //MARK: overrides methods
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
-        view.addSubview(buttonOne)
-        view.addSubview(buttonTwo)
-        
-        addConstraints()
-        buttonOne.addTarget(self, action: #selector(habitDidTapButton), for: .touchUpInside)
+        common()
     }
 }
 
-//MARK: For methods
+//MARK: private methods
 private extension CreatedTrackerViewController {
+    func common() {
+        view.backgroundColor = .white
+        addConstraints()
+    }
+    
+    //MARK: action methods
     @objc func habitDidTapButton() {
         dismiss(animated: true)
         delegate?.didTapAddButton()
     }
-    
+}
+
+//MARK: setup constraint
+private extension CreatedTrackerViewController {
     func addConstraints() {
+        view.addSubview(buttonOne)
+        view.addSubview(buttonTwo)
+        
         NSLayoutConstraint.activate([
             buttonOne.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             buttonOne.centerYAnchor.constraint(equalTo: view.centerYAnchor),

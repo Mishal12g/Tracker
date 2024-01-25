@@ -8,6 +8,7 @@
 import UIKit
 
 final class CategoryFormViewController: UIViewController {
+    //MARK: - Privates properties
     private let titleLable: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -35,13 +36,18 @@ final class CategoryFormViewController: UIViewController {
         return textField
     }()
     
+    //MARK: - Overrides methods
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
         setupConstraints()
     }
     
+    //MARK: - Actions methods
     @objc func didTapDoneButton() {
+        guard let text = textField.text else { return }
+        let category = TrackerCategory(title: text, trackers: [])
+        CategoriesStorageService.shared.addCategory(category)
         dismiss(animated: true)
     }
     
@@ -57,7 +63,7 @@ final class CategoryFormViewController: UIViewController {
 }
 
 //MARK: - setup constraints
-extension CategoryFormViewController {
+private extension CategoryFormViewController {
     func setupConstraints() {
         view.addSubview(titleLable)
         view.addSubview(textField)

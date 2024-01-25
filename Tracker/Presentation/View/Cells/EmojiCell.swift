@@ -8,8 +8,10 @@
 import UIKit
 
 final class EmojiCell: UICollectionViewCell {
+    //MARK: - static properties
     static let identity = "EmojiCell"
     
+    //MARK: - public properties
     let label: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -17,6 +19,7 @@ final class EmojiCell: UICollectionViewCell {
         return label
     }()
     
+    //MARK: - overrides methods
     override init(frame: CGRect) {
         super.init(frame: frame)
         contentView.addSubview(label)

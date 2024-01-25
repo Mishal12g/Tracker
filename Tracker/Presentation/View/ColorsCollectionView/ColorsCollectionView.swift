@@ -8,8 +8,10 @@
 import UIKit
 
 final class ColorsCollectionView: UICollectionView {
+    //MARK: - public methods
     let delegateAndDataSource = HelperColorsCollectionView()
     
+    //MARK: - overrides methods
     override init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout) {
         super.init(frame: frame, collectionViewLayout: layout)
         self.translatesAutoresizingMaskIntoConstraints = false

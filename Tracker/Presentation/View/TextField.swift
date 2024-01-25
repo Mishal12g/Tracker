@@ -9,16 +9,18 @@ import UIKit
 
 final class TextField: UITextField {
     
+    //MARK: - init methods
     init(placeholder: String) {
         super.init(frame: .zero)
         addView(placeholder: placeholder)
-        setConstraints()
+        setupConstraints()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
+    //MARK: - private methods
     private func addView(placeholder: String) {
         leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: frame.height))
         leftViewMode = .always
@@ -30,10 +32,9 @@ final class TextField: UITextField {
     }
 }
 
-// MARK: - Setting Constraints
-
+// MARK: - setup constraints
 extension TextField {
-    private func setConstraints() {
+    private func setupConstraints() {
         NSLayoutConstraint.activate([
             heightAnchor.constraint(equalToConstant: 75)
         ])

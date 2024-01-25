@@ -4,12 +4,17 @@ protocol HelperEmojiCollectionViewDelegate {
     func setEmoji(_ emoji: String)
 }
 
-final class HelperEmojiCollectionView: NSObject, UICollectionViewDataSource {
+final class HelperEmojiCollectionView: NSObject {
+    //MARK: - public properties
     var delegate: HelperEmojiCollectionViewDelegate?
     
+    //MARK: - privates properties
     private let emoji = ["🙂", "😻", "🌺", "🐶", "❤️", "😱", "😇", "😡", "🥶", "🤔", "🙌", "🍔", "🥦", "🏓", "🥇", "🎸", "🏝️", "😪"]
     private let params = GeometricParams(cellCount: 6, leftInset: 18.0, rightInset: 18.0, cellSpacing: 5.0)
-    
+}
+
+//MARK: - CollectionViewDataSource
+extension HelperEmojiCollectionView: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return emoji.count
     }

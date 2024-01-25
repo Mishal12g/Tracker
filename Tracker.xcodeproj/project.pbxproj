@@ -35,9 +35,7 @@
 		87988B262B5EB14200342625 /* ColorCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87988B252B5EB14200342625 /* ColorCell.swift */; };
 		87988B282B5FB14C00342625 /* EmojiCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87988B272B5FB14C00342625 /* EmojiCell.swift */; };
 		87988B2A2B5FB48900342625 /* SupplementaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87988B292B5FB48900342625 /* SupplementaryView.swift */; };
-		87A334CE2B612A3B00B4791D /* TwoButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87A334CD2B612A3B00B4791D /* TwoButtons.swift */; };
 		87A334D02B61585300B4791D /* Button.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87A334CF2B61585300B4791D /* Button.swift */; };
-		87A334D22B6178CE00B4791D /* ButtonStackTitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87A334D12B6178CE00B4791D /* ButtonStackTitle.swift */; };
 		87A334DA2B62394500B4791D /* TableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87A334D92B62394500B4791D /* TableView.swift */; };
 		87A334DC2B6239CC00B4791D /* TwoButtonsDataSourceTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87A334DB2B6239CC00B4791D /* TwoButtonsDataSourceTableView.swift */; };
 /* End PBXBuildFile section */
@@ -73,9 +71,7 @@
 		87988B252B5EB14200342625 /* ColorCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorCell.swift; sourceTree = "<group>"; };
 		87988B272B5FB14C00342625 /* EmojiCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiCell.swift; sourceTree = "<group>"; };
 		87988B292B5FB48900342625 /* SupplementaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupplementaryView.swift; sourceTree = "<group>"; };
-		87A334CD2B612A3B00B4791D /* TwoButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwoButtons.swift; sourceTree = "<group>"; };
 		87A334CF2B61585300B4791D /* Button.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Button.swift; sourceTree = "<group>"; };
-		87A334D12B6178CE00B4791D /* ButtonStackTitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonStackTitle.swift; sourceTree = "<group>"; };
 		87A334D92B62394500B4791D /* TableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableView.swift; sourceTree = "<group>"; };
 		87A334DB2B6239CC00B4791D /* TwoButtonsDataSourceTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwoButtonsDataSourceTableView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -189,6 +185,16 @@
 			path = Services;
 			sourceTree = "<group>";
 		};
+		8792E8732B62FAF100C4A4F8 /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				87988B252B5EB14200342625 /* ColorCell.swift */,
+				87988B272B5FB14C00342625 /* EmojiCell.swift */,
+				8792E86E2B6277EA00C4A4F8 /* CategoryCell.swift */,
+			);
+			path = Cells;
+			sourceTree = "<group>";
+		};
 		87988B062B5E708800342625 /* Trackers */ = {
 			isa = PBXGroup;
 			children = (
@@ -222,25 +228,13 @@
 				87A334D82B62393000B4791D /* TableView */,
 				874DFE072B610AF300C6AF5B /* EmojiCollectionView */,
 				8783CC332B61043A00184F73 /* ColorsCollectionView */,
+				8792E8732B62FAF100C4A4F8 /* Cells */,
 				87988B122B5E91AB00342625 /* ButtonForTextField.swift */,
 				87988B142B5E985800342625 /* TextField.swift */,
-				87988B252B5EB14200342625 /* ColorCell.swift */,
-				87988B272B5FB14C00342625 /* EmojiCell.swift */,
 				87988B292B5FB48900342625 /* SupplementaryView.swift */,
-				87A334D52B61968500B4791D /* ButtonsCategoryAndSchedule */,
 				87A334CF2B61585300B4791D /* Button.swift */,
-				8792E86E2B6277EA00C4A4F8 /* CategoryCell.swift */,
 			);
 			path = View;
-			sourceTree = "<group>";
-		};
-		87A334D52B61968500B4791D /* ButtonsCategoryAndSchedule */ = {
-			isa = PBXGroup;
-			children = (
-				87A334CD2B612A3B00B4791D /* TwoButtons.swift */,
-				87A334D12B6178CE00B4791D /* ButtonStackTitle.swift */,
-			);
-			path = ButtonsCategoryAndSchedule;
 			sourceTree = "<group>";
 		};
 		87A334D82B62393000B4791D /* TableView */ = {
@@ -342,14 +336,12 @@
 				87A334DC2B6239CC00B4791D /* TwoButtonsDataSourceTableView.swift in Sources */,
 				872CAB282B4E88F700AE1F8A /* TrackersViewController.swift in Sources */,
 				87988B132B5E91AB00342625 /* ButtonForTextField.swift in Sources */,
-				87A334CE2B612A3B00B4791D /* TwoButtons.swift in Sources */,
 				872CAB2A2B4E890F00AE1F8A /* StatisticViewController.swift in Sources */,
 				8792E86D2B62673B00C4A4F8 /* CategoriesListViewController.swift in Sources */,
 				878A07C22B555F490082BD0B /* TrackerRecord.swift in Sources */,
 				87A334D02B61585300B4791D /* Button.swift in Sources */,
 				87988B0D2B5E77FD00342625 /* CreatedTrackerViewController.swift in Sources */,
 				87A334DA2B62394500B4791D /* TableView.swift in Sources */,
-				87A334D22B6178CE00B4791D /* ButtonStackTitle.swift in Sources */,
 				8772052B2B4BE87E0075D94F /* AppDelegate.swift in Sources */,
 				8772052D2B4BE87E0075D94F /* SceneDelegate.swift in Sources */,
 				878A07BE2B555F050082BD0B /* Tracker.swift in Sources */,

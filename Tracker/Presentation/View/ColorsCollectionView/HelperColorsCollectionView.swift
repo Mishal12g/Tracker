@@ -11,11 +11,14 @@ protocol HelperColorsCollectionViewDelegate {
     func setColor(_ color: UIColor)
 }
 
-final class HelperColorsCollectionView: NSObject, UICollectionViewDataSource {
+final class HelperColorsCollectionView: NSObject {
     var delegate: HelperColorsCollectionViewDelegate?
     private let colors: [UIColor] = [._1, ._2, ._3, ._4, ._5, ._6, ._7, ._8, ._9, ._10, ._11, ._12, ._13, ._14, ._15, ._16, ._17, ._18]
     private let params = GeometricParams(cellCount: 6, leftInset: 18.0, rightInset: 18.0, cellSpacing: 17.0)
-    
+}
+
+//MARK: - CollectionViewDataSource
+extension HelperColorsCollectionView: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return colors.count
     }

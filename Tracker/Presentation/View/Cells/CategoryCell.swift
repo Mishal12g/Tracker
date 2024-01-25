@@ -8,8 +8,10 @@
 import UIKit
 
 class CategoryCell: UITableViewCell {
+    //MARK: - static properties
     static let identity = "CategoryCell"
     
+    //MARK: - public methods
     let doneImage: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(named: "done")
@@ -19,6 +21,7 @@ class CategoryCell: UITableViewCell {
         return imageView
     }()
     
+    //MARK: - override methods
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         selectionStyle = .none

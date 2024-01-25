@@ -8,6 +8,7 @@
 import UIKit
 
 final class Button: UIButton {
+    //MARK: - overrides methods
     override init(frame: CGRect) {
         super.init(frame: frame)
     }

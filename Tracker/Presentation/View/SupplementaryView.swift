@@ -8,6 +8,7 @@
 import UIKit
 
 class SupplementaryView: UICollectionReusableView {
+    //MARK: - public properties
     let titleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -16,6 +17,7 @@ class SupplementaryView: UICollectionReusableView {
         return label
     }()
     
+    //MARK: - overrides methods
     override init(frame: CGRect) {
         super.init(frame: frame)
         

@@ -8,8 +8,10 @@
 import UIKit
 
 class ColorCell: UICollectionViewCell {
+    //MARK: - static properties
     static let identity = "ColorCell"
     
+    //MARK: - public properties
     let selectedView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -21,6 +23,7 @@ class ColorCell: UICollectionViewCell {
         return view
     }()
     
+    //MARK: - override methods
     override init(frame: CGRect) {
         super.init(frame: frame)
         translatesAutoresizingMaskIntoConstraints = false
@@ -38,6 +41,7 @@ class ColorCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    //MARK: - public methods
     func setColor(_ color: UIColor) {
         selectedView.layer.borderColor = color.withAlphaComponent(0.5).cgColor
     }

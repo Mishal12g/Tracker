@@ -5,11 +5,14 @@ protocol HabitFormViewControllerDelegate {
 }
 
 final class HabitFormViewController: UIViewController {
+    //MARK: - public properties
     var delegate: HabitFormViewControllerDelegate?
     
+    //MARK: - privates properties
     private var emoji: String?
     private var color: UIColor?
     private var category: TrackerCategory?
+    
     private let dataSource = TwoButtonsDataSourceTableView()
     
     private let label: UILabel = {
@@ -77,61 +80,31 @@ final class HabitFormViewController: UIViewController {
         return stack
     }()
     
+    //MARK: - overrides methods
     override func viewDidLoad() {
         super.viewDidLoad()
+        common()
+    }
+}
+
+//MARK: - privates methods
+private extension HabitFormViewController {
+    func common() {
         twoButtonsVertical.delegate = self
         twoButtonsVertical.register(UITableViewCell.self, forCellReuseIdentifier: "TwoButtonsCell")
-        view.backgroundColor = .white
-        view.addSubview(scrollView)
-        view.addSubview(label)
-        scrollView.addSubview(textField)
-        scrollView.addSubview(twoButtonsVertical)
-        scrollView.addSubview(emojiCollection)
-        scrollView.addSubview(colorsCollection)
-        scrollView.addSubview(stackH)
-        stackH.addArrangedSubview(cancelButton)
-        stackH.addArrangedSubview(doneButton)
         
-        NSLayoutConstraint.activate([
-            label.topAnchor.constraint(equalTo: view.topAnchor, constant: 30),
-            label.widthAnchor.constraint(equalToConstant: view.bounds.width),
-            
-            scrollView.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 38),
-            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            scrollView.widthAnchor.constraint(equalTo: view.widthAnchor),
-            
-            
-            
-            textField.topAnchor.constraint(equalTo: scrollView.topAnchor),
-            textField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            textField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            
-            twoButtonsVertical.topAnchor.constraint(equalTo: textField.bottomAnchor, constant: 24),
-            twoButtonsVertical.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            twoButtonsVertical.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            twoButtonsVertical.heightAnchor.constraint(equalToConstant: 150),
-            
-            emojiCollection.topAnchor.constraint(equalTo: twoButtonsVertical.bottomAnchor, constant: 32),
-            emojiCollection.heightAnchor.constraint(equalToConstant: 250),
-            emojiCollection.widthAnchor.constraint(equalTo: view.widthAnchor),
-            
-            colorsCollection.topAnchor.constraint(equalTo: emojiCollection.bottomAnchor),
-            colorsCollection.heightAnchor.constraint(equalToConstant: 250),
-            colorsCollection.widthAnchor.constraint(equalTo: view.widthAnchor),
-            
-            stackH.topAnchor.constraint(equalTo: colorsCollection.bottomAnchor, constant: 10),
-            stackH.leadingAnchor.constraint(equalTo: textField.leadingAnchor),
-            stackH.trailingAnchor.constraint(equalTo: textField.trailingAnchor),
-            stackH.heightAnchor.constraint(equalToConstant: 60),
-            stackH.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
-        ])
+        view.backgroundColor = .white
+        
+        setupContraints()
     }
     
+    //MARK: action methods
     @objc func didTapCreatedButton() {
         guard let text = textField.text,
               let color = color,
               let emoji = emoji,
-              let category = category
+              let category = category,
+              !text.isEmpty
         else { return }
         let tracker = Tracker(id: UUID(), name: text, color: color, emoji: emoji, schedule: [])
         delegate?.createTracker(tracker, category.title)
@@ -165,5 +138,54 @@ extension HabitFormViewController: HelperColorsCollectionViewDelegate, HelperEmo
     
     func setColor(_ color: UIColor) {
         self.color = color
+    }
+}
+
+//MARK: - setup constraints
+private extension HabitFormViewController {
+    func setupContraints() {
+        //addSubviews
+        view.addSubview(scrollView)
+        view.addSubview(label)
+        scrollView.addSubview(textField)
+        scrollView.addSubview(twoButtonsVertical)
+        scrollView.addSubview(emojiCollection)
+        scrollView.addSubview(colorsCollection)
+        scrollView.addSubview(stackH)
+        stackH.addArrangedSubview(cancelButton)
+        stackH.addArrangedSubview(doneButton)
+        
+        //constraints
+        NSLayoutConstraint.activate([
+            label.topAnchor.constraint(equalTo: view.topAnchor, constant: 30),
+            label.widthAnchor.constraint(equalToConstant: view.bounds.width),
+            
+            scrollView.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 38),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            scrollView.widthAnchor.constraint(equalTo: view.widthAnchor),
+            
+            textField.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            textField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            textField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            
+            twoButtonsVertical.topAnchor.constraint(equalTo: textField.bottomAnchor, constant: 24),
+            twoButtonsVertical.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            twoButtonsVertical.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            twoButtonsVertical.heightAnchor.constraint(equalToConstant: 150),
+            
+            emojiCollection.topAnchor.constraint(equalTo: twoButtonsVertical.bottomAnchor, constant: 32),
+            emojiCollection.heightAnchor.constraint(equalToConstant: 250),
+            emojiCollection.widthAnchor.constraint(equalTo: view.widthAnchor),
+            
+            colorsCollection.topAnchor.constraint(equalTo: emojiCollection.bottomAnchor),
+            colorsCollection.heightAnchor.constraint(equalToConstant: 250),
+            colorsCollection.widthAnchor.constraint(equalTo: view.widthAnchor),
+            
+            stackH.topAnchor.constraint(equalTo: colorsCollection.bottomAnchor, constant: 10),
+            stackH.leadingAnchor.constraint(equalTo: textField.leadingAnchor),
+            stackH.trailingAnchor.constraint(equalTo: textField.trailingAnchor),
+            stackH.heightAnchor.constraint(equalToConstant: 60),
+            stackH.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+        ])
     }
 }

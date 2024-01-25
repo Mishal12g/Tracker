@@ -8,18 +8,19 @@
 import UIKit
 
 final class CategoriesStorageService {
+    //MARK: - Static properties
     static let didChangeNotification = Notification.Name("CategoriesStorageServiceDidChange")
     static let shared = CategoriesStorageService()
     
-    private(set) var categories: [TrackerCategory] = [TrackerCategory(title: "Покушать", trackers: []),
-                                                      TrackerCategory(title: "Бег", trackers: []),
-                                                      TrackerCategory(title: "Важное", trackers: []),
-                                                      TrackerCategory(title: "Мусор", trackers: []),
-                                                      TrackerCategory(title: "Зарядка", trackers: []),
-                                                      TrackerCategory(title: "Чтение", trackers: [])]
+    //MARK: - Privates properties
+    private(set) var categories = [TrackerCategory]()
     
+    //MARK: - Public methods
     func addCategory(_ category: TrackerCategory) {
-        
+        categories.append(category)
+        NotificationCenter.default.post(name: CategoriesStorageService.didChangeNotification,
+                                        object: self,
+                                        userInfo: ["Categories" : categories.self])
     }
     
     func addTracker(_ categoryName: String, _ tracker: Tracker) {

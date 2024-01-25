@@ -12,8 +12,10 @@ protocol CategoriesListViewControllerDelegate {
 }
 
 class CategoriesListViewController: UIViewController {
+    //MARK: public properties
     var delegate: CategoriesListViewControllerDelegate?
     
+    //MARK: privates properties
     private var categories = CategoriesStorageService.shared.categories
     private var categoriesListObserver: NSObjectProtocol?
     
@@ -67,13 +69,14 @@ class CategoriesListViewController: UIViewController {
         return button
     }()
     
+    //MARK: - overrides methods
     override func viewDidLoad() {
         super.viewDidLoad()
         commonSetup()
     }
 }
 
-//MARK: - For methods
+//MARK: - privates methods
 private extension CategoriesListViewController {
     @objc func didTapCreateNewCategory() {
        let vc = CategoryFormViewController()
@@ -89,12 +92,11 @@ private extension CategoriesListViewController {
     func commonSetup() {
         view.backgroundColor = .white
         setupConstraints()
-        
         hideEmptyError(!categories.isEmpty ? true : false)
         
         categoriesListObserver = NotificationCenter.default.addObserver(forName: CategoriesStorageService.didChangeNotification,
                                                                         object: nil,
-                                                                        queue: .main) { [weak self]_ in
+                                                                        queue: .main) { [weak self] _ in
             guard let self = self else { return }
             self.updatesTableView()
         }
@@ -107,7 +109,7 @@ private extension CategoriesListViewController {
 }
 
 //MARK: - setup constraints
-extension CategoriesListViewController {
+private extension CategoriesListViewController {
     func setupConstraints() {
         view.addSubview(titleLable)
         view.addSubview(tableView)
@@ -154,6 +156,7 @@ extension CategoriesListViewController: UITableViewDataSource {
         cell.textLabel?.text = categories[indexPath.row].title
         cell.backgroundColor = .ypWhite
         
+        //TODO: Исправить баг отображения таблицы
         if indexPath.item == 0 {
             cell.layer.cornerRadius = 16
             cell.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]

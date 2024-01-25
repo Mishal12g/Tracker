@@ -4,9 +4,11 @@ class TrackersViewController: UIViewController {
     //MARK: - privates properties
     private var categories = CategoriesStorageService.shared.categories
     private var completedTrackers: [TrackerRecord] = []
+    private var categoriesListObserver: NSObjectProtocol?
+    
     private let datePicker = UIDatePicker()
     private let params = GeometricParams(cellCount: 2, leftInset: 16, rightInset: 16, cellSpacing: 9)
-    private var categoriesListObserver: NSObjectProtocol?
+    
     
     private let collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -44,22 +46,25 @@ class TrackersViewController: UIViewController {
         return label
     }()
     
-    //MARK: - Overrides methods
+    //MARK: - overrides methods
     override func viewDidLoad() {
+        common()
+    }
+}
+
+//MARK: - privates methods
+private extension TrackersViewController {
+    func common() {
         view.backgroundColor = .white
         hideErrorViews()
         setupNavigationBar()
-        addSubViews()
         addConstraint()
-        datePicker.datePickerMode = .date
-        datePicker.preferredDatePickerStyle = .compact
-        datePicker.locale = Locale(identifier: "RU")
-        datePicker.addTarget(self, action: #selector(datePickerValueChanged(_:)), for: .valueChanged)
-        collectionView.dataSource = self
-        collectionView.delegate = self
-        collectionView.register(TrackerCell.self, forCellWithReuseIdentifier: TrackerCell.identity)
-        collectionView.register(SupplementaryView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "TrackerVCheader")
-        
+        setupDataPicker()
+        setupCollection()
+        addCategoriesObserver()
+    }
+    
+    func addCategoriesObserver() {
         categoriesListObserver = NotificationCenter.default.addObserver(forName: CategoriesStorageService.didChangeNotification,
                                                                         object: nil,
                                                                         queue: .main) { [weak self]_ in
@@ -67,13 +72,24 @@ class TrackersViewController: UIViewController {
             self.updatesCollectionView()
         }
     }
-}
-
-//MARK: - For methods view
-private extension TrackersViewController {
+    
     func updatesCollectionView() {
         self.categories = CategoriesStorageService.shared.categories
         collectionView.reloadData()
+    }
+    
+    func setupCollection() {
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        collectionView.register(TrackerCell.self, forCellWithReuseIdentifier: TrackerCell.identity)
+        collectionView.register(SupplementaryView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "TrackerVCheader")
+    }
+    
+    func setupDataPicker() {
+        datePicker.datePickerMode = .date
+        datePicker.preferredDatePickerStyle = .compact
+        datePicker.locale = Locale(identifier: "RU")
+        datePicker.addTarget(self, action: #selector(datePickerValueChanged(_:)), for: .valueChanged)
     }
     
     func hideErrorViews() {
@@ -82,7 +98,13 @@ private extension TrackersViewController {
             return
         }
         
-        hide(true)
+        let categoriesIsNotEmpty = categories.filter { !$0.trackers.isEmpty }
+        
+        if categoriesIsNotEmpty.isEmpty {
+            hide(false)
+        } else {
+            hide(true)
+        }
         
         func hide(_ isHide: Bool) {
             emptyLabel.isHidden = isHide
@@ -90,6 +112,17 @@ private extension TrackersViewController {
         }
     }
     
+    func setupNavigationBar() {
+        navigationItem.title = "Трекеры"
+        addTrackerButton.addTarget(self, action: #selector(addTrackerDidTap), for: .touchUpInside)
+        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: addTrackerButton)
+        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)
+        navigationItem.searchController = UISearchController(searchResultsController: nil)
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationController?.navigationItem.largeTitleDisplayMode = .always
+    }
+    
+    //MARK: action methods
     @objc func datePickerValueChanged(_ sender: UIDatePicker) {
         let selectedDate = sender.date
         let dateFormatter = DateFormatter()
@@ -104,41 +137,6 @@ private extension TrackersViewController {
         let vc = UINavigationController(rootViewController: trackerSelectionVC)
         
         self.present(vc, animated: true)
-    }
-    
-    func setupNavigationBar() {
-        navigationItem.title = "Трекеры"
-        addTrackerButton.addTarget(self, action: #selector(addTrackerDidTap), for: .touchUpInside)
-        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: addTrackerButton)
-        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)
-        navigationItem.searchController = UISearchController(searchResultsController: nil)
-        
-        navigationController?.navigationBar.prefersLargeTitles = true
-        navigationController?.navigationItem.largeTitleDisplayMode = .always
-    }
-    
-    func addSubViews() {
-        
-        view.addSubview(collectionView)
-        view.addSubview(emptyImageView)
-        view.addSubview(emptyLabel)
-    }
-    
-    func addConstraint() {
-        NSLayoutConstraint.activate([
-            collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            collectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            
-            emptyImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            emptyImageView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            emptyImageView.heightAnchor.constraint(equalToConstant: 80),
-            emptyImageView.widthAnchor.constraint(equalToConstant: 80),
-            
-            emptyLabel.topAnchor.constraint(equalTo: emptyImageView.bottomAnchor, constant: 8),
-            emptyLabel.centerXAnchor.constraint(equalTo: emptyImageView.centerXAnchor),
-        ])
     }
 }
 
@@ -157,6 +155,7 @@ extension TrackersViewController: CreatedTrackerViewControllerDelegate {
 extension TrackersViewController: HabitFormViewControllerDelegate {
     func createTracker(_ tracker: Tracker, _ categoryName: String) {
         CategoriesStorageService.shared.addTracker(categoryName, tracker)
+        hideErrorViews()
     }
 }
 
@@ -229,5 +228,32 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
                                                          height: UIView.layoutFittingExpandedSize.height),
                                                   withHorizontalFittingPriority: .required,
                                                   verticalFittingPriority: .fittingSizeLevel)
+    }
+}
+
+//MARK: setup constraint
+private extension TrackersViewController {
+    func addSubViews() {
+        view.addSubview(collectionView)
+        view.addSubview(emptyImageView)
+        view.addSubview(emptyLabel)
+    }
+    
+    func addConstraint() {
+        addSubViews()
+        NSLayoutConstraint.activate([
+            collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            collectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            
+            emptyImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            emptyImageView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            emptyImageView.heightAnchor.constraint(equalToConstant: 80),
+            emptyImageView.widthAnchor.constraint(equalToConstant: 80),
+            
+            emptyLabel.topAnchor.constraint(equalTo: emptyImageView.bottomAnchor, constant: 8),
+            emptyLabel.centerXAnchor.constraint(equalTo: emptyImageView.centerXAnchor),
+        ])
     }
 }
