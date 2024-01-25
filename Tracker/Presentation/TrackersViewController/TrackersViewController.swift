@@ -86,7 +86,7 @@ private extension TrackersViewController {
     }
     
     @objc func addTrackerDidTap() {
-        let trackerSelectionVC = TrackerSelectionViewController()
+        let trackerSelectionVC = CreatedTrackerViewController(delegate: self)
         trackerSelectionVC.title = "Создание трекера"
         let vc = UINavigationController(rootViewController: trackerSelectionVC)
         
@@ -126,6 +126,17 @@ private extension TrackersViewController {
             emptyLabel.topAnchor.constraint(equalTo: emptyImageView.bottomAnchor, constant: 8),
             emptyLabel.centerXAnchor.constraint(equalTo: emptyImageView.centerXAnchor),
         ])
+    }
+}
+
+//MARK: - CreadtedTrackerViewControllerDelegate
+extension TrackersViewController: CreatedTrackerViewControllerDelegate {
+    func didTapAddButton() {
+        let vc = HabitFormViewController()
+        vc.title = "Новая привычка"
+//        vc.navigationItem.hidesBackButton = true
+
+        present(vc, animated: true)
     }
 }
 

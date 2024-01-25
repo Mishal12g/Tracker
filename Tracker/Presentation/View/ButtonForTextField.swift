@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class Button: UIButton {
+final class ButtonForTextField: UIButton {
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.translatesAutoresizingMaskIntoConstraints = false

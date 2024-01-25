@@ -7,9 +7,24 @@
 
 import UIKit
 
-final class TrackerSelectionViewController: UIViewController {    
+protocol CreatedTrackerViewControllerDelegate {
+    func didTapAddButton()
+}
+
+final class CreatedTrackerViewController: UIViewController {
+    var delegate: CreatedTrackerViewControllerDelegate?
+    
+    init(delegate: CreatedTrackerViewControllerDelegate?) {
+        self.delegate = delegate
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     private let buttonOne: UIButton = {
-        let button = Button(type: .system)
+        let button = ButtonForTextField(type: .system)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         button.setTitle("Привычка", for: .normal)
         
@@ -17,7 +32,7 @@ final class TrackerSelectionViewController: UIViewController {
     }()
     
     private let buttonTwo: UIButton = {
-        let button = Button(type: .system)
+        let button = ButtonForTextField(type: .system)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         button.setTitle("Нерегулярные событие", for: .normal)
         
@@ -36,12 +51,10 @@ final class TrackerSelectionViewController: UIViewController {
 }
 
 //MARK: For methods
-private extension TrackerSelectionViewController {
+private extension CreatedTrackerViewController {
     @objc func habitDidTapButton() {
-        let vc = HabitFormViewController()
-        vc.title = "Новая привычка"
-        vc.navigationItem.hidesBackButton = true
-        navigationController?.pushViewController(vc, animated: true)
+        dismiss(animated: true)
+        delegate?.didTapAddButton()
     }
     
     func addConstraints() {
