@@ -59,9 +59,10 @@ class CategoriesListViewController: UIViewController {
         return label
     }()
     
-    private let button: Button = {
+    lazy private var button: Button = {
         let button = Button(type: .system)
         button.setStyle(color: .black, tintColor: .white, title: "Добавить категорию")
+        button.addTarget(self, action: #selector(didTapCreateNewCategory), for: .touchUpInside)
         
         return button
     }()
@@ -74,6 +75,12 @@ class CategoriesListViewController: UIViewController {
 
 //MARK: - For methods
 private extension CategoriesListViewController {
+    @objc func didTapCreateNewCategory() {
+       let vc = CategoryFormViewController()
+        
+        present(vc, animated: true)
+    }
+    
     func updatesTableView() {
         self.categories = CategoriesStorageService.shared.categories
         tableView.reloadData()
@@ -164,7 +171,7 @@ extension CategoriesListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let cell = tableView.cellForRow(at: indexPath) as? CategoryCell else { return }
         cell.doneImage.isHidden = false
-        delegate?.selectedCategory(categories[indexPath.item]) 
+        delegate?.selectedCategory(categories[indexPath.item])
     }
     
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {

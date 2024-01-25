@@ -7,7 +7,7 @@ class TrackersViewController: UIViewController {
     private let datePicker = UIDatePicker()
     private let params = GeometricParams(cellCount: 2, leftInset: 16, rightInset: 16, cellSpacing: 9)
     private var categoriesListObserver: NSObjectProtocol?
-
+    
     private let collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         let collection = UICollectionView(frame: .zero, collectionViewLayout: layout)
@@ -224,8 +224,6 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         let indexPath = IndexPath(row: 0, section: section)
         let headerView = self.collectionView(collectionView, viewForSupplementaryElementOfKind: UICollectionView.elementKindSectionHeader, at: indexPath)
-        
-        
         
         return headerView.systemLayoutSizeFitting(CGSize(width: collectionView.frame.width,
                                                          height: UIView.layoutFittingExpandedSize.height),

@@ -20,7 +20,7 @@ final class TwoButtonsDataSourceTableView: NSObject, UITableViewDataSource {
         var cell = tableView.dequeueReusableCell(withIdentifier: "TwoButtonsCell", for: indexPath)
         
         cell = UITableViewCell(style: .subtitle,
-                        reuseIdentifier: "TwoButtonsCell")
+                               reuseIdentifier: "TwoButtonsCell")
         
         
         cell.textLabel?.text = words[indexPath.row]
