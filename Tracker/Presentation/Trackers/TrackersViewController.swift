@@ -159,6 +159,19 @@ extension TrackersViewController: HabitFormViewControllerDelegate {
     }
 }
 
+//MARK: - TrackerCellDelegate
+extension TrackersViewController: TrackerCellDelegate {
+    func didTapAddButton(_ cell: TrackerCell) {
+        let record = TrackerRecord(id: cell.id, date: datePicker.date)
+        if cell.isDoneTracker {
+            completedTrackers.append(record)
+        } else {
+            guard let index = completedTrackers.firstIndex(where: { $0.id == cell.id }) else { return }
+            completedTrackers.remove(at: index)
+        }
+    }
+}
+
 //MARK: - UICollectionViewDataSource
 extension TrackersViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -170,6 +183,7 @@ extension TrackersViewController: UICollectionViewDataSource {
         let category = categories[indexPath.section]
         let tracker = category.trackers[indexPath.item]
         
+        cell.delegate = self
         cell.emojiLabel.text = tracker.emoji
         cell.trackerNameLabel.text = tracker.name
         cell.view.backgroundColor = tracker.color

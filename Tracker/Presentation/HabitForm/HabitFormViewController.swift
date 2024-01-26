@@ -159,7 +159,7 @@ extension HabitFormViewController: HelperColorsCollectionViewDelegate, HelperEmo
         schedule = Array(weekdays)
         
         if let schedule = schedule, !schedule.isEmpty {
-            selectedDays = schedule
+            selectedDays = schedule.count == 7 ? "Каждый день" : schedule
                 .sorted { $0.rawValue < $1.rawValue }
                 .map { $0.short }
                 .joined(separator: ", ")

@@ -150,6 +150,7 @@ extension CategoriesListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let cell = tableView.cellForRow(at: indexPath) as? CategoryCell else { return }
         cell.doneImage.isHidden = false
+        
         delegate?.selectedCategory(categories[indexPath.item])
     }
     

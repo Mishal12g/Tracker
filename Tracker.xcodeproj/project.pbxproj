@@ -192,6 +192,7 @@
 		8792E8732B62FAF100C4A4F8 /* Cells */ = {
 			isa = PBXGroup;
 			children = (
+				8738D8EE2B57F02E00D6975E /* TrackerCell.swift */,
 				87988B252B5EB14200342625 /* ColorCell.swift */,
 				87988B272B5FB14C00342625 /* EmojiCell.swift */,
 				8792E86E2B6277EA00C4A4F8 /* CategoryCell.swift */,
@@ -204,7 +205,6 @@
 			isa = PBXGroup;
 			children = (
 				872CAB272B4E88F700AE1F8A /* TrackersViewController.swift */,
-				8738D8EE2B57F02E00D6975E /* TrackerCell.swift */,
 				87988B082B5E70D200342625 /* GeometricParams.swift */,
 			);
 			path = Trackers;

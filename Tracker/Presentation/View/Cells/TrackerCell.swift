@@ -7,11 +7,22 @@
 
 import UIKit
 
+protocol TrackerCellDelegate {
+    func didTapAddButton(_ cell: TrackerCell)
+}
+
 class TrackerCell: UICollectionViewCell {
-    //MARK: static properties
+    //MARK: - static properties
     static let identity = "TrackerCell"
     
-    //MARK: public properties
+    //MARK: - privates properties
+    private(set) var isDoneTracker: Bool = false
+    private var countDays = 0
+    
+    //MARK: - public properties
+    var delegate: TrackerCellDelegate?
+    let id = UUID()
+    
     let view: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -34,7 +45,6 @@ class TrackerCell: UICollectionViewCell {
         let label = UILabel(frame: CGRect(x: 0, y: 0, width: 24, height: 24))
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.systemFont(ofSize: 14)
-        label.text = "🥲"
         
         return label
     }()
@@ -49,22 +59,23 @@ class TrackerCell: UICollectionViewCell {
         return label
     }()
     
-    let countDaysLabel: UILabel = {
+    lazy var countDaysLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "0 дней"
+        label.text = "\(countDays) д."
         label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
         label.textColor = .black
         
         return label
     }()
     
-    let addButton: UIButton = {
+    lazy var addButton: UIButton = {
         let image = UIImage(named: "add_icon")
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(image, for: .normal)
-        button.tintColor = .ypGreen
+        button.addTarget(self, action: #selector(didTapAddButton), for: .touchUpInside)
+        button.layer.cornerRadius = 34 / 2
         
         return button
     }()
@@ -79,6 +90,24 @@ class TrackerCell: UICollectionViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    //MARK: action methods
+    @objc func didTapAddButton() {
+        isDoneTracker.toggle()
+        if isDoneTracker {
+            addButton.setImage(UIImage(named: "done"), for: .normal)
+            addButton.backgroundColor = view.backgroundColor?.withAlphaComponent(0.5)
+            addButton.tintColor = .white
+            countDays += 1
+            countDaysLabel.text = "\(countDays) д."
+        } else {
+            addButton.setImage(UIImage(named: "add_icon"), for: .normal)
+            addButton.tintColor = view.backgroundColor
+            addButton.backgroundColor = .white
+            countDays -= 1
+            countDaysLabel.text = "\(countDays) д."
+        }
+    }
 }
 
 //MARK: setup constraints
@@ -90,7 +119,7 @@ private extension TrackerCell {
         view.addSubview(trackerNameLabel)
         contentView.addSubview(countDaysLabel)
         contentView.addSubview(addButton)
-       
+        
         NSLayoutConstraint.activate([
             view.heightAnchor.constraint(equalToConstant: 90),
             view.topAnchor.constraint(equalTo: contentView.topAnchor),
