@@ -32,6 +32,7 @@ final class CategoryFormViewController: UIViewController {
         let textField = TextField(placeholder: "Введите название категории")
         textField.delegate = self
         textField.addTarget(self, action: #selector(editingChanged(_:)), for: .editingChanged)
+        textField.becomeFirstResponder()
         
         return textField
     }()
@@ -41,6 +42,7 @@ final class CategoryFormViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .white
         setupConstraints()
+        hideKeyBoard()
     }
     
     //MARK: - Actions methods
@@ -59,6 +61,24 @@ final class CategoryFormViewController: UIViewController {
             button.isEnabled = false
             button.backgroundColor = .gray
         }
+    }
+    
+    @objc func hideKeyboard() {
+        textField.resignFirstResponder()
+    }
+}
+
+//MARK: - UITableViewDelegate
+extension CategoryFormViewController: UITextFieldDelegate {
+    private func hideKeyBoard() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(hideKeyboard))
+        tapGesture.cancelsTouchesInView = false
+        view.addGestureRecognizer(tapGesture)
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
     }
 }
 
@@ -83,9 +103,4 @@ private extension CategoryFormViewController {
             button.heightAnchor.constraint(equalToConstant: 60),
         ])
     }
-}
-
-//MARK: - UITableViewDelegate
-extension CategoryFormViewController: UITextFieldDelegate {
-    //Обработать скрытие клавиатуры.
 }

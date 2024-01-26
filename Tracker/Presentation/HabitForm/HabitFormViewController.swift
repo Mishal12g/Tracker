@@ -33,11 +33,19 @@ final class HabitFormViewController: UIViewController {
         return scrollView
     }()
     
-    private let textField = TextField(placeholder: "Введите название трекера")
+    lazy private var textField: TextField = {
+        let textField = TextField(placeholder: "Введите название трекера")
+        textField.delegate = self
+        textField.becomeFirstResponder()
+        
+        return textField
+    }()
     
     lazy private var twoButtonsVertical: UITableView = {
         let table = TableView(dataSource: dataSource)
-        
+        table.delegate = self
+        table.register(UITableViewCell.self, forCellReuseIdentifier: "TwoButtonsCell")
+
         return table
     }()
     
@@ -55,9 +63,10 @@ final class HabitFormViewController: UIViewController {
         return collection
     }()
     
-    private let cancelButton: Button = {
+    lazy private var cancelButton: Button = {
         let button = Button(type: .system)
         button.setStyle(borderColor: .ypRed, tintColor: .ypRed, borderWidth: 1, title: "Отменить")
+        button.addTarget(self, action: #selector(didTapCancelButton), for: .touchUpInside)
         
         return button
     }()
@@ -90,15 +99,20 @@ final class HabitFormViewController: UIViewController {
 //MARK: - privates methods
 private extension HabitFormViewController {
     func common() {
-        twoButtonsVertical.delegate = self
-        twoButtonsVertical.register(UITableViewCell.self, forCellReuseIdentifier: "TwoButtonsCell")
-        
         view.backgroundColor = .white
-        
         setupContraints()
+        hideKeyBoard()
     }
     
     //MARK: action methods
+    @objc func didTapCancelButton() {
+        dismiss(animated: true)
+    }
+    
+    @objc func hideKeyboard() {
+        textField.resignFirstResponder()
+    }
+    
     @objc func didTapCreatedButton() {
         guard let text = textField.text,
               let color = color,
@@ -138,6 +152,20 @@ extension HabitFormViewController: HelperColorsCollectionViewDelegate, HelperEmo
     
     func setColor(_ color: UIColor) {
         self.color = color
+    }
+}
+
+//MARK: - TextFieldDelegate
+extension HabitFormViewController: UITextFieldDelegate {
+    private func hideKeyBoard() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(hideKeyboard))
+        tapGesture.cancelsTouchesInView = false
+        view.addGestureRecognizer(tapGesture)
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
     }
 }
 
