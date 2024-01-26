@@ -12,6 +12,7 @@ final class HabitFormViewController: UIViewController {
     private var emoji: String?
     private var color: UIColor?
     private var category: TrackerCategory?
+    private var schedule: Array<Weekday>?
     
     private let dataSource = TwoButtonsDataSourceTableView()
     
@@ -45,7 +46,7 @@ final class HabitFormViewController: UIViewController {
         let table = TableView(dataSource: dataSource)
         table.delegate = self
         table.register(UITableViewCell.self, forCellReuseIdentifier: "TwoButtonsCell")
-
+        
         return table
     }()
     
@@ -118,9 +119,10 @@ private extension HabitFormViewController {
               let color = color,
               let emoji = emoji,
               let category = category,
+              let schedule = schedule,
               !text.isEmpty
         else { return }
-        let tracker = Tracker(id: UUID(), name: text, color: color, emoji: emoji, schedule: [])
+        let tracker = Tracker(id: UUID(), name: text, color: color, emoji: emoji, schedule: schedule)
         delegate?.createTracker(tracker, category.title)
         dismiss(animated: true)
     }
@@ -131,6 +133,10 @@ extension HabitFormViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.item == 0 {
             let vc = CategoriesListViewController()
+            vc.delegate = self
+            present(vc, animated: true)
+        } else if indexPath.item == 1 {
+            let vc = ScheduleViewController()
             vc.delegate = self
             present(vc, animated: true)
         }
@@ -147,10 +153,29 @@ extension HabitFormViewController: UITableViewDelegate {
 }
 
 //MARK: - HelpersDelegate
-extension HabitFormViewController: HelperColorsCollectionViewDelegate, HelperEmojiCollectionViewDelegate, CategoriesListViewControllerDelegate {
+extension HabitFormViewController: HelperColorsCollectionViewDelegate, HelperEmojiCollectionViewDelegate, CategoriesListViewControllerDelegate, ScheduleViewControllerDelegate {
+    func setSchedule(_ weekdays: Set<Weekday>) {
+        var selectedDays: String?
+        schedule = Array(weekdays)
+        
+        if let schedule = schedule, !schedule.isEmpty {
+            selectedDays = schedule
+                .sorted { $0.rawValue < $1.rawValue }
+                .map { $0.short }
+                .joined(separator: ", ")
+            
+            self.schedule = schedule
+                .sorted { $0.rawValue < $1.rawValue }
+                .map { $0 }
+        } else { return }
+        
+        dataSource.textTwo = selectedDays
+        twoButtonsVertical.reloadData()
+    }
+    
     func selectedCategory(_ category: TrackerCategory) {
         self.category = category
-        dataSource.text = category.title
+        dataSource.textOne = category.title
         twoButtonsVertical.reloadData()
     }
     

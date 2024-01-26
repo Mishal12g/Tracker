@@ -9,7 +9,8 @@ import UIKit
 
 final class TwoButtonsDataSourceTableView: NSObject, UITableViewDataSource {
     //MARK: - public properties
-    var text: String?
+    var textOne: String?
+    var textTwo: String?
     
     //MARK: - privates properties
     private let words = ["Категория", "Расписание"]
@@ -29,7 +30,7 @@ final class TwoButtonsDataSourceTableView: NSObject, UITableViewDataSource {
         cell.textLabel?.text = words[indexPath.row]
         cell.backgroundColor = .ypWhite
         cell.accessoryType = .disclosureIndicator
-        cell.detailTextLabel?.text = indexPath.row == 0 ? text : ""
+        cell.detailTextLabel?.text = indexPath.row == 0 ? textOne : textTwo
         return cell
     }
 }

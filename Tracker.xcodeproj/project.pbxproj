@@ -27,6 +27,8 @@
 		8792E86D2B62673B00C4A4F8 /* CategoriesListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8792E86C2B62673B00C4A4F8 /* CategoriesListViewController.swift */; };
 		8792E86F2B6277EA00C4A4F8 /* CategoryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8792E86E2B6277EA00C4A4F8 /* CategoryCell.swift */; };
 		8792E8722B62923400C4A4F8 /* CategoriesStorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8792E8712B62923400C4A4F8 /* CategoriesStorageService.swift */; };
+		8792E8762B6399BD00C4A4F8 /* ScheduleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8792E8752B6399BD00C4A4F8 /* ScheduleViewController.swift */; };
+		8792E8782B63A22E00C4A4F8 /* ScheduleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8792E8772B63A22E00C4A4F8 /* ScheduleCell.swift */; };
 		87988B092B5E70D200342625 /* GeometricParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87988B082B5E70D200342625 /* GeometricParams.swift */; };
 		87988B0D2B5E77FD00342625 /* CreatedTrackerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87988B0C2B5E77FD00342625 /* CreatedTrackerViewController.swift */; };
 		87988B102B5E84D600342625 /* HabitFormViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87988B0F2B5E84D600342625 /* HabitFormViewController.swift */; };
@@ -63,6 +65,8 @@
 		8792E86C2B62673B00C4A4F8 /* CategoriesListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoriesListViewController.swift; sourceTree = "<group>"; };
 		8792E86E2B6277EA00C4A4F8 /* CategoryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryCell.swift; sourceTree = "<group>"; };
 		8792E8712B62923400C4A4F8 /* CategoriesStorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoriesStorageService.swift; sourceTree = "<group>"; };
+		8792E8752B6399BD00C4A4F8 /* ScheduleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleViewController.swift; sourceTree = "<group>"; };
+		8792E8772B63A22E00C4A4F8 /* ScheduleCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleCell.swift; sourceTree = "<group>"; };
 		87988B082B5E70D200342625 /* GeometricParams.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeometricParams.swift; sourceTree = "<group>"; };
 		87988B0C2B5E77FD00342625 /* CreatedTrackerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatedTrackerViewController.swift; sourceTree = "<group>"; };
 		87988B0F2B5E84D600342625 /* HabitFormViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitFormViewController.swift; sourceTree = "<group>"; };
@@ -191,6 +195,7 @@
 				87988B252B5EB14200342625 /* ColorCell.swift */,
 				87988B272B5FB14C00342625 /* EmojiCell.swift */,
 				8792E86E2B6277EA00C4A4F8 /* CategoryCell.swift */,
+				8792E8772B63A22E00C4A4F8 /* ScheduleCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -218,6 +223,7 @@
 			children = (
 				87988B0F2B5E84D600342625 /* HabitFormViewController.swift */,
 				87988B0C2B5E77FD00342625 /* CreatedTrackerViewController.swift */,
+				8792E8752B6399BD00C4A4F8 /* ScheduleViewController.swift */,
 			);
 			path = HabitForm;
 			sourceTree = "<group>";
@@ -331,6 +337,7 @@
 				87988B092B5E70D200342625 /* GeometricParams.swift in Sources */,
 				874DFE0B2B610B1900C6AF5B /* HelperEmojiCollectionView.swift in Sources */,
 				874DFE092B610B0700C6AF5B /* EmojiCollectionView.swift in Sources */,
+				8792E8762B6399BD00C4A4F8 /* ScheduleViewController.swift in Sources */,
 				8792E86F2B6277EA00C4A4F8 /* CategoryCell.swift in Sources */,
 				8792E8722B62923400C4A4F8 /* CategoriesStorageService.swift in Sources */,
 				87A334DC2B6239CC00B4791D /* TwoButtonsDataSourceTableView.swift in Sources */,
@@ -341,6 +348,7 @@
 				878A07C22B555F490082BD0B /* TrackerRecord.swift in Sources */,
 				87A334D02B61585300B4791D /* Button.swift in Sources */,
 				87988B0D2B5E77FD00342625 /* CreatedTrackerViewController.swift in Sources */,
+				8792E8782B63A22E00C4A4F8 /* ScheduleCell.swift in Sources */,
 				87A334DA2B62394500B4791D /* TableView.swift in Sources */,
 				8772052B2B4BE87E0075D94F /* AppDelegate.swift in Sources */,
 				8772052D2B4BE87E0075D94F /* SceneDelegate.swift in Sources */,
