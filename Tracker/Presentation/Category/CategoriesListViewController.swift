@@ -27,7 +27,6 @@ class CategoriesListViewController: UIViewController {
         table.register(CategoryCell.self, forCellReuseIdentifier: CategoryCell.identity)
         table.rowHeight = 75
         table.layer.cornerRadius = 16
-        table.separatorStyle = .singleLine
         
         return table
     }()
@@ -79,20 +78,21 @@ class CategoriesListViewController: UIViewController {
 //MARK: - privates methods
 private extension CategoriesListViewController {
     @objc func didTapCreateNewCategory() {
-       let vc = CategoryFormViewController()
+        let vc = CategoryFormViewController()
         
         present(vc, animated: true)
     }
     
     func updatesTableView() {
         self.categories = CategoriesStorageService.shared.categories
+        hideEmptyError()
         tableView.reloadData()
     }
     
     func commonSetup() {
         view.backgroundColor = .white
         setupConstraints()
-        hideEmptyError(!categories.isEmpty ? true : false)
+        hideEmptyError()
         
         categoriesListObserver = NotificationCenter.default.addObserver(forName: CategoriesStorageService.didChangeNotification,
                                                                         object: nil,
@@ -102,9 +102,68 @@ private extension CategoriesListViewController {
         }
     }
     
-    func hideEmptyError(_ isHidden: Bool) {
-        emptyLabel.isHidden = isHidden
-        emptyImageView.isHidden = isHidden
+    func hideEmptyError() {
+        if categories.isEmpty {
+            emptyLabel.isHidden = false
+            emptyImageView.isHidden = false
+        } else {
+            emptyLabel.isHidden = true
+            emptyImageView.isHidden = true
+        }
+    }
+}
+
+//MARK: - tableView dataSource
+extension CategoriesListViewController: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        
+        return categories.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: CategoryCell.identity, for: indexPath) as? CategoryCell else { return UITableViewCell()}
+        
+        cell.textLabel?.text = categories[indexPath.row].title
+        cell.backgroundColor = .ypWhite
+        
+        let isTopCell = indexPath.row == 0
+        let isBottomCell = indexPath.row == tableView.numberOfRows(inSection: indexPath.section) - 1
+        
+        if isTopCell, categories.count == 1 {
+            cell.layer.cornerRadius = 16
+        } else if isTopCell {
+            cell.layer.cornerRadius = 16
+            cell.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+        } else if isBottomCell {
+            cell.layer.cornerRadius = 16
+            cell.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+        } else {
+            cell.layer.cornerRadius = 0
+        }
+        
+        return cell
+    }
+}
+
+//MARK: - tableView delegate
+extension CategoriesListViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard let cell = tableView.cellForRow(at: indexPath) as? CategoryCell else { return }
+        cell.doneImage.isHidden = false
+        delegate?.selectedCategory(categories[indexPath.item])
+    }
+    
+    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+        guard let cell = tableView.cellForRow(at: indexPath) as? CategoryCell else { return }
+        cell.doneImage.isHidden = true
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if indexPath.row == tableView.numberOfRows(inSection: indexPath.section) - 1 {
+            cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: tableView.bounds.width)
+        } else {
+            cell.separatorInset = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 15)
+        }
     }
 }
 
@@ -140,45 +199,5 @@ private extension CategoriesListViewController {
             button.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
             button.heightAnchor.constraint(equalToConstant: 60),
         ])
-    }
-}
-
-//MARK: - tableView dataSource
-extension CategoriesListViewController: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        
-        return categories.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: CategoryCell.identity, for: indexPath) as? CategoryCell else { return UITableViewCell()}
-        
-        cell.textLabel?.text = categories[indexPath.row].title
-        cell.backgroundColor = .ypWhite
-        
-        //TODO: Исправить баг отображения таблицы
-        if indexPath.item == 0 {
-            cell.layer.cornerRadius = 16
-            cell.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
-        } else if indexPath.item == categories.count - 1 {
-            cell.layer.cornerRadius = 16
-            cell.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
-        }
-        
-        return cell
-    }
-}
-
-//MARK: - tableView delegate
-extension CategoriesListViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let cell = tableView.cellForRow(at: indexPath) as? CategoryCell else { return }
-        cell.doneImage.isHidden = false
-        delegate?.selectedCategory(categories[indexPath.item])
-    }
-    
-    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
-        guard let cell = tableView.cellForRow(at: indexPath) as? CategoryCell else { return }
-        cell.doneImage.isHidden = true
     }
 }
