@@ -8,6 +8,13 @@ class TrackersViewController: UIViewController {
     private var categoriesListObserver: NSObjectProtocol?
     private let params = GeometricParams(cellCount: 2, leftInset: 16, rightInset: 16, cellSpacing: 9)
     
+    lazy private var searchFiled: UISearchController = {
+        let search = UISearchController()
+        search.searchResultsUpdater = self
+        
+        return search
+    }()
+    
     lazy private var datePicker: UIDatePicker = {
         let picker = UIDatePicker()
         picker.datePickerMode = .date
@@ -70,15 +77,15 @@ private extension TrackersViewController {
         setupCollection()
         addCategoriesObserver()
     }
-    func filtteredCategories() {
+    func filterCategoriesByDate() {
         let dayOfWeek = Calendar.current.component(.weekday, from: datePicker.date)
         
         var filteredCategories = [TrackerCategory]()
         
-        for category in categories {
+        categories.forEach { category in
             var filteredTrackers: [Tracker] = []
             
-            for tracker in category.trackers {
+            category.trackers.forEach { tracker in
                 let isTrackerAvailableOnSelectedDay = tracker.schedule.contains(Weekday(rawValue: dayOfWeek)!)
                 
                 if isTrackerAvailableOnSelectedDay {
@@ -98,6 +105,30 @@ private extension TrackersViewController {
         collectionView.reloadData()
     }
     
+    func filterCategoriesByTrackers(searchText: String?) {
+        var filteredCategories = [TrackerCategory]()
+        
+        if !searchText!.isEmpty {
+            categories.forEach { category in
+                let trackers = category.trackers.filter {
+                    $0.name.lowercased().hasPrefix(searchText!.lowercased())
+                }
+                
+                if !trackers.isEmpty {
+                    var filtteredCategory = category
+                    filtteredCategory.trackers = trackers
+                    filteredCategories.append(filtteredCategory)
+                }
+            }
+            
+            self.filteredCategories = filteredCategories
+            hideErrorViews()
+            collectionView.reloadData()
+        } else {
+            filterCategoriesByDate()
+        }
+    }
+    
     func addCategoriesObserver() {
         categoriesListObserver = NotificationCenter.default.addObserver(forName: CategoriesStorageService.didChangeNotification,
                                                                         object: nil,
@@ -109,7 +140,7 @@ private extension TrackersViewController {
     
     func updatesCollectionView() {
         self.categories = CategoriesStorageService.shared.categories
-        filtteredCategories()
+        filterCategoriesByDate()
     }
     
     func setupCollection() {
@@ -144,14 +175,14 @@ private extension TrackersViewController {
         addTrackerButton.addTarget(self, action: #selector(addTrackerDidTap), for: .touchUpInside)
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: addTrackerButton)
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)
-        navigationItem.searchController = UISearchController(searchResultsController: nil)
+        navigationItem.searchController = searchFiled
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationController?.navigationItem.largeTitleDisplayMode = .always
     }
     
     //MARK: action methods
     @objc func datePickerValueChanged(_ sender: UIDatePicker) {
-        filtteredCategories()
+        filterCategoriesByDate()
     }
     
     @objc func addTrackerDidTap() {
@@ -265,6 +296,13 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
                                                          height: UIView.layoutFittingExpandedSize.height),
                                                   withHorizontalFittingPriority: .required,
                                                   verticalFittingPriority: .fittingSizeLevel)
+    }
+}
+
+//MARK: serach delegate
+extension TrackersViewController: UISearchResultsUpdating {
+    func updateSearchResults(for searchController: UISearchController) {
+        filterCategoriesByTrackers(searchText: searchController.searchBar.text)
     }
 }
 
