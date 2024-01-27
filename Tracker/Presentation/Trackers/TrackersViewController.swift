@@ -3,12 +3,20 @@ import UIKit
 class TrackersViewController: UIViewController {
     //MARK: - privates properties
     private var categories = CategoriesStorageService.shared.categories
+    private var filteredCategories: [TrackerCategory] = []
     private var completedTrackers: [TrackerRecord] = []
     private var categoriesListObserver: NSObjectProtocol?
-    
-    private let datePicker = UIDatePicker()
     private let params = GeometricParams(cellCount: 2, leftInset: 16, rightInset: 16, cellSpacing: 9)
     
+    lazy private var datePicker: UIDatePicker = {
+        let picker = UIDatePicker()
+        picker.datePickerMode = .date
+        picker.preferredDatePickerStyle = .compact
+        picker.locale = Locale.current
+        picker.addTarget(self, action: #selector(datePickerValueChanged(_:)), for: .valueChanged)
+        
+        return picker
+    }()
     
     private let collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -59,9 +67,35 @@ private extension TrackersViewController {
         hideErrorViews()
         setupNavigationBar()
         addConstraint()
-        setupDataPicker()
         setupCollection()
         addCategoriesObserver()
+    }
+    func filtteredCategories() {
+        let dayOfWeek = Calendar.current.component(.weekday, from: datePicker.date)
+        
+        var filteredCategories = [TrackerCategory]()
+        
+        for category in categories {
+            var filteredTrackers: [Tracker] = []
+            
+            for tracker in category.trackers {
+                let isTrackerAvailableOnSelectedDay = tracker.schedule.contains(Weekday(rawValue: dayOfWeek)!)
+                
+                if isTrackerAvailableOnSelectedDay {
+                    filteredTrackers.append(tracker)
+                }
+            }
+            
+            if !filteredTrackers.isEmpty {
+                var filteredCategory = category
+                filteredCategory.trackers = filteredTrackers
+                filteredCategories.append(filteredCategory)
+            }
+        }
+        
+        self.filteredCategories = filteredCategories
+        hideErrorViews()
+        collectionView.reloadData()
     }
     
     func addCategoriesObserver() {
@@ -75,7 +109,7 @@ private extension TrackersViewController {
     
     func updatesCollectionView() {
         self.categories = CategoriesStorageService.shared.categories
-        collectionView.reloadData()
+        filtteredCategories()
     }
     
     func setupCollection() {
@@ -85,20 +119,13 @@ private extension TrackersViewController {
         collectionView.register(SupplementaryView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "TrackerVCheader")
     }
     
-    func setupDataPicker() {
-        datePicker.datePickerMode = .date
-        datePicker.preferredDatePickerStyle = .compact
-        datePicker.locale = Locale(identifier: "RU")
-        datePicker.addTarget(self, action: #selector(datePickerValueChanged(_:)), for: .valueChanged)
-    }
-    
     func hideErrorViews() {
-        guard !categories.isEmpty else {
+        guard !filteredCategories.isEmpty else {
             hide(false)
             return
         }
         
-        let categoriesIsNotEmpty = categories.filter { !$0.trackers.isEmpty }
+        let categoriesIsNotEmpty = filteredCategories.filter { !$0.trackers.isEmpty }
         
         if categoriesIsNotEmpty.isEmpty {
             hide(false)
@@ -124,11 +151,7 @@ private extension TrackersViewController {
     
     //MARK: action methods
     @objc func datePickerValueChanged(_ sender: UIDatePicker) {
-        let selectedDate = sender.date
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "dd.MM.yyyy"
-        let formattedDate = dateFormatter.string(from: selectedDate)
-        print(formattedDate)
+        filtteredCategories()
     }
     
     @objc func addTrackerDidTap() {
@@ -175,12 +198,12 @@ extension TrackersViewController: TrackerCellDelegate {
 //MARK: - UICollectionViewDataSource
 extension TrackersViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        categories[section].trackers.count
+        filteredCategories[section].trackers.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TrackerCell.identity, for: indexPath) as? TrackerCell else { return UICollectionViewCell() }
-        let category = categories[indexPath.section]
+        let category = filteredCategories[indexPath.section]
         let tracker = category.trackers[indexPath.item]
         
         cell.delegate = self
@@ -193,7 +216,7 @@ extension TrackersViewController: UICollectionViewDataSource {
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return categories.count
+        return filteredCategories.count
     }
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
@@ -203,7 +226,7 @@ extension TrackersViewController: UICollectionViewDataSource {
         switch kind {
         case UICollectionView.elementKindSectionHeader:
             id = "TrackerVCheader"
-            text = categories[indexPath.section].title
+            text = filteredCategories[indexPath.section].title
         case UICollectionView.elementKindSectionFooter:
             id = "footer"
             text = "Footer"
@@ -211,7 +234,7 @@ extension TrackersViewController: UICollectionViewDataSource {
             id = ""
             text = ""
         }
-        guard let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: id, for: indexPath) as? SupplementaryView, !categories[indexPath.section].trackers.isEmpty else { return UICollectionReusableView()}
+        guard let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: id, for: indexPath) as? SupplementaryView, !filteredCategories[indexPath.section].trackers.isEmpty else { return UICollectionReusableView()}
         view.titleLabel.text = text
         return view
     }
