@@ -1,12 +1,16 @@
 import UIKit
 
-protocol HabitFormViewControllerDelegate {
+protocol HabitFormViewControllerDelegate: AnyObject {
     func createTracker(_ tracker: Tracker, _ categoryName: String)
+}
+
+protocol HabitFormViewControllerProtocol: AnyObject {
+    func isEnabled()
 }
 
 final class HabitFormViewController: UIViewController {
     //MARK: - public properties
-    var delegate: HabitFormViewControllerDelegate?
+    weak var delegate: HabitFormViewControllerDelegate?
     
     //MARK: - privates properties
     private var emoji: String?
@@ -53,6 +57,7 @@ final class HabitFormViewController: UIViewController {
     lazy private var emojiCollection: EmojiCollectionView = {
         let collection = EmojiCollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
         collection.delegateAndDataSource.delegate = self
+        collection.delegateAndDataSource.isEnabledDelegate = self
         
         return collection
     }()
@@ -60,6 +65,7 @@ final class HabitFormViewController: UIViewController {
     lazy private var colorsCollection: ColorsCollectionView = {
         let collection = ColorsCollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
         collection.delegateAndDataSource.delegate = self
+        collection.delegateAndDataSource.isEnabledDelegate = self
         
         return collection
     }()
@@ -75,6 +81,7 @@ final class HabitFormViewController: UIViewController {
     lazy private var doneButton: UIButton = {
         let button = Button(type: .system)
         button.setStyle(color: .ypGray1, tintColor: .white, title: "Создать")
+        button.isEnabled = false
         button.addTarget(self, action: #selector(didTapCreatedButton), for: .touchUpInside)
         
         return button
@@ -112,6 +119,7 @@ private extension HabitFormViewController {
     
     @objc func hideKeyboard() {
         textField.resignFirstResponder()
+        isEnabled()
     }
     
     @objc func didTapCreatedButton() {
@@ -128,16 +136,38 @@ private extension HabitFormViewController {
     }
 }
 
+//MARK: - is enabled button
+extension HabitFormViewController: HabitFormViewControllerProtocol {
+    func isEnabled() {
+        guard let text = textField.text,
+              let _ = color,
+              let _ = emoji,
+              let _ = category,
+              let _ = schedule,
+              !text.isEmpty
+        else {
+            doneButton.isEnabled = false
+            doneButton.backgroundColor = .ypGray1
+            return
+        }
+        
+        doneButton.backgroundColor = .black
+        doneButton.isEnabled = true
+    }
+}
+
 //MARK: - TableView Delegate
 extension HabitFormViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.item == 0 {
             let vc = CategoriesListViewController()
             vc.delegate = self
+            vc.isEnabledDelegate = self
             present(vc, animated: true)
         } else if indexPath.item == 1 {
             let vc = ScheduleViewController()
             vc.delegate = self
+            vc.isEnabledDelegate = self
             present(vc, animated: true)
         }
         tableView.deselectRow(at: indexPath, animated: true)
@@ -198,6 +228,8 @@ extension HabitFormViewController: UITextFieldDelegate {
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
+        isEnabled()
+        
         return true
     }
 }

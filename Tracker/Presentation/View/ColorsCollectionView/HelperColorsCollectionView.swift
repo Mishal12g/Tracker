@@ -7,12 +7,14 @@
 
 import UIKit
 
-protocol HelperColorsCollectionViewDelegate {
+protocol HelperColorsCollectionViewDelegate: AnyObject {
     func setColor(_ color: UIColor)
 }
 
 final class HelperColorsCollectionView: NSObject {
-    var delegate: HelperColorsCollectionViewDelegate?
+    weak var delegate: HelperColorsCollectionViewDelegate?
+    weak var isEnabledDelegate: HabitFormViewControllerProtocol?
+    
     private let colors: [UIColor] = [._1, ._2, ._3, ._4, ._5, ._6, ._7, ._8, ._9, ._10, ._11, ._12, ._13, ._14, ._15, ._16, ._17, ._18]
     private let params = GeometricParams(cellCount: 6, leftInset: 18.0, rightInset: 18.0, cellSpacing: 17.0)
 }
@@ -41,7 +43,7 @@ extension HelperColorsCollectionView: UICollectionViewDataSource {
         switch kind {
         case UICollectionView.elementKindSectionHeader:
             id = "header"
-            text = "Emoji"
+            text = "Цвет"
         case UICollectionView.elementKindSectionFooter:
             id = "footer"
             text = "Footer"
@@ -62,6 +64,7 @@ extension HelperColorsCollectionView: UICollectionViewDelegateFlowLayout {
         cell.selectedView.isHidden = false
         cell.setColor(colors[indexPath.row])
         delegate?.setColor(colors[indexPath.row])
+        isEnabledDelegate?.isEnabled()
     }
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {

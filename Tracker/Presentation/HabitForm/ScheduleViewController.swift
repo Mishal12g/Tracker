@@ -7,13 +7,14 @@
 
 import UIKit
 
-protocol ScheduleViewControllerDelegate {
+protocol ScheduleViewControllerDelegate: AnyObject {
     func setSchedule(_ weekdays: Set<Weekday>)
 }
 
 final class ScheduleViewController: UIViewController {
     //MARK: - public properties
-    var delegate: ScheduleViewControllerDelegate?
+    weak var delegate: ScheduleViewControllerDelegate?
+    weak var isEnabledDelegate: HabitFormViewControllerProtocol?
     
     //MARK: - privates properties
     private var selectedDays = Set<Weekday>()
@@ -58,8 +59,8 @@ final class ScheduleViewController: UIViewController {
     
     //MARK: - action methods
     @objc func didTapDoneButton() {
-//        guard let selectedDays = selectedDays else { return }
         delegate?.setSchedule(selectedDays)
+        isEnabledDelegate?.isEnabled()
         dismiss(animated: true)
     }
 }

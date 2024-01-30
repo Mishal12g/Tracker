@@ -1,12 +1,13 @@
 import UIKit
 
-protocol HelperEmojiCollectionViewDelegate {
+protocol HelperEmojiCollectionViewDelegate: AnyObject {
     func setEmoji(_ emoji: String)
 }
 
 final class HelperEmojiCollectionView: NSObject {
     //MARK: - public properties
-    var delegate: HelperEmojiCollectionViewDelegate?
+    weak var delegate: HelperEmojiCollectionViewDelegate?
+    weak var isEnabledDelegate: HabitFormViewControllerProtocol?
     
     //MARK: - privates properties
     private let emoji = ["🙂", "😻", "🌺", "🐶", "❤️", "😱", "😇", "😡", "🥶", "🤔", "🙌", "🍔", "🥦", "🏓", "🥇", "🎸", "🏝️", "😪"]
@@ -37,7 +38,7 @@ extension HelperEmojiCollectionView: UICollectionViewDataSource {
         switch kind {
         case UICollectionView.elementKindSectionHeader:
             id = "header"
-            text = "Цвет"
+            text = "Emoji"
         case UICollectionView.elementKindSectionFooter:
             id = "footer"
             text = "Footer"
@@ -58,6 +59,7 @@ extension HelperEmojiCollectionView: UICollectionViewDelegateFlowLayout {
         cell.layer.cornerRadius = 16
         cell.backgroundColor = .ypWhite
         delegate?.setEmoji(emoji[indexPath.item])
+        isEnabledDelegate?.isEnabled()
     }
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {

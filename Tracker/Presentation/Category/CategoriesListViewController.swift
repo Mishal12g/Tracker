@@ -7,13 +7,14 @@
 
 import UIKit
 
-protocol CategoriesListViewControllerDelegate {
+protocol CategoriesListViewControllerDelegate: AnyObject {
     func selectedCategory(_ category: TrackerCategory)
 }
 
 class CategoriesListViewController: UIViewController {
     //MARK: public properties
-    var delegate: CategoriesListViewControllerDelegate?
+    weak var delegate: CategoriesListViewControllerDelegate?
+    weak var isEnabledDelegate: HabitFormViewControllerProtocol?
     
     //MARK: privates properties
     private var categories = CategoriesStorageService.shared.categories
@@ -150,8 +151,8 @@ extension CategoriesListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let cell = tableView.cellForRow(at: indexPath) as? CategoryCell else { return }
         cell.doneImage.isHidden = false
-        
         delegate?.selectedCategory(categories[indexPath.item])
+        isEnabledDelegate?.isEnabled()
     }
     
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {

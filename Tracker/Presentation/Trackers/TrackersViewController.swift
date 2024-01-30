@@ -323,6 +323,8 @@ extension TrackersViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         filterCategoriesByTrackers(searchText: searchController.searchBar.text)
     }
+    
+    
 }
 
 //MARK: setup constraint
