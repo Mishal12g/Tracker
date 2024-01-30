@@ -7,8 +7,9 @@
 
 import UIKit
 
-protocol TrackerCellDelegate {
-    func didTapAddButton(_ cell: TrackerCell)
+protocol TrackerCellDelegate: AnyObject {
+    func completeTracker(id: UUID)
+    func uncompleteTracker(id: UUID)
 }
 
 class TrackerCell: UICollectionViewCell {
@@ -16,12 +17,11 @@ class TrackerCell: UICollectionViewCell {
     static let identity = "TrackerCell"
     
     //MARK: - privates properties
-    private(set) var isDoneTracker: Bool = false
-    private var countDays = 0
+    private var isCompletedToday: Bool = false
+    private var trackerID: UUID?
     
     //MARK: - public properties
-    var delegate: TrackerCellDelegate?
-    let id = UUID()
+    weak var delegate: TrackerCellDelegate?
     
     let view: UIView = {
         let view = UIView()
@@ -62,7 +62,7 @@ class TrackerCell: UICollectionViewCell {
     lazy var countDaysLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "\(countDays) д."
+        label.text = "0 д."
         label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
         label.textColor = .black
         
@@ -91,21 +91,38 @@ class TrackerCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    //MARK: action methods
-    @objc func didTapAddButton() {
-        isDoneTracker.toggle()
-        if isDoneTracker {
-            addButton.setImage(UIImage(named: "done"), for: .normal)
+    //MARK: - helpers
+    func config(with tracker: Tracker,
+                isCompletedToday: Bool,
+                completedDays: Int) {
+        self.isCompletedToday = isCompletedToday
+        self.trackerID = tracker.id
+        
+        countDaysLabel.text = "\(completedDays) д."
+        emojiLabel.text = tracker.emoji
+        trackerNameLabel.text = tracker.name
+        view.backgroundColor = tracker.color
+        addButton.tintColor = tracker.color
+        let image = UIImage(named: !isCompletedToday ? "add_icon" : "done")
+        
+        if isCompletedToday {
             addButton.backgroundColor = view.backgroundColor?.withAlphaComponent(0.5)
             addButton.tintColor = .white
-            countDays += 1
-            countDaysLabel.text = "\(countDays) д."
-        } else {
-            addButton.setImage(UIImage(named: "add_icon"), for: .normal)
+        }       else {
             addButton.tintColor = view.backgroundColor
             addButton.backgroundColor = .white
-            countDays -= 1
-            countDaysLabel.text = "\(countDays) д."
+        }
+        
+        addButton.setImage(image, for: .normal)
+    }
+    
+    //MARK: action methods
+    @objc func didTapAddButton() {
+        guard let trackerID = trackerID else { return }
+        if isCompletedToday {
+            delegate?.uncompleteTracker(id: trackerID)
+        } else {
+            delegate?.completeTracker(id: trackerID)
         }
     }
 }

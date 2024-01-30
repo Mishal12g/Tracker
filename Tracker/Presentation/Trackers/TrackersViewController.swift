@@ -19,7 +19,8 @@ class TrackersViewController: UIViewController {
         let picker = UIDatePicker()
         picker.datePickerMode = .date
         picker.preferredDatePickerStyle = .compact
-        picker.locale = Locale.current
+        picker.locale = Locale(identifier: "ru_Ru")
+        picker.calendar.firstWeekday = 2
         picker.addTarget(self, action: #selector(datePickerValueChanged(_:)), for: .valueChanged)
         
         return picker
@@ -71,62 +72,72 @@ class TrackersViewController: UIViewController {
 private extension TrackersViewController {
     func common() {
         view.backgroundColor = .white
-        hideErrorViews()
+        filterCategoriesByDate()
         setupNavigationBar()
         addConstraint()
         setupCollection()
         addCategoriesObserver()
     }
     func filterCategoriesByDate() {
-        let dayOfWeek = Calendar.current.component(.weekday, from: datePicker.date)
+        let calendar = Calendar.current
+        let dayOfWeek = calendar.component(.weekday, from: datePicker.date)
         
-        var filteredCategories = [TrackerCategory]()
-        
-        categories.forEach { category in
-            var filteredTrackers: [Tracker] = []
+        filteredCategories = categories.compactMap { category in
+            let trackers = category.trackers.filter { tracker in
+                tracker.schedule.contains { weeakDay in
+                    weeakDay.rawValue == dayOfWeek}}
             
-            category.trackers.forEach { tracker in
-                let isTrackerAvailableOnSelectedDay = tracker.schedule.contains(Weekday(rawValue: dayOfWeek)!)
-                
-                if isTrackerAvailableOnSelectedDay {
-                    filteredTrackers.append(tracker)
-                }
+            if trackers.isEmpty {
+                return nil
             }
             
-            if !filteredTrackers.isEmpty {
-                var filteredCategory = category
-                filteredCategory.trackers = filteredTrackers
-                filteredCategories.append(filteredCategory)
-            }
+            return TrackerCategory(
+                title: category.title,
+                trackers: trackers
+            )
         }
         
-        self.filteredCategories = filteredCategories
         hideErrorViews()
         collectionView.reloadData()
     }
     
     func filterCategoriesByTrackers(searchText: String?) {
-        var filteredCategories = [TrackerCategory]()
-        
         if !searchText!.isEmpty {
-            categories.forEach { category in
-                let trackers = category.trackers.filter {
-                    $0.name.lowercased().hasPrefix(searchText!.lowercased())
+            
+            
+            filteredCategories = categories.compactMap { category in
+                let trackers = category.trackers.filter { tracker in
+                    tracker.name.lowercased().hasPrefix(searchText!.lowercased())
                 }
                 
-                if !trackers.isEmpty {
-                    var filtteredCategory = category
-                    filtteredCategory.trackers = trackers
-                    filteredCategories.append(filtteredCategory)
+                if trackers.isEmpty {
+                    return nil
                 }
+                
+                return TrackerCategory(
+                    title: category.title,
+                    trackers: trackers
+                )
             }
             
-            self.filteredCategories = filteredCategories
             hideErrorViews()
             collectionView.reloadData()
         } else {
             filterCategoriesByDate()
         }
+    }
+    
+    func isTrackerCompletedToday(id: UUID) -> Bool {
+        let res = completedTrackers.contains(where: { trackerRecord in
+            isSameTracker(trackerRecord: trackerRecord, id: id)
+        })
+        
+        return res
+    }
+    
+    func isSameTracker(trackerRecord: TrackerRecord, id: UUID) -> Bool {
+        let isSameDate = Calendar.current.isDate(trackerRecord.date, inSameDayAs: datePicker.date)
+        return trackerRecord.id == id && isSameDate
     }
     
     func addCategoriesObserver() {
@@ -215,14 +226,19 @@ extension TrackersViewController: HabitFormViewControllerDelegate {
 
 //MARK: - TrackerCellDelegate
 extension TrackersViewController: TrackerCellDelegate {
-    func didTapAddButton(_ cell: TrackerCell) {
-        let record = TrackerRecord(id: cell.id, date: datePicker.date)
-        if cell.isDoneTracker {
-            completedTrackers.append(record)
-        } else {
-            guard let index = completedTrackers.firstIndex(where: { $0.id == cell.id }) else { return }
-            completedTrackers.remove(at: index)
-        }
+    func completeTracker(id: UUID) {
+        
+        let trackerRecord = TrackerRecord(id: id, date: datePicker.date)
+        completedTrackers.append(trackerRecord)
+        
+        collectionView.reloadData()
+    }
+    
+    func uncompleteTracker(id: UUID) {
+        completedTrackers.removeAll(where: { trackerRecord in
+            isSameTracker(trackerRecord: trackerRecord, id: id)
+        })
+        collectionView.reloadData()
     }
 }
 
@@ -233,15 +249,13 @@ extension TrackersViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TrackerCell.identity, for: indexPath) as? TrackerCell else { return UICollectionViewCell() }
-        let category = filteredCategories[indexPath.section]
-        let tracker = category.trackers[indexPath.item]
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TrackerCell.identity, for: indexPath) as? TrackerCell else { return UICollectionViewCell()}
         
+        let tracker = filteredCategories[indexPath.section].trackers[indexPath.row]
+        let isCompletedTracker = isTrackerCompletedToday(id: tracker.id)
+        let completedDays = completedTrackers.filter { $0.id == tracker.id }.count
+        cell.config(with: tracker, isCompletedToday: isCompletedTracker, completedDays: completedDays)
         cell.delegate = self
-        cell.emojiLabel.text = tracker.emoji
-        cell.trackerNameLabel.text = tracker.name
-        cell.view.backgroundColor = tracker.color
-        cell.addButton.tintColor = tracker.color
         
         return cell
     }

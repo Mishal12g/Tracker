@@ -13,7 +13,11 @@ final class CategoriesStorageService {
     static let shared = CategoriesStorageService()
     
     //MARK: - Privates properties
-    private(set) var categories = [TrackerCategory]()
+    private(set) var categories: [TrackerCategory] = [
+    TrackerCategory(title: "sport", trackers: [
+        Tracker(id: UUID(), name: "run", color: ._1, emoji: "😁", schedule: [.tuesday])
+    ])
+    ]
     
     //MARK: - Public methods
     func addCategory(_ category: TrackerCategory) {
