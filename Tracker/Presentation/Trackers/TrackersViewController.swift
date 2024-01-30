@@ -227,6 +227,11 @@ extension TrackersViewController: HabitFormViewControllerDelegate {
 //MARK: - TrackerCellDelegate
 extension TrackersViewController: TrackerCellDelegate {
     func completeTracker(id: UUID) {
+        let components = Calendar.current.dateComponents([.day], from: Date(), to: datePicker.date)
+        
+        if let days = components.day {
+            if days > 0  { return }
+        }
         
         let trackerRecord = TrackerRecord(id: id, date: datePicker.date)
         completedTrackers.append(trackerRecord)
