@@ -7,7 +7,7 @@
 
 import UIKit
 
-class CategoryCell: UITableViewCell {
+final class CategoryCell: UITableViewCell {
     //MARK: - static properties
     static let identity = "CategoryCell"
     

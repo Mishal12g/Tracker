@@ -12,7 +12,7 @@ protocol TrackerCellDelegate: AnyObject {
     func uncompleteTracker(id: UUID)
 }
 
-class TrackerCell: UICollectionViewCell {
+final class TrackerCell: UICollectionViewCell {
     //MARK: - static properties
     static let identity = "TrackerCell"
     

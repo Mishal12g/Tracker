@@ -1,6 +1,6 @@
 import UIKit
 
-class TabBarController: UITabBarController {
+final class TabBarController: UITabBarController {
     //MARK: overrides methods
     override func viewDidLoad() {
         tabbarAppearance()

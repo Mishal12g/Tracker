@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ColorCell: UICollectionViewCell {
+final class ColorCell: UICollectionViewCell {
     //MARK: - static properties
     static let identity = "ColorCell"
     

@@ -11,7 +11,7 @@ protocol CategoriesListViewControllerDelegate: AnyObject {
     func selectedCategory(_ category: TrackerCategory)
 }
 
-class CategoriesListViewController: UIViewController {
+final class CategoriesListViewController: UIViewController {
     //MARK: public properties
     weak var delegate: CategoriesListViewControllerDelegate?
     weak var isEnabledDelegate: HabitFormViewControllerProtocol?

@@ -7,13 +7,13 @@
 
 import UIKit
 
-protocol CreatedTrackerViewControllerDelegate {
+protocol CreatedTrackerViewControllerDelegate: AnyObject {
     func didTapAddButton()
 }
 
 final class CreatedTrackerViewController: UIViewController {
     //MARK: public properties
-    var delegate: CreatedTrackerViewControllerDelegate?
+    weak var delegate: CreatedTrackerViewControllerDelegate?
     
     //MARK: - Init Methods
     init(delegate: CreatedTrackerViewControllerDelegate?) {

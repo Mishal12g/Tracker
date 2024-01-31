@@ -7,7 +7,7 @@
 
 import UIKit
 
-class SupplementaryView: UICollectionReusableView {
+final class SupplementaryView: UICollectionReusableView {
     //MARK: - public properties
     let titleLabel: UILabel = {
         let label = UILabel()

@@ -1,11 +1,12 @@
 import UIKit
 
-class TrackersViewController: UIViewController {
+final class TrackersViewController: UIViewController {
     //MARK: - privates properties
     private var categories = CategoriesStorageService.shared.categories
     private var filteredCategories: [TrackerCategory] = []
     private var completedTrackers: [TrackerRecord] = []
     private var categoriesListObserver: NSObjectProtocol?
+    
     private let params = GeometricParams(cellCount: 2, leftInset: 16, rightInset: 16, cellSpacing: 9)
     
     lazy private var searchFiled: UISearchController = {
@@ -26,10 +27,14 @@ class TrackersViewController: UIViewController {
         return picker
     }()
     
-    private let collectionView: UICollectionView = {
+    lazy private var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         let collection = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collection.translatesAutoresizingMaskIntoConstraints = false
+        collection.dataSource = self
+        collection.delegate = self
+        collection.register(TrackerCell.self, forCellWithReuseIdentifier: TrackerCell.identity)
+        collection.register(SupplementaryView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "TrackerVCheader")
         
         return collection
     }()
@@ -75,9 +80,10 @@ private extension TrackersViewController {
         filterCategoriesByDate()
         setupNavigationBar()
         addConstraint()
-        setupCollection()
         addCategoriesObserver()
     }
+    
+    //filter categories
     func filterCategoriesByDate() {
         let calendar = Calendar.current
         let dayOfWeek = calendar.component(.weekday, from: datePicker.date)
@@ -103,8 +109,6 @@ private extension TrackersViewController {
     
     func filterCategoriesByTrackers(searchText: String?) {
         if !searchText!.isEmpty {
-            
-            
             filteredCategories = categories.compactMap { category in
                 let trackers = category.trackers.filter { tracker in
                     tracker.name.lowercased().hasPrefix(searchText!.lowercased())
@@ -127,6 +131,7 @@ private extension TrackersViewController {
         }
     }
     
+    //tracker record
     func isTrackerCompletedToday(id: UUID) -> Bool {
         let res = completedTrackers.contains(where: { trackerRecord in
             isSameTracker(trackerRecord: trackerRecord, id: id)
@@ -140,6 +145,23 @@ private extension TrackersViewController {
         return trackerRecord.id == id && isSameDate
     }
     
+    func completeTrackerDate(_ id: UUID) {
+        let calendar = Calendar.current
+        let currentDate = calendar.startOfDay(for: Date())
+        let selectedDate = calendar.startOfDay(for: datePicker.date)
+
+        let components = calendar.dateComponents([.day], from: currentDate, to: selectedDate)
+
+        if let days = components.day, days > 0 {
+            return
+        }
+
+        let trackerRecord = TrackerRecord(id: id, date: datePicker.date)
+        completedTrackers.append(trackerRecord)
+        collectionView.reloadData()
+    }
+    
+    //observer
     func addCategoriesObserver() {
         categoriesListObserver = NotificationCenter.default.addObserver(forName: CategoriesStorageService.didChangeNotification,
                                                                         object: nil,
@@ -154,13 +176,7 @@ private extension TrackersViewController {
         filterCategoriesByDate()
     }
     
-    func setupCollection() {
-        collectionView.dataSource = self
-        collectionView.delegate = self
-        collectionView.register(TrackerCell.self, forCellWithReuseIdentifier: TrackerCell.identity)
-        collectionView.register(SupplementaryView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "TrackerVCheader")
-    }
-    
+    //views setup
     func hideErrorViews() {
         guard !filteredCategories.isEmpty else {
             hide(false)
@@ -205,7 +221,7 @@ private extension TrackersViewController {
     }
 }
 
-//MARK: - CreadtedTrackerViewControllerDelegate
+//MARK: - CreatedTrackerViewControllerDelegate
 extension TrackersViewController: CreatedTrackerViewControllerDelegate {
     func didTapAddButton() {
         let vc = HabitFormViewController()
@@ -227,16 +243,7 @@ extension TrackersViewController: HabitFormViewControllerDelegate {
 //MARK: - TrackerCellDelegate
 extension TrackersViewController: TrackerCellDelegate {
     func completeTracker(id: UUID) {
-        let components = Calendar.current.dateComponents([.day], from: Date(), to: datePicker.date)
-        
-        if let days = components.day {
-            if days > 0  { return }
-        }
-        
-        let trackerRecord = TrackerRecord(id: id, date: datePicker.date)
-        completedTrackers.append(trackerRecord)
-        
-        collectionView.reloadData()
+        completeTrackerDate(id)
     }
     
     func uncompleteTracker(id: UUID) {
@@ -323,8 +330,6 @@ extension TrackersViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         filterCategoriesByTrackers(searchText: searchController.searchBar.text)
     }
-    
-    
 }
 
 //MARK: setup constraint
@@ -337,6 +342,7 @@ private extension TrackersViewController {
     
     func addConstraint() {
         addSubViews()
+        
         NSLayoutConstraint.activate([
             collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),

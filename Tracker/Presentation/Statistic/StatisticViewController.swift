@@ -1,6 +1,6 @@
 import UIKit
 
-class StatisticViewController: UIViewController {
+final class StatisticViewController: UIViewController {
     let emptyImageView: UIImageView = {
         guard let image = UIImage(named: "il_error_2") else { return UIImageView() }
         let imageView = UIImageView(image: image)
