@@ -11,7 +11,6 @@ final class CategoryFormViewController: UIViewController {
     //MARK: - Privates properties
     private let titleLable: UILabel = {
         let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Новая категория"
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         label.textAlignment = .center
@@ -19,7 +18,7 @@ final class CategoryFormViewController: UIViewController {
         return label
     }()
     
-    lazy private var button: Button = {
+    private lazy var button: Button = {
         let button = Button(type: .system)
         button.setStyle(color: .gray, tintColor: .white, title: "Готово")
         button.addTarget(self, action: #selector(didTapDoneButton), for: .touchUpInside)
@@ -28,7 +27,7 @@ final class CategoryFormViewController: UIViewController {
         return button
     }()
     
-    lazy private var textField: TextField = {
+    private lazy var textField: TextField = {
         let textField = TextField(placeholder: "Введите название категории")
         textField.delegate = self
         textField.addTarget(self, action: #selector(editingChanged(_:)), for: .editingChanged)
@@ -88,6 +87,12 @@ private extension CategoryFormViewController {
         view.addSubview(titleLable)
         view.addSubview(textField)
         view.addSubview(button)
+        [button,
+         textField,
+         titleLable].forEach {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview($0)
+        }
         
         NSLayoutConstraint.activate([
             titleLable.topAnchor.constraint(equalTo: view.topAnchor, constant: 30),

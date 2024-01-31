@@ -26,7 +26,7 @@ extension HelperEmojiCollectionView: UICollectionViewDataSource {
         }
         
         cell.layer.cornerRadius = 16
-        cell.label.text = emoji[indexPath.item]
+        cell.config(text: emoji[indexPath.item]) 
         
         return cell
     }

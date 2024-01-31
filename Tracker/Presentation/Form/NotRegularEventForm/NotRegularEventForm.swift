@@ -42,7 +42,7 @@ final class NotRegularEventFormViewController: UIViewController {
         return scrollView
     }()
     
-    lazy private var textField: TextField = {
+    private lazy var textField: TextField = {
         let textField = TextField(placeholder: "Введите название трекера")
         textField.delegate = self
         textField.becomeFirstResponder()
@@ -50,7 +50,7 @@ final class NotRegularEventFormViewController: UIViewController {
         return textField
     }()
     
-    lazy private var categoryButton: UITableView = {
+    private lazy var categoryButton: UITableView = {
         let table = TableView(dataSource: dataSource)
         table.delegate = self
         table.register(UITableViewCell.self, forCellReuseIdentifier: "TwoButtonsCell")
@@ -59,7 +59,7 @@ final class NotRegularEventFormViewController: UIViewController {
         return table
     }()
     
-    lazy private var emojiCollection: EmojiCollectionView = {
+    private lazy var emojiCollection: EmojiCollectionView = {
         let collection = EmojiCollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
         collection.delegateAndDataSource.delegate = self
         collection.delegateAndDataSource.isEnabledDelegate = self
@@ -67,7 +67,7 @@ final class NotRegularEventFormViewController: UIViewController {
         return collection
     }()
     
-    lazy private var colorsCollection: ColorsCollectionView = {
+    private lazy var colorsCollection: ColorsCollectionView = {
         let collection = ColorsCollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
         collection.delegateAndDataSource.delegate = self
         collection.delegateAndDataSource.isEnabledDelegate = self
@@ -75,7 +75,7 @@ final class NotRegularEventFormViewController: UIViewController {
         return collection
     }()
     
-    lazy private var cancelButton: Button = {
+    private lazy var cancelButton: Button = {
         let button = Button(type: .system)
         button.setStyle(borderColor: .ypRed, tintColor: .ypRed, borderWidth: 1, title: "Отменить")
         button.addTarget(self, action: #selector(didTapCancelButton), for: .touchUpInside)
@@ -83,7 +83,7 @@ final class NotRegularEventFormViewController: UIViewController {
         return button
     }()
     
-    lazy private var doneButton: UIButton = {
+    private lazy var doneButton: UIButton = {
         let button = Button(type: .system)
         button.setStyle(color: .ypGray1, tintColor: .white, title: "Создать")
         button.isEnabled = false
@@ -94,7 +94,6 @@ final class NotRegularEventFormViewController: UIViewController {
     
     private let stackH: UIStackView = {
         let stack = UIStackView()
-        stack.translatesAutoresizingMaskIntoConstraints = false
         stack.axis = .horizontal
         stack.distribution = .fillEqually
         stack.spacing = 5
@@ -208,15 +207,24 @@ extension NotRegularEventFormViewController: UITextFieldDelegate {
 private extension NotRegularEventFormViewController {
     func setupContraints() {
         //addSubviews
-        view.addSubview(scrollView)
-        view.addSubview(titleLabel)
-        scrollView.addSubview(textField)
-        scrollView.addSubview(categoryButton)
-        scrollView.addSubview(emojiCollection)
-        scrollView.addSubview(colorsCollection)
-        scrollView.addSubview(stackH)
-        stackH.addArrangedSubview(cancelButton)
-        stackH.addArrangedSubview(doneButton)
+        [scrollView, titleLabel].forEach {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview($0)
+        }
+        
+        [textField,
+         categoryButton,
+         emojiCollection,
+         colorsCollection,
+         stackH].forEach {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            scrollView.addSubview($0)
+        }
+        
+        [cancelButton, doneButton].forEach {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            stackH.addArrangedSubview($0)
+        }
         
         //constraints
         NSLayoutConstraint.activate([

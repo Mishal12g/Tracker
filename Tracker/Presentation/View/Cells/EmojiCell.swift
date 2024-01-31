@@ -12,7 +12,7 @@ final class EmojiCell: UICollectionViewCell {
     static let identity = "EmojiCell"
     
     //MARK: - public properties
-    let label: UILabel = {
+    private let label: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         
@@ -32,5 +32,9 @@ final class EmojiCell: UICollectionViewCell {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    func config(text: String) {
+        label.text = text
     }
 }

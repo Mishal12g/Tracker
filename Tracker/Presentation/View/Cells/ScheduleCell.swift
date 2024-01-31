@@ -7,7 +7,7 @@
 
 import UIKit
 
-protocol ScheduleCellDelegate {
+protocol ScheduleCellDelegate: AnyObject {
     func didAddDay(day: Weekday)
     func didRemoveDay(day: Weekday)
 }
@@ -18,13 +18,13 @@ final class ScheduleCell: UITableViewCell {
     static let identity = "ScheduleCell"
     
     //MARK: - public properties
-    var delegate: ScheduleCellDelegate?
+    weak var delegate: ScheduleCellDelegate?
     
     //MARK: - privates properties
     private var selectedDay: Weekday?
     
     //MARK: - views
-    let switchButton: UISwitch = {
+    private let switchButton: UISwitch = {
         let switchButton = UISwitch()
         switchButton.translatesAutoresizingMaskIntoConstraints = false
         switchButton.isEnabled = true
