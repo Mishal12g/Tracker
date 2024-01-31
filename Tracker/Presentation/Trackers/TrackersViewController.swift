@@ -6,6 +6,7 @@ final class TrackersViewController: UIViewController {
     private var filteredCategories: [TrackerCategory] = []
     private var completedTrackers: [TrackerRecord] = []
     private var categoriesListObserver: NSObjectProtocol?
+    private var currentData: Date = Date()
     
     private let params = GeometricParams(cellCount: 2, leftInset: 16, rightInset: 16, cellSpacing: 9)
     
@@ -90,7 +91,8 @@ private extension TrackersViewController {
         
         filteredCategories = categories.compactMap { category in
             let trackers = category.trackers.filter { tracker in
-                tracker.schedule.contains { weeakDay in
+                guard let schedule = tracker.schedule else { return true }
+                return schedule.contains { weeakDay in
                     weeakDay.rawValue == dayOfWeek}}
             
             if trackers.isEmpty {
@@ -147,7 +149,7 @@ private extension TrackersViewController {
     
     func completeTrackerDate(_ id: UUID) {
         let calendar = Calendar.current
-        let currentDate = calendar.startOfDay(for: Date())
+        let currentDate = calendar.startOfDay(for: currentData)
         let selectedDate = calendar.startOfDay(for: datePicker.date)
 
         let components = calendar.dateComponents([.day], from: currentDate, to: selectedDate)
@@ -223,8 +225,16 @@ private extension TrackersViewController {
 
 //MARK: - CreatedTrackerViewControllerDelegate
 extension TrackersViewController: CreatedTrackerViewControllerDelegate {
-    func didTapAddButton() {
+    func didTapAddTrackerButton() {
         let vc = HabitFormViewController()
+        vc.delegate = self
+        vc.title = "Новая привычка"
+        
+        present(vc, animated: true)
+    }
+    
+    func didTapAddNotRegularEvent() {
+        let vc = NotRegularEventFormViewController()
         vc.delegate = self
         vc.title = "Новая привычка"
         

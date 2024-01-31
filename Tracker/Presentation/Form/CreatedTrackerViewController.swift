@@ -8,7 +8,8 @@
 import UIKit
 
 protocol CreatedTrackerViewControllerDelegate: AnyObject {
-    func didTapAddButton()
+    func didTapAddTrackerButton()
+    func didTapAddNotRegularEvent()
 }
 
 final class CreatedTrackerViewController: UIViewController {
@@ -35,10 +36,11 @@ final class CreatedTrackerViewController: UIViewController {
         return button
     }()
     
-    private let buttonTwo: UIButton = {
+    lazy private var buttonTwo: UIButton = {
         let button = ButtonForTextField(type: .system)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         button.setTitle("Нерегулярные событие", for: .normal)
+        button.addTarget(self, action: #selector(NotRegularEventTapButton), for: .touchUpInside)
         
         return button
     }()
@@ -60,7 +62,12 @@ private extension CreatedTrackerViewController {
     //MARK: action methods
     @objc func habitDidTapButton() {
         dismiss(animated: true)
-        delegate?.didTapAddButton()
+        delegate?.didTapAddTrackerButton()
+    }
+    
+    @objc func NotRegularEventTapButton() {
+        dismiss(animated: true)
+        delegate?.didTapAddNotRegularEvent()
     }
 }
 

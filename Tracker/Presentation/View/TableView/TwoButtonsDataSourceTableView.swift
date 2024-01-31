@@ -11,13 +11,14 @@ final class TwoButtonsDataSourceTableView: NSObject, UITableViewDataSource {
     //MARK: - public properties
     var textOne: String?
     var textTwo: String?
+    var countButtons = 2
     
     //MARK: - privates properties
     private let words = ["Категория", "Расписание"]
     
     //MARK: UITableViewDataSurce
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return words.count
+        return countButtons
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
