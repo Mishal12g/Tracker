@@ -29,9 +29,13 @@ final class TwoButtonsDataSourceTableView: NSObject, UITableViewDataSource {
         
         
         cell.textLabel?.text = words[indexPath.row]
+        cell.textLabel?.font = UIFont.systemFont(ofSize: 17, weight: .regular)
         cell.backgroundColor = .ypWhite
         cell.accessoryType = .disclosureIndicator
         cell.detailTextLabel?.text = indexPath.row == 0 ? textOne : textTwo
+        cell.detailTextLabel?.textColor = .ypGray1
+        cell.detailTextLabel?.font = UIFont.systemFont(ofSize: 17, weight: .regular)
+        
         return cell
     }
 }

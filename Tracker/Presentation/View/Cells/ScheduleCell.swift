@@ -36,6 +36,7 @@ final class ScheduleCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setConstraints()
+        textLabel?.font = UIFont.systemFont(ofSize: 17, weight: .regular)
         switchButton.addTarget(self, action: #selector(didTapSwitch(_:)), for: .valueChanged)
     }
     

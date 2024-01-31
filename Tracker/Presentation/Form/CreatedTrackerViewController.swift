@@ -27,6 +27,16 @@ final class CreatedTrackerViewController: UIViewController {
     }
     
     //MARK: - privates properties
+    private let titleLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "Создание трекера"
+        label.textAlignment = .center
+        label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        
+        return label
+    }()
+
     lazy private var buttonOne: UIButton = {
         let button = ButtonForTextField(type: .system)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
@@ -76,8 +86,12 @@ private extension CreatedTrackerViewController {
     func addConstraints() {
         view.addSubview(buttonOne)
         view.addSubview(buttonTwo)
+        view.addSubview(titleLabel)
         
         NSLayoutConstraint.activate([
+            titleLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 30),
+            titleLabel.widthAnchor.constraint(equalToConstant: view.bounds.width),
+            
             buttonOne.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             buttonOne.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             buttonOne.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),

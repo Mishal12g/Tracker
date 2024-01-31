@@ -88,6 +88,7 @@ extension ScheduleViewController: UITableViewDataSource {
         cell.delegate = self
         cell.tag = indexPath.row
         cell.textLabel?.text = Weekday.allCases[indexPath.row].title
+        cell.textLabel?.font = UIFont.systemFont(ofSize: 17, weight: .regular)
         cell.backgroundColor = .ypWhite
         
         return cell

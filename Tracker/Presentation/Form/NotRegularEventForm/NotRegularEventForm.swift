@@ -24,7 +24,7 @@ final class NotRegularEventFormViewController: UIViewController {
         return dataSource
     }()
     
-    private let label: UILabel = {
+    private let titleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Новое нерегулярное событие"
@@ -209,7 +209,7 @@ private extension NotRegularEventFormViewController {
     func setupContraints() {
         //addSubviews
         view.addSubview(scrollView)
-        view.addSubview(label)
+        view.addSubview(titleLabel)
         scrollView.addSubview(textField)
         scrollView.addSubview(categoryButton)
         scrollView.addSubview(emojiCollection)
@@ -220,10 +220,10 @@ private extension NotRegularEventFormViewController {
         
         //constraints
         NSLayoutConstraint.activate([
-            label.topAnchor.constraint(equalTo: view.topAnchor, constant: 30),
-            label.widthAnchor.constraint(equalToConstant: view.bounds.width),
+            titleLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 30),
+            titleLabel.widthAnchor.constraint(equalToConstant: view.bounds.width),
             
-            scrollView.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 38),
+            scrollView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 38),
             scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             scrollView.widthAnchor.constraint(equalTo: view.widthAnchor),
             

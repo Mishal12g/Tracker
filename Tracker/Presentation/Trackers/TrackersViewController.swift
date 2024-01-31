@@ -13,6 +13,7 @@ final class TrackersViewController: UIViewController {
     lazy private var searchFiled: UISearchController = {
         let search = UISearchController()
         search.searchResultsUpdater = self
+        search.searchBar.placeholder = "Поиск"
         
         return search
     }()
@@ -61,7 +62,7 @@ final class TrackersViewController: UIViewController {
     private let emptyLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont.systemFont(ofSize: 12)
+        label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
         label.textAlignment = .center
         label.text = "Что будем отслеживать?"
         
@@ -149,16 +150,16 @@ private extension TrackersViewController {
     
     func completeTrackerDate(_ id: UUID) {
         let calendar = Calendar.current
-        let currentDate = calendar.startOfDay(for: currentData)
-        let selectedDate = calendar.startOfDay(for: datePicker.date)
-
+        let currentDate = calendar.startOfDay(for: Date())
+        let selectedDate = calendar.startOfDay(for: currentDate)
+        
         let components = calendar.dateComponents([.day], from: currentDate, to: selectedDate)
-
+        
         if let days = components.day, days > 0 {
             return
         }
-
-        let trackerRecord = TrackerRecord(id: id, date: datePicker.date)
+        
+        let trackerRecord = TrackerRecord(id: id, date: currentDate)
         completedTrackers.append(trackerRecord)
         collectionView.reloadData()
     }
@@ -211,15 +212,14 @@ private extension TrackersViewController {
     
     //MARK: action methods
     @objc func datePickerValueChanged(_ sender: UIDatePicker) {
+        currentData = sender.date
         filterCategoriesByDate()
     }
     
     @objc func addTrackerDidTap() {
         let trackerSelectionVC = CreatedTrackerViewController(delegate: self)
-        trackerSelectionVC.title = "Создание трекера"
-        let vc = UINavigationController(rootViewController: trackerSelectionVC)
         
-        self.present(vc, animated: true)
+        self.present(trackerSelectionVC, animated: true)
     }
 }
 
@@ -230,14 +230,16 @@ extension TrackersViewController: CreatedTrackerViewControllerDelegate {
         vc.delegate = self
         vc.title = "Новая привычка"
         
+        dismiss(animated: true)
         present(vc, animated: true)
     }
     
     func didTapAddNotRegularEvent() {
         let vc = NotRegularEventFormViewController()
         vc.delegate = self
-        vc.title = "Новая привычка"
+        vc.title = "Новое нерегулярное событие"
         
+        dismiss(animated: true)
         present(vc, animated: true)
     }
 }

@@ -21,7 +21,7 @@ final class CategoryFormViewController: UIViewController {
     
     lazy private var button: Button = {
         let button = Button(type: .system)
-        button.setStyle(color: .gray, tintColor: .white, title: "Добавить категорию")
+        button.setStyle(color: .gray, tintColor: .white, title: "Готово")
         button.addTarget(self, action: #selector(didTapDoneButton), for: .touchUpInside)
         button.isEnabled = false
         
