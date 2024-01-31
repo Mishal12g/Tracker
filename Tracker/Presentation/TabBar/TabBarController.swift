@@ -1,13 +1,14 @@
 import UIKit
 
-class TabBarController: UITabBarController {
+final class TabBarController: UITabBarController {
+    //MARK: overrides methods
     override func viewDidLoad() {
         tabbarAppearance()
         
-        let trackersListVC = UINavigationController(rootViewController: TrackersListViewController())
+        let trackersListVC = UINavigationController(rootViewController: TrackersViewController())
         trackersListVC.tabBarItem = UITabBarItem(title: "Трекеры", image: UIImage(named: "tracker"), selectedImage: nil)
         
-        let statisticVC = StatisticViewController()
+        let statisticVC = UINavigationController(rootViewController: StatisticViewController())
         statisticVC.tabBarItem = UITabBarItem(title: "Статистика", image: UIImage(named: "statistic"), selectedImage: nil)
         
         self.viewControllers = [trackersListVC, statisticVC]
