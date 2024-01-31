@@ -356,6 +356,8 @@ private extension TrackersViewController {
             
             emptyLabel.topAnchor.constraint(equalTo: emptyImageView.bottomAnchor, constant: 8),
             emptyLabel.centerXAnchor.constraint(equalTo: emptyImageView.centerXAnchor),
+            
+            datePicker.widthAnchor.constraint(equalToConstant: 120)
         ])
     }
 }
