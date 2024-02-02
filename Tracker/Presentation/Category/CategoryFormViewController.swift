@@ -84,9 +84,6 @@ extension CategoryFormViewController: UITextFieldDelegate {
 //MARK: - setup constraints
 private extension CategoryFormViewController {
     func setupConstraints() {
-        view.addSubview(titleLable)
-        view.addSubview(textField)
-        view.addSubview(button)
         [button,
          textField,
          titleLable].forEach {
