@@ -2,11 +2,14 @@ import UIKit
 
 final class TrackersViewController: UIViewController {
     //MARK: - privates properties
-    private var categories = CategoriesStorageService.shared.categories
-    private var filteredCategories: [TrackerCategory] = []
+    private lazy var trackerStore = TrackerStore(delegate: self)
     private var completedTrackers: [TrackerRecord] = []
-    private var categoriesListObserver: NSObjectProtocol?
-    private var currentData: Date = Date()
+    private var currentDate: Date = Date()
+    private var searchText: String = "" {
+        didSet {
+            applyFilter()
+        }
+    }
     
     private let params = GeometricParams(cellCount: 2, leftInset: 16, rightInset: 16, cellSpacing: 9)
     
@@ -76,59 +79,15 @@ final class TrackersViewController: UIViewController {
 private extension TrackersViewController {
     func common() {
         view.backgroundColor = .white
-        filterCategoriesByDate()
         setupNavigationBar()
         addConstraint()
-        addCategoriesObserver()
-    }
-    
-    //filter categories
-    func filterCategoriesByDate() {
-        let calendar = Calendar.current
-        let dayOfWeek = calendar.component(.weekday, from: datePicker.date)
-        
-        filteredCategories = categories.compactMap { category in
-            let trackers = category.trackers.filter { tracker in
-                guard let schedule = tracker.schedule else { return true }
-                return schedule.contains { weeakDay in
-                    weeakDay.rawValue == dayOfWeek}}
-            
-            if trackers.isEmpty {
-                return nil
-            }
-            
-            return TrackerCategory(
-                title: category.title,
-                trackers: trackers
-            )
-        }
-        
+        applyFilter()
         hideErrorViews()
-        collectionView.reloadData()
     }
     
-    func filterCategoriesByTrackers(searchText: String?) {
-        if !searchText!.isEmpty {
-            filteredCategories = categories.compactMap { category in
-                let trackers = category.trackers.filter { tracker in
-                    tracker.name.lowercased().hasPrefix(searchText!.lowercased())
-                }
-                
-                if trackers.isEmpty {
-                    return nil
-                }
-                
-                return TrackerCategory(
-                    title: category.title,
-                    trackers: trackers
-                )
-            }
-            
-            hideErrorViews()
-            collectionView.reloadData()
-        } else {
-            filterCategoriesByDate()
-        }
+    //filter
+    func applyFilter() {
+        trackerStore.filter(by: currentDate, and: searchText)
     }
     
     //tracker record
@@ -161,40 +120,10 @@ private extension TrackersViewController {
         collectionView.reloadData()
     }
     
-    //observer
-    func addCategoriesObserver() {
-        categoriesListObserver = NotificationCenter.default.addObserver(forName: CategoriesStorageService.didChangeNotification,
-                                                                        object: nil,
-                                                                        queue: .main) { [weak self]_ in
-            guard let self = self else { return }
-            self.updatesCollectionView()
-        }
-    }
-    
-    func updatesCollectionView() {
-        self.categories = CategoriesStorageService.shared.categories
-        filterCategoriesByDate()
-    }
-    
     //views setup
     func hideErrorViews() {
-        guard !filteredCategories.isEmpty else {
-            hide(false)
-            return
-        }
-        
-        let categoriesIsNotEmpty = filteredCategories.filter { !$0.trackers.isEmpty }
-        
-        if categoriesIsNotEmpty.isEmpty {
-            hide(false)
-        } else {
-            hide(true)
-        }
-        
-        func hide(_ isHide: Bool) {
-            emptyLabel.isHidden = isHide
-            emptyImageView.isHidden = isHide
-        }
+        emptyLabel.isHidden = trackerStore.numberOfSections != 0
+        emptyImageView.isHidden = trackerStore.numberOfSections != 0
     }
     
     func setupNavigationBar() {
@@ -209,14 +138,21 @@ private extension TrackersViewController {
     
     //MARK: action methods
     @objc func datePickerValueChanged(_ sender: UIDatePicker) {
-        currentData = sender.date
-        filterCategoriesByDate()
+        currentDate = sender.date
+        applyFilter()
     }
     
     @objc func addTrackerDidTap() {
         let trackerSelectionVC = CreatedTrackerViewController(delegate: self)
         
         self.present(trackerSelectionVC, animated: true)
+    }
+}
+
+extension TrackersViewController: StoreDelegate {
+    func didUpdate() {
+        hideErrorViews()
+        collectionView.reloadData()
     }
 }
 
@@ -243,9 +179,13 @@ extension TrackersViewController: CreatedTrackerViewControllerDelegate {
 
 //MARK: - HabitFormViewControllerDelegate
 extension TrackersViewController: HabitFormViewControllerDelegate {
-    func createTracker(_ tracker: Tracker, _ categoryName: String) {
-        CategoriesStorageService.shared.addTracker(categoryName, tracker)
-        hideErrorViews()
+    func createTracker(_ tracker: Tracker, _ category: TrackerCategory) {
+        do {
+            try trackerStore.addTracker(tracker: tracker, category: category)
+        }
+        catch {
+            print(error.localizedDescription)
+        }
     }
 }
 
@@ -266,13 +206,16 @@ extension TrackersViewController: TrackerCellDelegate {
 //MARK: - UICollectionViewDataSource
 extension TrackersViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        filteredCategories[section].trackers.count
+        trackerStore.numberOfRowsInSection(section)
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TrackerCell.identity, for: indexPath) as? TrackerCell else { return UICollectionViewCell()}
         
-        let tracker = filteredCategories[indexPath.section].trackers[indexPath.row]
+        guard let tracker = trackerStore.object(at: indexPath) else {
+            return cell
+        }
+        
         let isCompletedTracker = isTrackerCompletedToday(id: tracker.id)
         let completedDays = completedTrackers.filter { $0.id == tracker.id }.count
         cell.config(with: tracker, isCompletedToday: isCompletedTracker, completedDays: completedDays)
@@ -282,7 +225,7 @@ extension TrackersViewController: UICollectionViewDataSource {
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return filteredCategories.count
+        return trackerStore.numberOfSections
     }
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
@@ -292,7 +235,7 @@ extension TrackersViewController: UICollectionViewDataSource {
         switch kind {
         case UICollectionView.elementKindSectionHeader:
             id = "TrackerVCheader"
-            text = filteredCategories[indexPath.section].title
+            text = trackerStore.header(at: indexPath) ?? ""
         case UICollectionView.elementKindSectionFooter:
             id = "footer"
             text = "Footer"
@@ -300,7 +243,8 @@ extension TrackersViewController: UICollectionViewDataSource {
             id = ""
             text = ""
         }
-        guard let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: id, for: indexPath) as? SupplementaryView, !filteredCategories[indexPath.section].trackers.isEmpty else { return UICollectionReusableView()}
+        guard let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: id, for: indexPath) as? SupplementaryView, !trackerStore.isEmpty
+        else { return UICollectionReusableView()}
         view.titleLabel.text = text
         return view
     }
@@ -337,7 +281,7 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
 //MARK: serach delegate
 extension TrackersViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
-        filterCategoriesByTrackers(searchText: searchController.searchBar.text)
+        searchText = searchController.searchBar.text ?? ""
     }
 }
 

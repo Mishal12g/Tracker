@@ -8,6 +8,8 @@
 import UIKit
 
 final class CategoryFormViewController: UIViewController {
+    private let categoryStore = TrackerCategoryStore()
+    
     //MARK: - Privates properties
     private let titleLable: UILabel = {
         let label = UILabel()
@@ -47,8 +49,8 @@ final class CategoryFormViewController: UIViewController {
     //MARK: - Actions methods
     @objc func didTapDoneButton() {
         guard let text = textField.text else { return }
-        let category = TrackerCategory(title: text, trackers: [])
-        CategoriesStorageService.shared.addCategory(category)
+        let category = TrackerCategory(id: UUID(), title: text, trackers: [])
+        categoryStore.addCategory(category: category)
         dismiss(animated: true)
     }
     

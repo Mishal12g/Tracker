@@ -17,8 +17,12 @@ final class CategoriesListViewController: UIViewController {
     weak var isEnabledDelegate: HabitFormViewControllerProtocol?
     
     //MARK: privates properties
-    private var categories = CategoriesStorageService.shared.categories
-    private var categoriesListObserver: NSObjectProtocol?
+    private lazy var categoryStore = TrackerCategoryStore(delegate: self)
+    private lazy var categories: [TrackerCategory] = {
+        let categoroies = categoryStore.objects()
+        
+        return categoroies
+    }()
     
     private lazy var tableView: UITableView = {
         let table = UITableView()
@@ -80,23 +84,10 @@ private extension CategoriesListViewController {
         present(vc, animated: true)
     }
     
-    func updatesTableView() {
-        self.categories = CategoriesStorageService.shared.categories
-        hideEmptyError()
-        tableView.reloadData()
-    }
-    
     func commonSetup() {
         view.backgroundColor = .white
         setupConstraints()
         hideEmptyError()
-        
-        categoriesListObserver = NotificationCenter.default.addObserver(forName: CategoriesStorageService.didChangeNotification,
-                                                                        object: nil,
-                                                                        queue: .main) { [weak self] _ in
-            guard let self = self else { return }
-            self.updatesTableView()
-        }
     }
     
     func hideEmptyError() {
@@ -157,6 +148,14 @@ extension CategoriesListViewController: UITableViewDelegate {
         } else {
             cell.separatorInset = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 15)
         }
+    }
+}
+
+extension CategoriesListViewController: StoreDelegate {
+    func didUpdate() {
+        self.categories = categoryStore.objects()
+        hideEmptyError()
+        tableView.reloadData()
     }
 }
 

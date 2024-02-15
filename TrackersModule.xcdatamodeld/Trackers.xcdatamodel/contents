@@ -1,19 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22522" systemVersion="23C71" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
-    <entity name="TrackerCategoryCoreData" representedClassName="TrackerCategoryCoreData" syncable="YES" codeGenerationType="class">
+    <entity name="CategoryCD" representedClassName="CategoryCD" syncable="YES" codeGenerationType="class">
+        <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="title" attributeType="String"/>
-        <relationship name="trackers" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="TrackerCoreData" inverseName="category" inverseEntity="TrackerCoreData"/>
+        <relationship name="trackers" toMany="YES" deletionRule="Nullify" destinationEntity="TrackerCD" inverseName="category" inverseEntity="TrackerCD"/>
     </entity>
-    <entity name="TrackerCoreData" representedClassName="TrackerCoreData" syncable="YES" codeGenerationType="class">
-        <attribute name="color" attributeType="Transformable"/>
+    <entity name="RecordCD" representedClassName="RecordCD" syncable="YES" codeGenerationType="class"/>
+    <entity name="TrackerCD" representedClassName="TrackerCD" syncable="YES" codeGenerationType="class">
         <attribute name="emoji" attributeType="String"/>
+        <attribute name="hexColor" attributeType="String"/>
         <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="name" attributeType="String"/>
-        <attribute name="schedule" attributeType="Transformable"/>
-        <relationship name="category" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="TrackerCategoryCoreData" inverseName="trackers" inverseEntity="TrackerCategoryCoreData"/>
-    </entity>
-    <entity name="TreckerRecordCoreData" representedClassName="TreckerRecordCoreData" syncable="YES" codeGenerationType="class">
-        <attribute name="date" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="schedule" attributeType="String"/>
+        <relationship name="category" maxCount="1" deletionRule="Nullify" destinationEntity="CategoryCD" inverseName="trackers" inverseEntity="CategoryCD"/>
     </entity>
 </model>

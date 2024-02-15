@@ -1,7 +1,7 @@
 import UIKit
 
 protocol HabitFormViewControllerDelegate: AnyObject {
-    func createTracker(_ tracker: Tracker, _ categoryName: String)
+    func createTracker(_ tracker: Tracker, _ category: TrackerCategory)
 }
 
 protocol HabitFormViewControllerProtocol: AnyObject {
@@ -130,7 +130,7 @@ private extension HabitFormViewController {
               !text.isEmpty
         else { return }
         let tracker = Tracker(id: UUID(), name: text, color: color, emoji: emoji, schedule: schedule)
-        delegate?.createTracker(tracker, category.title)
+        delegate?.createTracker(tracker, category)
         dismiss(animated: true)
     }
 }
