@@ -3,6 +3,7 @@ import UIKit
 final class TrackersViewController: UIViewController {
     //MARK: - privates properties
     private lazy var trackerStore = TrackerStore(delegate: self)
+    
     private var currentDate: Date = Date()
     private var searchText: String = "" {
         didSet {
@@ -91,11 +92,6 @@ private extension TrackersViewController {
     }
     
     //tracker record
-    func isSameTracker(trackerRecord: TrackerRecord, id: UUID) -> Bool {
-        let isSameDate = Calendar.current.isDate(trackerRecord.completedDate, inSameDayAs: datePicker.date)
-        return trackerRecord.trackerId == id && isSameDate
-    }
-    
     func completeTrackerDate(_ id: UUID) {
         let calendar = Calendar.current
         let currentDate = calendar.startOfDay(for: Date())
