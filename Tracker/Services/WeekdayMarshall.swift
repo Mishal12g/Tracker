@@ -8,10 +8,13 @@
 import Foundation
 
 final class WeekDayMarshall {
-    static func encode(weekDays: [Weekday]) -> String {
-        weekDays
-            .map({ "\($0.rawValue)" })
+    static func encode(weekDays: [Weekday]?) -> String? {
+        guard let weekDays = weekDays else { return nil }
+       
+        let str = weekDays.map({ "\($0.rawValue)" })
             .joined(separator: ", ")
+        
+        return str
     }
     
     static func decode(weekDays: String) -> [Weekday] {

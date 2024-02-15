@@ -3,7 +3,6 @@ import UIKit
 final class TrackersViewController: UIViewController {
     //MARK: - privates properties
     private lazy var trackerStore = TrackerStore(delegate: self)
-    private var completedTrackers: [TrackerRecord] = []
     private var currentDate: Date = Date()
     private var searchText: String = "" {
         didSet {
@@ -11,6 +10,7 @@ final class TrackersViewController: UIViewController {
         }
     }
     
+    private let recordStore = TrackerRecordStore()
     private let params = GeometricParams(cellCount: 2, leftInset: 16, rightInset: 16, cellSpacing: 9)
     
     private lazy var searchFiled: UISearchController = {
@@ -91,17 +91,9 @@ private extension TrackersViewController {
     }
     
     //tracker record
-    func isTrackerCompletedToday(id: UUID) -> Bool {
-        let res = completedTrackers.contains(where: { trackerRecord in
-            isSameTracker(trackerRecord: trackerRecord, id: id)
-        })
-        
-        return res
-    }
-    
     func isSameTracker(trackerRecord: TrackerRecord, id: UUID) -> Bool {
-        let isSameDate = Calendar.current.isDate(trackerRecord.date, inSameDayAs: datePicker.date)
-        return trackerRecord.id == id && isSameDate
+        let isSameDate = Calendar.current.isDate(trackerRecord.completedDate, inSameDayAs: datePicker.date)
+        return trackerRecord.trackerId == id && isSameDate
     }
     
     func completeTrackerDate(_ id: UUID) {
@@ -115,8 +107,8 @@ private extension TrackersViewController {
             return
         }
         
-        let trackerRecord = TrackerRecord(id: id, date: currentDate)
-        completedTrackers.append(trackerRecord)
+        let trackerRecord = TrackerRecord(trackerId: id, completedDate: currentDate)
+        recordStore.add(trackerRecord)
         collectionView.reloadData()
     }
     
@@ -192,14 +184,18 @@ extension TrackersViewController: HabitFormViewControllerDelegate {
 //MARK: - TrackerCellDelegate
 extension TrackersViewController: TrackerCellDelegate {
     func completeTracker(id: UUID) {
-        completeTrackerDate(id)
+        if currentDate < Date() {
+            let record = TrackerRecord(trackerId: id, completedDate: currentDate)
+            recordStore.add(record)
+            collectionView.reloadData()
+        }
     }
     
     func uncompleteTracker(id: UUID) {
-        completedTrackers.removeAll(where: { trackerRecord in
-            isSameTracker(trackerRecord: trackerRecord, id: id)
-        })
-        collectionView.reloadData()
+        if let record = recordStore.fetchRecord(by: id, and: currentDate) {
+            recordStore.delete(record)
+            collectionView.reloadData()
+        }
     }
 }
 
@@ -216,10 +212,15 @@ extension TrackersViewController: UICollectionViewDataSource {
             return cell
         }
         
-        let isCompletedTracker = isTrackerCompletedToday(id: tracker.id)
-        let completedDays = completedTrackers.filter { $0.id == tracker.id }.count
-        cell.config(with: tracker, isCompletedToday: isCompletedTracker, completedDays: completedDays)
+        let isCompletedTracker = recordStore.isTrackerCompletedToday(by: tracker.id, and: currentDate)
+        let completedDays = recordStore.completedTrackers(by: tracker.id)
+        
         cell.delegate = self
+        cell.config(
+            with: tracker,
+            isCompletedToday: isCompletedTracker,
+            completedDays: completedDays
+        )
         
         return cell
     }

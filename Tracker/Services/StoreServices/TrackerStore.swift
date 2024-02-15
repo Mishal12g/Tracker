@@ -9,9 +9,7 @@ import UIKit
 import CoreData
 
 final class TrackerStore: NSObject {
-    //    private let dataStore = DataStore.shared
     private var context: NSManagedObjectContext {
-        //        dataStore.managedObjectContext
         (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     }
     
@@ -52,7 +50,7 @@ extension TrackerStore {
     }
     
     var numberOfSections: Int {
-       return fetchedResultsController.sections?.count ?? 0
+        return fetchedResultsController.sections?.count ?? 0
     }
     
     func numberOfRowsInSection(_ section: Int) -> Int {
@@ -89,7 +87,7 @@ extension TrackerStore {
         let trackerCD = TrackerCD(context: context)
         trackerCD.id = tracker.id
         trackerCD.hexColor = ColorMarshall.encode(color: tracker.color)
-        trackerCD.schedule = WeekDayMarshall.encode(weekDays: tracker.schedule!)
+        trackerCD.schedule = WeekDayMarshall.encode(weekDays: tracker.schedule ?? Weekday.allCases)
         trackerCD.emoji = tracker.emoji
         trackerCD.name = tracker.name
         
