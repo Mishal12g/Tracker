@@ -140,7 +140,6 @@
 		8772051E2B4BE87E0075D94F = {
 			isa = PBXGroup;
 			children = (
-				87D488D82B7101EF00489422 /* TrackersModule.xcdatamodeld */,
 				877205292B4BE87E0075D94F /* Tracker */,
 				877205282B4BE87E0075D94F /* Products */,
 			);
@@ -202,6 +201,7 @@
 		8792E8702B62920900C4A4F8 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				87D488D82B7101EF00489422 /* TrackersModule.xcdatamodeld */,
 				87D489112B72615A00489422 /* StoreServices */,
 				874635922B7503DE006DA126 /* ColorMarshall.swift */,
 				874635942B75042F006DA126 /* WeekdayMarshall.swift */,
