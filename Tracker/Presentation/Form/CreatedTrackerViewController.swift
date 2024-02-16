@@ -8,7 +8,8 @@
 import UIKit
 
 protocol CreatedTrackerViewControllerDelegate: AnyObject {
-    func didTapAddButton()
+    func didTapAddTrackerButton()
+    func didTapAddNotRegularEvent()
 }
 
 final class CreatedTrackerViewController: UIViewController {
@@ -26,7 +27,16 @@ final class CreatedTrackerViewController: UIViewController {
     }
     
     //MARK: - privates properties
-    lazy private var buttonOne: UIButton = {
+    private let titleLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Создание трекера"
+        label.textAlignment = .center
+        label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        
+        return label
+    }()
+
+    private lazy var buttonOne: UIButton = {
         let button = ButtonForTextField(type: .system)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         button.setTitle("Привычка", for: .normal)
@@ -35,10 +45,11 @@ final class CreatedTrackerViewController: UIViewController {
         return button
     }()
     
-    private let buttonTwo: UIButton = {
+    private lazy var buttonTwo: UIButton = {
         let button = ButtonForTextField(type: .system)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         button.setTitle("Нерегулярные событие", for: .normal)
+        button.addTarget(self, action: #selector(NotRegularEventTapButton), for: .touchUpInside)
         
         return button
     }()
@@ -60,17 +71,29 @@ private extension CreatedTrackerViewController {
     //MARK: action methods
     @objc func habitDidTapButton() {
         dismiss(animated: true)
-        delegate?.didTapAddButton()
+        delegate?.didTapAddTrackerButton()
+    }
+    
+    @objc func NotRegularEventTapButton() {
+        dismiss(animated: true)
+        delegate?.didTapAddNotRegularEvent()
     }
 }
 
 //MARK: setup constraint
 private extension CreatedTrackerViewController {
     func addConstraints() {
-        view.addSubview(buttonOne)
-        view.addSubview(buttonTwo)
+        [buttonOne,
+         buttonTwo,
+         titleLabel].forEach {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview($0)
+        }
         
         NSLayoutConstraint.activate([
+            titleLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 30),
+            titleLabel.widthAnchor.constraint(equalToConstant: view.bounds.width),
+            
             buttonOne.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             buttonOne.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             buttonOne.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),

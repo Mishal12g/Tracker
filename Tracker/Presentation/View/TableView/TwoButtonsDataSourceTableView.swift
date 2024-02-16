@@ -11,13 +11,14 @@ final class TwoButtonsDataSourceTableView: NSObject, UITableViewDataSource {
     //MARK: - public properties
     var textOne: String?
     var textTwo: String?
+    var countButtons = 2
     
     //MARK: - privates properties
     private let words = ["Категория", "Расписание"]
     
     //MARK: UITableViewDataSurce
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return words.count
+        return countButtons
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -28,9 +29,13 @@ final class TwoButtonsDataSourceTableView: NSObject, UITableViewDataSource {
         
         
         cell.textLabel?.text = words[indexPath.row]
+        cell.textLabel?.font = UIFont.systemFont(ofSize: 17, weight: .regular)
         cell.backgroundColor = .ypWhite
         cell.accessoryType = .disclosureIndicator
         cell.detailTextLabel?.text = indexPath.row == 0 ? textOne : textTwo
+        cell.detailTextLabel?.textColor = .ypGray1
+        cell.detailTextLabel?.font = UIFont.systemFont(ofSize: 17, weight: .regular)
+        
         return cell
     }
 }

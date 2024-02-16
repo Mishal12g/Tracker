@@ -61,7 +61,7 @@ extension HelperColorsCollectionView: UICollectionViewDataSource {
 extension HelperColorsCollectionView: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let cell = collectionView.cellForItem(at: indexPath) as? ColorCell else { return }
-        cell.selectedView.isHidden = false
+        cell.updateSelectedView(false)
         cell.setColor(colors[indexPath.row])
         delegate?.setColor(colors[indexPath.row])
         isEnabledDelegate?.isEnabled()
@@ -69,7 +69,7 @@ extension HelperColorsCollectionView: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
         guard let cell = collectionView.cellForItem(at: indexPath) as? ColorCell else { return }
-        cell.selectedView.isHidden = true
+        cell.updateSelectedView(true)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {

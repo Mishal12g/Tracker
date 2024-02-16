@@ -21,7 +21,6 @@ final class ScheduleViewController: UIViewController {
     
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Расписание"
         label.textAlignment = .center
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
@@ -29,9 +28,8 @@ final class ScheduleViewController: UIViewController {
         return label
     }()
     
-    lazy private var tableView: UITableView = {
+    private lazy var tableView: UITableView = {
         let table = UITableView()
-        table.translatesAutoresizingMaskIntoConstraints = false
         table.delegate = self
         table.dataSource = self
         table.register(ScheduleCell.self, forCellReuseIdentifier: ScheduleCell.identity)
@@ -42,7 +40,7 @@ final class ScheduleViewController: UIViewController {
         return table
     }()
     
-    lazy private var doneButton: Button = {
+    private lazy var doneButton: Button = {
         let button = Button(type: .system)
         button.setStyle(color: .black, tintColor: .white, title: "Готово")
         button.addTarget(self, action: #selector(didTapDoneButton), for: .touchUpInside)
@@ -88,6 +86,7 @@ extension ScheduleViewController: UITableViewDataSource {
         cell.delegate = self
         cell.tag = indexPath.row
         cell.textLabel?.text = Weekday.allCases[indexPath.row].title
+        cell.textLabel?.font = UIFont.systemFont(ofSize: 17, weight: .regular)
         cell.backgroundColor = .ypWhite
         
         return cell
@@ -121,9 +120,12 @@ extension ScheduleViewController: UITableViewDelegate {
 //MARK: - setup contstraint
 private extension ScheduleViewController {
     func setConstraint() {
-        view.addSubview(tableView)
-        view.addSubview(doneButton)
-        view.addSubview(titleLabel)
+        [tableView, 
+         titleLabel,
+         doneButton].forEach {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview($0)
+        }
         
         NSLayoutConstraint.activate([
             titleLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 30),

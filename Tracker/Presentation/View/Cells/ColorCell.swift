@@ -12,7 +12,7 @@ final class ColorCell: UICollectionViewCell {
     static let identity = "ColorCell"
     
     //MARK: - public properties
-    let selectedView: UIView = {
+    private let selectedView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = UIColor.red.withAlphaComponent(0)
@@ -44,5 +44,9 @@ final class ColorCell: UICollectionViewCell {
     //MARK: - public methods
     func setColor(_ color: UIColor) {
         selectedView.layer.borderColor = color.withAlphaComponent(0.5).cgColor
+    }
+    
+    func updateSelectedView(_ isSelected: Bool) {
+        selectedView.isHidden = isSelected
     }
 }

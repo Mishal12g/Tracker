@@ -11,8 +11,8 @@ final class CategoryCell: UITableViewCell {
     //MARK: - static properties
     static let identity = "CategoryCell"
     
-    //MARK: - public methods
-    let doneImage: UIImageView = {
+    //MARK: - public properties
+    private let doneImage: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(named: "done")
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -36,5 +36,10 @@ final class CategoryCell: UITableViewCell {
     }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    //MARK: - public methods
+    func hideButton(_ isHidden: Bool) {
+        doneImage.isHidden = isHidden
     }
 }

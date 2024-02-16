@@ -6,17 +6,19 @@ final class TrackersViewController: UIViewController {
     private var filteredCategories: [TrackerCategory] = []
     private var completedTrackers: [TrackerRecord] = []
     private var categoriesListObserver: NSObjectProtocol?
+    private var currentData: Date = Date()
     
     private let params = GeometricParams(cellCount: 2, leftInset: 16, rightInset: 16, cellSpacing: 9)
     
-    lazy private var searchFiled: UISearchController = {
+    private lazy var searchFiled: UISearchController = {
         let search = UISearchController()
         search.searchResultsUpdater = self
+        search.searchBar.placeholder = "Поиск"
         
         return search
     }()
     
-    lazy private var datePicker: UIDatePicker = {
+    private lazy var datePicker: UIDatePicker = {
         let picker = UIDatePicker()
         picker.datePickerMode = .date
         picker.preferredDatePickerStyle = .compact
@@ -27,10 +29,9 @@ final class TrackersViewController: UIViewController {
         return picker
     }()
     
-    lazy private var collectionView: UICollectionView = {
+    private lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         let collection = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collection.translatesAutoresizingMaskIntoConstraints = false
         collection.dataSource = self
         collection.delegate = self
         collection.register(TrackerCell.self, forCellWithReuseIdentifier: TrackerCell.identity)
@@ -52,15 +53,13 @@ final class TrackersViewController: UIViewController {
     private let emptyImageView: UIImageView = {
         let image = UIImage(named: "il_error_1")
         let imageView = UIImageView(image: image)
-        imageView.translatesAutoresizingMaskIntoConstraints = false
         
         return imageView
     }()
     
     private let emptyLabel: UILabel = {
         let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont.systemFont(ofSize: 12)
+        label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
         label.textAlignment = .center
         label.text = "Что будем отслеживать?"
         
@@ -90,7 +89,8 @@ private extension TrackersViewController {
         
         filteredCategories = categories.compactMap { category in
             let trackers = category.trackers.filter { tracker in
-                tracker.schedule.contains { weeakDay in
+                guard let schedule = tracker.schedule else { return true }
+                return schedule.contains { weeakDay in
                     weeakDay.rawValue == dayOfWeek}}
             
             if trackers.isEmpty {
@@ -148,15 +148,15 @@ private extension TrackersViewController {
     func completeTrackerDate(_ id: UUID) {
         let calendar = Calendar.current
         let currentDate = calendar.startOfDay(for: Date())
-        let selectedDate = calendar.startOfDay(for: datePicker.date)
-
+        let selectedDate = calendar.startOfDay(for: currentDate)
+        
         let components = calendar.dateComponents([.day], from: currentDate, to: selectedDate)
-
+        
         if let days = components.day, days > 0 {
             return
         }
-
-        let trackerRecord = TrackerRecord(id: id, date: datePicker.date)
+        
+        let trackerRecord = TrackerRecord(id: id, date: currentDate)
         completedTrackers.append(trackerRecord)
         collectionView.reloadData()
     }
@@ -209,25 +209,34 @@ private extension TrackersViewController {
     
     //MARK: action methods
     @objc func datePickerValueChanged(_ sender: UIDatePicker) {
+        currentData = sender.date
         filterCategoriesByDate()
     }
     
     @objc func addTrackerDidTap() {
         let trackerSelectionVC = CreatedTrackerViewController(delegate: self)
-        trackerSelectionVC.title = "Создание трекера"
-        let vc = UINavigationController(rootViewController: trackerSelectionVC)
         
-        self.present(vc, animated: true)
+        self.present(trackerSelectionVC, animated: true)
     }
 }
 
 //MARK: - CreatedTrackerViewControllerDelegate
 extension TrackersViewController: CreatedTrackerViewControllerDelegate {
-    func didTapAddButton() {
+    func didTapAddTrackerButton() {
         let vc = HabitFormViewController()
         vc.delegate = self
         vc.title = "Новая привычка"
         
+        dismiss(animated: true)
+        present(vc, animated: true)
+    }
+    
+    func didTapAddNotRegularEvent() {
+        let vc = NotRegularEventFormViewController()
+        vc.delegate = self
+        vc.title = "Новое нерегулярное событие"
+        
+        dismiss(animated: true)
         present(vc, animated: true)
     }
 }
@@ -335,9 +344,12 @@ extension TrackersViewController: UISearchResultsUpdating {
 //MARK: setup constraint
 private extension TrackersViewController {
     func addSubViews() {
-        view.addSubview(collectionView)
-        view.addSubview(emptyImageView)
-        view.addSubview(emptyLabel)
+        [collectionView,
+         emptyImageView,
+         emptyLabel].forEach {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview($0)
+        }
     }
     
     func addConstraint() {

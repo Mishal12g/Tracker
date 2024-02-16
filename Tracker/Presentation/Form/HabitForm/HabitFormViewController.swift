@@ -20,7 +20,7 @@ final class HabitFormViewController: UIViewController {
     
     private let dataSource = TwoButtonsDataSourceTableView()
     
-    private let label: UILabel = {
+    private let titleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Новая привычка"
@@ -38,7 +38,7 @@ final class HabitFormViewController: UIViewController {
         return scrollView
     }()
     
-    lazy private var textField: TextField = {
+    private lazy var textField: TextField = {
         let textField = TextField(placeholder: "Введите название трекера")
         textField.delegate = self
         textField.becomeFirstResponder()
@@ -46,7 +46,7 @@ final class HabitFormViewController: UIViewController {
         return textField
     }()
     
-    lazy private var twoButtonsVertical: UITableView = {
+    private lazy var twoButtonsVertical: UITableView = {
         let table = TableView(dataSource: dataSource)
         table.delegate = self
         table.register(UITableViewCell.self, forCellReuseIdentifier: "TwoButtonsCell")
@@ -54,7 +54,7 @@ final class HabitFormViewController: UIViewController {
         return table
     }()
     
-    lazy private var emojiCollection: EmojiCollectionView = {
+    private lazy var emojiCollection: EmojiCollectionView = {
         let collection = EmojiCollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
         collection.delegateAndDataSource.delegate = self
         collection.delegateAndDataSource.isEnabledDelegate = self
@@ -62,7 +62,7 @@ final class HabitFormViewController: UIViewController {
         return collection
     }()
     
-    lazy private var colorsCollection: ColorsCollectionView = {
+    private lazy var colorsCollection: ColorsCollectionView = {
         let collection = ColorsCollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
         collection.delegateAndDataSource.delegate = self
         collection.delegateAndDataSource.isEnabledDelegate = self
@@ -70,7 +70,7 @@ final class HabitFormViewController: UIViewController {
         return collection
     }()
     
-    lazy private var cancelButton: Button = {
+    private lazy var cancelButton: Button = {
         let button = Button(type: .system)
         button.setStyle(borderColor: .ypRed, tintColor: .ypRed, borderWidth: 1, title: "Отменить")
         button.addTarget(self, action: #selector(didTapCancelButton), for: .touchUpInside)
@@ -78,7 +78,7 @@ final class HabitFormViewController: UIViewController {
         return button
     }()
     
-    lazy private var doneButton: UIButton = {
+    private lazy var doneButton: UIButton = {
         let button = Button(type: .system)
         button.setStyle(color: .ypGray1, tintColor: .white, title: "Создать")
         button.isEnabled = false
@@ -89,7 +89,6 @@ final class HabitFormViewController: UIViewController {
     
     private let stackH: UIStackView = {
         let stack = UIStackView()
-        stack.translatesAutoresizingMaskIntoConstraints = false
         stack.axis = .horizontal
         stack.distribution = .fillEqually
         stack.spacing = 5
@@ -238,22 +237,31 @@ extension HabitFormViewController: UITextFieldDelegate {
 private extension HabitFormViewController {
     func setupContraints() {
         //addSubviews
-        view.addSubview(scrollView)
-        view.addSubview(label)
-        scrollView.addSubview(textField)
-        scrollView.addSubview(twoButtonsVertical)
-        scrollView.addSubview(emojiCollection)
-        scrollView.addSubview(colorsCollection)
-        scrollView.addSubview(stackH)
-        stackH.addArrangedSubview(cancelButton)
-        stackH.addArrangedSubview(doneButton)
+        [scrollView, titleLabel].forEach {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview($0)
+        }
+        
+        [textField,
+         twoButtonsVertical,
+         emojiCollection,
+         colorsCollection,
+         stackH].forEach {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            scrollView.addSubview($0)
+        }
+        
+        [cancelButton, doneButton].forEach {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            stackH.addArrangedSubview($0)
+        }
         
         //constraints
         NSLayoutConstraint.activate([
-            label.topAnchor.constraint(equalTo: view.topAnchor, constant: 30),
-            label.widthAnchor.constraint(equalToConstant: view.bounds.width),
+            titleLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 30),
+            titleLabel.widthAnchor.constraint(equalToConstant: view.bounds.width),
             
-            scrollView.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 38),
+            scrollView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 38),
             scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             scrollView.widthAnchor.constraint(equalTo: view.widthAnchor),
             

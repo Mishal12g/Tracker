@@ -4,14 +4,12 @@ final class StatisticViewController: UIViewController {
     let emptyImageView: UIImageView = {
         guard let image = UIImage(named: "il_error_2") else { return UIImageView() }
         let imageView = UIImageView(image: image)
-        imageView.translatesAutoresizingMaskIntoConstraints = false
         
         return imageView
     }()
     
     let emptyLabel: UILabel = {
         let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Анализировать пока нечего"
         label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
         label.textAlignment = .center
@@ -30,9 +28,11 @@ final class StatisticViewController: UIViewController {
 //MARK: - set constraints
 private extension StatisticViewController {
     func setConstraints() {
-        view.addSubview(emptyImageView)
-        view.addSubview(emptyLabel)
-        
+        [emptyImageView,
+         emptyLabel].forEach {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview($0)
+        }
         NSLayoutConstraint.activate([
             emptyImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             emptyImageView.centerYAnchor.constraint(equalTo: view.centerYAnchor),

@@ -23,6 +23,7 @@ final class Button: UIButton {
     ) {
         translatesAutoresizingMaskIntoConstraints = false
         
+        titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         backgroundColor = color
         layer.borderWidth = borderWidth
         layer.cornerRadius = radius

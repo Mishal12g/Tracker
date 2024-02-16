@@ -24,13 +24,16 @@ final class CategoriesStorageService {
     }
     
     func addTracker(_ categoryName: String, _ tracker: Tracker) {
-        if let i = categories.firstIndex(where: {
-            $0.title == categoryName
-        }) {
-            categories[i].trackers.append(tracker)
-            NotificationCenter.default.post(name: CategoriesStorageService.didChangeNotification,
-                                            object: self,
-                                            userInfo: ["Categories" : categories.self])
+        categories = categories.map { category in
+            var array = category.trackers
+            array.append(tracker)
+            
+            return TrackerCategory(title: category.title,
+                                   trackers: array)
         }
+        
+        NotificationCenter.default.post(name: CategoriesStorageService.didChangeNotification,
+                                        object: self,
+                                        userInfo: ["Categories" : categories.self])
     }
 }

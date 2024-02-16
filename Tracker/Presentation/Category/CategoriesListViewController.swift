@@ -20,9 +20,8 @@ final class CategoriesListViewController: UIViewController {
     private var categories = CategoriesStorageService.shared.categories
     private var categoriesListObserver: NSObjectProtocol?
     
-    lazy private var tableView: UITableView = {
+    private lazy var tableView: UITableView = {
         let table = UITableView()
-        table.translatesAutoresizingMaskIntoConstraints = false
         table.delegate = self
         table.dataSource = self
         table.register(CategoryCell.self, forCellReuseIdentifier: CategoryCell.identity)
@@ -34,7 +33,6 @@ final class CategoriesListViewController: UIViewController {
     
     private let titleLable: UILabel = {
         let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Категория"
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         label.textAlignment = .center
@@ -45,14 +43,12 @@ final class CategoriesListViewController: UIViewController {
     private let emptyImageView: UIImageView = {
         guard let image = UIImage(named: "il_error_1") else { return UIImageView()}
         let imageView = UIImageView(image: image)
-        imageView.translatesAutoresizingMaskIntoConstraints = false
         
         return imageView
     }()
     
     private let emptyLabel: UILabel = {
         let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Привычки и события можно объединить по смыслу"
         label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
         label.textAlignment = .center
@@ -61,7 +57,7 @@ final class CategoriesListViewController: UIViewController {
         return label
     }()
     
-    lazy private var button: Button = {
+    private lazy var button: Button = {
         let button = Button(type: .system)
         button.setStyle(color: .black, tintColor: .white, title: "Добавить категорию")
         button.addTarget(self, action: #selector(didTapCreateNewCategory), for: .touchUpInside)
@@ -104,13 +100,8 @@ private extension CategoriesListViewController {
     }
     
     func hideEmptyError() {
-        if categories.isEmpty {
-            emptyLabel.isHidden = false
-            emptyImageView.isHidden = false
-        } else {
-            emptyLabel.isHidden = true
-            emptyImageView.isHidden = true
-        }
+        emptyLabel.isHidden = !categories.isEmpty
+        emptyImageView.isHidden = !categories.isEmpty
     }
 }
 
@@ -150,14 +141,14 @@ extension CategoriesListViewController: UITableViewDataSource {
 extension CategoriesListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let cell = tableView.cellForRow(at: indexPath) as? CategoryCell else { return }
-        cell.doneImage.isHidden = false
+        cell.hideButton(false)
         delegate?.selectedCategory(categories[indexPath.item])
         isEnabledDelegate?.isEnabled()
     }
     
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
         guard let cell = tableView.cellForRow(at: indexPath) as? CategoryCell else { return }
-        cell.doneImage.isHidden = true
+        cell.hideButton(true)
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
@@ -172,11 +163,14 @@ extension CategoriesListViewController: UITableViewDelegate {
 //MARK: - setup constraints
 private extension CategoriesListViewController {
     func setupConstraints() {
-        view.addSubview(titleLable)
-        view.addSubview(tableView)
-        view.addSubview(emptyImageView)
-        view.addSubview(emptyLabel)
-        view.addSubview(button)
+        [titleLable,
+         tableView,
+         emptyImageView,
+         emptyLabel,
+         button].forEach {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview($0)
+        }
         
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: titleLable.bottomAnchor, constant: 38),

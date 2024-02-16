@@ -23,7 +23,7 @@ final class TrackerCell: UICollectionViewCell {
     //MARK: - public properties
     weak var delegate: TrackerCellDelegate?
     
-    let view: UIView = {
+    private let view: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = .ypGreen
@@ -31,7 +31,7 @@ final class TrackerCell: UICollectionViewCell {
         return view
     }()
     
-    let emojiView: UIView = {
+    private let emojiView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.layer.cornerRadius = 24 / 2
@@ -41,7 +41,7 @@ final class TrackerCell: UICollectionViewCell {
         return view
     }()
     
-    let emojiLabel: UILabel = {
+    private let emojiLabel: UILabel = {
         let label = UILabel(frame: CGRect(x: 0, y: 0, width: 24, height: 24))
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.systemFont(ofSize: 14)
@@ -49,7 +49,7 @@ final class TrackerCell: UICollectionViewCell {
         return label
     }()
     
-    let trackerNameLabel: UILabel = {
+    private let trackerNameLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 2
@@ -59,7 +59,7 @@ final class TrackerCell: UICollectionViewCell {
         return label
     }()
     
-    lazy var countDaysLabel: UILabel = {
+    private lazy var countDaysLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "0 д."
@@ -69,7 +69,7 @@ final class TrackerCell: UICollectionViewCell {
         return label
     }()
     
-    lazy var addButton: UIButton = {
+    private lazy var addButton: UIButton = {
         let image = UIImage(named: "add_icon")
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
