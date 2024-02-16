@@ -20,7 +20,6 @@ final class CategoriesListViewController: UIViewController {
     private lazy var categoryStore = TrackerCategoryStore(delegate: self)
     private lazy var categories: [TrackerCategory] = {
         let categoroies = categoryStore.objects()
-        
         return categoroies
     }()
     
