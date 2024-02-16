@@ -2,9 +2,7 @@ import UIKit
 
 final class TrackersViewController: UIViewController {
     //MARK: - privates properties
-    private var trackerStore: TrackerStore {
-        TrackerStore(delegate: self)
-    }
+    private lazy var trackerStore = TrackerStore(delegate: self)
     
     private var currentDate: Date {
         let calendar = Calendar.current
