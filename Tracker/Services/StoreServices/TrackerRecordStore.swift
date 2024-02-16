@@ -10,7 +10,10 @@ import CoreData
 
 final class TrackerRecordStore {
     private var context: NSManagedObjectContext {
-        (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+            fatalError("Не удалось получить AppDelegate")
+        }
+        return appDelegate.persistentContainer.viewContext
     }
     
     //convert
@@ -26,6 +29,14 @@ final class TrackerRecordStore {
 }
 
 extension TrackerRecordStore {
+//    func printob() {
+//        let r = RecordCD.fetchRequest()
+//        guard let res = try? context.fetch(r) else { return }
+//        let resConvert = res.map {
+//            convert(recordCD: $0)
+//        }
+//        print(resConvert)
+//    }
     func isTrackerCompletedToday(by trackerId: UUID, and currentDate: Date) -> Bool {
         fetchRecord(by: trackerId, and: currentDate) != nil
     }
@@ -49,7 +60,7 @@ extension TrackerRecordStore {
         ])
         
         guard let recordCD = try? context.fetch(fetchRequest).first else { return nil }
-        
+       
         return convert(recordCD: recordCD)
     }
     

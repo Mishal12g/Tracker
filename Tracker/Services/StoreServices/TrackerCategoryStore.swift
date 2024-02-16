@@ -13,7 +13,10 @@ final class TrackerCategoryStore: NSObject {
     private weak var delegate: StoreDelegate?
     
     private var context: NSManagedObjectContext {
-        (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+            fatalError("Не удалось получить AppDelegate")
+        }
+        return appDelegate.persistentContainer.viewContext
     }
     
     private lazy var fetchResultsController: NSFetchedResultsController<CategoryCD> = {

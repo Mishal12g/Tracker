@@ -2,9 +2,19 @@ import UIKit
 
 final class TrackersViewController: UIViewController {
     //MARK: - privates properties
-    private lazy var trackerStore = TrackerStore(delegate: self)
+    private var trackerStore: TrackerStore {
+        TrackerStore(delegate: self)
+    }
     
-    private var currentDate: Date = Date()
+    private var currentDate: Date {
+        let calendar = Calendar.current
+        let dateComponents = calendar.dateComponents([.year, .month, .day], from:  datePicker.date)
+        
+        guard let date = calendar.date(from: dateComponents) else { return Date()}
+        
+        return date
+    }
+    
     private var searchText: String = "" {
         didSet {
             applyFilter()
@@ -91,23 +101,6 @@ private extension TrackersViewController {
         trackerStore.filter(by: currentDate, and: searchText)
     }
     
-    //tracker record
-    func completeTrackerDate(_ id: UUID) {
-        let calendar = Calendar.current
-        let currentDate = calendar.startOfDay(for: Date())
-        let selectedDate = calendar.startOfDay(for: currentDate)
-        
-        let components = calendar.dateComponents([.day], from: currentDate, to: selectedDate)
-        
-        if let days = components.day, days > 0 {
-            return
-        }
-        
-        let trackerRecord = TrackerRecord(trackerId: id, completedDate: currentDate)
-        recordStore.add(trackerRecord)
-        collectionView.reloadData()
-    }
-    
     //views setup
     func hideErrorViews() {
         emptyLabel.isHidden = trackerStore.numberOfSections != 0
@@ -126,7 +119,6 @@ private extension TrackersViewController {
     
     //MARK: action methods
     @objc func datePickerValueChanged(_ sender: UIDatePicker) {
-        currentDate = sender.date
         applyFilter()
     }
     
@@ -180,6 +172,7 @@ extension TrackersViewController: HabitFormViewControllerDelegate {
 //MARK: - TrackerCellDelegate
 extension TrackersViewController: TrackerCellDelegate {
     func completeTracker(id: UUID) {
+        
         if currentDate < Date() {
             let record = TrackerRecord(trackerId: id, completedDate: currentDate)
             recordStore.add(record)
