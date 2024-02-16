@@ -57,7 +57,7 @@ extension HelperEmojiCollectionView: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let cell = collectionView.cellForItem(at: indexPath) as? EmojiCell else { return }
         cell.layer.cornerRadius = 16
-        cell.backgroundColor = .ypWhite
+        cell.backgroundColor = .ypGray
         delegate?.setEmoji(emoji[indexPath.item])
         isEnabledDelegate?.isEnabled()
     }

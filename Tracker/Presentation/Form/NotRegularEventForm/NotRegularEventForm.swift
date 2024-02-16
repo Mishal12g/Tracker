@@ -134,7 +134,7 @@ private extension NotRegularEventFormViewController {
               !text.isEmpty
         else { return }
         let tracker = Tracker(id: UUID(), name: text, color: color, emoji: emoji, schedule: nil)
-        delegate?.createTracker(tracker, category.title)
+        delegate?.createTracker(tracker, category)
         dismiss(animated: true)
     }
 }
