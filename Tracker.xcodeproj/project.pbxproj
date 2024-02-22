@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8719D5B92B87476000A0F0D6 /* OnboardingStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8719D5B82B87476000A0F0D6 /* OnboardingStore.swift */; };
 		872CAB252B4E866500AE1F8A /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 872CAB242B4E866500AE1F8A /* TabBarController.swift */; };
 		872CAB282B4E88F700AE1F8A /* TrackersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 872CAB272B4E88F700AE1F8A /* TrackersViewController.swift */; };
 		872CAB2A2B4E890F00AE1F8A /* StatisticViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 872CAB292B4E890F00AE1F8A /* StatisticViewController.swift */; };
@@ -54,6 +55,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		8719D5B82B87476000A0F0D6 /* OnboardingStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingStore.swift; sourceTree = "<group>"; };
 		872CAB242B4E866500AE1F8A /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		872CAB272B4E88F700AE1F8A /* TrackersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackersViewController.swift; sourceTree = "<group>"; };
 		872CAB292B4E890F00AE1F8A /* StatisticViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticViewController.swift; sourceTree = "<group>"; };
@@ -212,6 +214,7 @@
 				87D489112B72615A00489422 /* StoreServices */,
 				874635922B7503DE006DA126 /* ColorMarshall.swift */,
 				874635942B75042F006DA126 /* WeekdayMarshall.swift */,
+				8719D5B82B87476000A0F0D6 /* OnboardingStore.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -393,6 +396,7 @@
 				87988B102B5E84D600342625 /* HabitFormViewController.swift in Sources */,
 				87988B282B5FB14C00342625 /* EmojiCell.swift in Sources */,
 				8738D8EF2B57F02E00D6975E /* TrackerCell.swift in Sources */,
+				8719D5B92B87476000A0F0D6 /* OnboardingStore.swift in Sources */,
 				87A674D72B860E800095C2D5 /* OnboardingTwoViewController.swift in Sources */,
 				8772052F2B4BE87E0075D94F /* ViewController.swift in Sources */,
 				8783CC322B61043300184F73 /* ColorsCollectionView.swift in Sources */,

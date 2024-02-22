@@ -53,12 +53,21 @@ private extension OnboardingPageController {
             tintColor: .white,
             title: "Вот это технологии!"
         )
+        doneButton.addTarget(self, action: #selector(onTapDoneButton), for: .touchDown)
         
         //pageControl
         pageControl.numberOfPages = pages.count
         pageControl.currentPage = 0
         pageControl.currentPageIndicatorTintColor = .black
         pageControl.pageIndicatorTintColor = .gray.withAlphaComponent(0.5)
+    }
+    
+    @objc func onTapDoneButton() {
+        guard let window = UIApplication.shared.windows.first else { return }
+        let vc = TabBarController()
+        OnboardingStore.shared.isAuth = true
+        
+        window.rootViewController = vc
     }
 }
 
