@@ -159,8 +159,8 @@ extension HabitFormViewController: HabitFormViewControllerProtocol {
 extension HabitFormViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.item == 0 {
-            let vc = CategoriesListViewController()
-            vc.delegate = self
+            let viewModel = CategoryViewModel(delegate: self)
+            let vc = CategoriesListViewController(viewModel: viewModel)
             vc.isEnabledDelegate = self
             present(vc, animated: true)
         } else if indexPath.item == 1 {

@@ -13,11 +13,10 @@ protocol CategoriesListViewControllerDelegate: AnyObject {
 
 final class CategoriesListViewController: UIViewController {
     //MARK: - public properties
-    weak var delegate: CategoriesListViewControllerDelegate?
     weak var isEnabledDelegate: HabitFormViewControllerProtocol?
     
     //MARK: - privates properties
-    private let viewModel = CategoryViewModel()
+    private let viewModel: CategoryViewModel
     
     //MARK: UI
     private let tableView = UITableView()
@@ -30,6 +29,15 @@ final class CategoriesListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         commonSetup()
+    }
+    
+    init(viewModel: CategoryViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }
 
@@ -132,7 +140,7 @@ extension CategoriesListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let cell = tableView.cellForRow(at: indexPath) as? CategoryCell else { return }
         cell.hideButton(false)
-        delegate?.selectedCategory(viewModel.categories[indexPath.item])
+        viewModel.didSelected(at: indexPath)
         isEnabledDelegate?.isEnabled()
     }
     

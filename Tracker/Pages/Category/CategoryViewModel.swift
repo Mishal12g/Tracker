@@ -10,7 +10,10 @@ import Foundation
 typealias Binding<T> = (T) -> Void
 
 final class CategoryViewModel {
-    //MARK: privates properties
+    //MARK: - piblic properties
+    weak var delegate: CategoriesListViewControllerDelegate?
+    
+    //MARK: - privates properties
     private lazy var categoryStore = TrackerCategoryStore(delegate: self)
     private(set) var categories: [TrackerCategory] = [] {
         didSet {
@@ -20,12 +23,17 @@ final class CategoryViewModel {
     
     var categoriesBinding: Binding<[TrackerCategory]>?
     
-    init() {
+    init(delegate: CategoriesListViewControllerDelegate) {
+        self.delegate = delegate
         categories = getAllCategoriesFromStore()
     }
     
     private func getAllCategoriesFromStore() -> [TrackerCategory] {
         categoryStore.objects()
+    }
+    
+    func didSelected(at indexPath: IndexPath) {
+        delegate?.selectedCategory(categories[indexPath.item])
     }
 }
 

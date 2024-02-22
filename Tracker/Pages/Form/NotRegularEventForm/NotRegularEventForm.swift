@@ -161,10 +161,10 @@ extension NotRegularEventFormViewController: HabitFormViewControllerProtocol {
 //MARK: - TableView Delegate
 extension NotRegularEventFormViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-            let vc = CategoriesListViewController()
-            vc.delegate = self
-            vc.isEnabledDelegate = self
-            present(vc, animated: true)
+        let viewModel = CategoryViewModel(delegate: self)
+        let vc = CategoriesListViewController(viewModel: viewModel)
+        vc.isEnabledDelegate = self
+        present(vc, animated: true)
         
         tableView.deselectRow(at: indexPath, animated: true)
     }
