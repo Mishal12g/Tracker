@@ -12,61 +12,19 @@ protocol CategoriesListViewControllerDelegate: AnyObject {
 }
 
 final class CategoriesListViewController: UIViewController {
-    //MARK: public properties
+    //MARK: - public properties
     weak var delegate: CategoriesListViewControllerDelegate?
     weak var isEnabledDelegate: HabitFormViewControllerProtocol?
     
-    //MARK: privates properties
-    private lazy var categoryStore = TrackerCategoryStore(delegate: self)
-    private lazy var categories: [TrackerCategory] = {
-        let categoroies = categoryStore.objects()
-        return categoroies
-    }()
+    //MARK: - privates properties
+    private let viewModel = CategoryViewModel()
     
-    private lazy var tableView: UITableView = {
-        let table = UITableView()
-        table.delegate = self
-        table.dataSource = self
-        table.register(CategoryCell.self, forCellReuseIdentifier: CategoryCell.identity)
-        table.rowHeight = 75
-        table.layer.cornerRadius = 16
-        
-        return table
-    }()
-    
-    private let titleLable: UILabel = {
-        let label = UILabel()
-        label.text = "Категория"
-        label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        label.textAlignment = .center
-        
-        return label
-    }()
-    
-    private let emptyImageView: UIImageView = {
-        guard let image = UIImage(named: "il_error_1") else { return UIImageView()}
-        let imageView = UIImageView(image: image)
-        
-        return imageView
-    }()
-    
-    private let emptyLabel: UILabel = {
-        let label = UILabel()
-        label.text = "Привычки и события можно объединить по смыслу"
-        label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
-        label.textAlignment = .center
-        label.numberOfLines = 2
-        
-        return label
-    }()
-    
-    private lazy var button: Button = {
-        let button = Button(type: .system)
-        button.setStyle(color: .black, tintColor: .white, title: "Добавить категорию")
-        button.addTarget(self, action: #selector(didTapCreateNewCategory), for: .touchUpInside)
-        
-        return button
-    }()
+    //MARK: UI
+    private let tableView = UITableView()
+    private let titleLabel = UILabel()
+    private let emptyImageView = UIImageView()
+    private let emptyLabel = UILabel()
+    private let button = Button(type: .system)
     
     //MARK: - overrides methods
     override func viewDidLoad() {
@@ -87,11 +45,52 @@ private extension CategoriesListViewController {
         view.backgroundColor = .white
         setupConstraints()
         hideEmptyError()
+        
+        viewModel.categoriesBinding = { _ in
+            self.tableView.reloadData()
+            self.hideEmptyError()
+        }
     }
     
     func hideEmptyError() {
-        emptyLabel.isHidden = !categories.isEmpty
-        emptyImageView.isHidden = !categories.isEmpty
+        emptyLabel.isHidden = !viewModel.categories.isEmpty
+        emptyImageView.isHidden = !viewModel.categories.isEmpty
+    }
+    
+    func setUI() {
+        //tableView
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.register(CategoryCell.self, forCellReuseIdentifier: CategoryCell.identity)
+        tableView.rowHeight = 75
+        tableView.layer.cornerRadius = 16
+        
+        //titleLabel
+        titleLabel.text = "Категория"
+        titleLabel.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        titleLabel.textAlignment = .center
+        
+        //emptyImageView
+        guard let image = UIImage(named: "il_error_1") else { return }
+        emptyImageView.image = image
+        
+        //emptyLabel
+        emptyLabel.text = "Привычки и события можно объединить по смыслу"
+        emptyLabel.font = UIFont.systemFont(ofSize: 12, weight: .medium)
+        emptyLabel.textAlignment = .center
+        emptyLabel.numberOfLines = 2
+        
+        //button
+        button.setStyle(
+            color: .black,
+            tintColor: .white,
+            title: "Добавить категорию"
+        )
+        button.addTarget(
+            self,
+            action: #selector(didTapCreateNewCategory),
+            for: .touchUpInside
+        )
     }
 }
 
@@ -99,19 +98,19 @@ private extension CategoriesListViewController {
 extension CategoriesListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        return categories.count
+        return viewModel.categories.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: CategoryCell.identity, for: indexPath) as? CategoryCell else { return UITableViewCell()}
         
-        cell.textLabel?.text = categories[indexPath.row].title
+        cell.textLabel?.text = viewModel.categories[indexPath.row].title
         cell.backgroundColor = .ypWhite
         
         let isTopCell = indexPath.row == 0
         let isBottomCell = indexPath.row == tableView.numberOfRows(inSection: indexPath.section) - 1
         
-        if isTopCell, categories.count == 1 {
+        if isTopCell, viewModel.categories.count == 1 {
             cell.layer.cornerRadius = 16
         } else if isTopCell {
             cell.layer.cornerRadius = 16
@@ -132,7 +131,7 @@ extension CategoriesListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let cell = tableView.cellForRow(at: indexPath) as? CategoryCell else { return }
         cell.hideButton(false)
-        delegate?.selectedCategory(categories[indexPath.item])
+        delegate?.selectedCategory(viewModel.categories[indexPath.item])
         isEnabledDelegate?.isEnabled()
     }
     
@@ -143,25 +142,27 @@ extension CategoriesListViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if indexPath.row == tableView.numberOfRows(inSection: indexPath.section) - 1 {
-            cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: tableView.bounds.width)
+            cell.separatorInset = UIEdgeInsets(
+                top: 0,
+                left: 0,
+                bottom: 0,
+                right: tableView.bounds.width
+            )
         } else {
-            cell.separatorInset = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 15)
+            cell.separatorInset = UIEdgeInsets(
+                top: 0,
+                left: 15,
+                bottom: 0,
+                right: 15
+            )
         }
-    }
-}
-
-extension CategoriesListViewController: StoreDelegate {
-    func didUpdate() {
-        self.categories = categoryStore.objects()
-        hideEmptyError()
-        tableView.reloadData()
     }
 }
 
 //MARK: - setup constraints
 private extension CategoriesListViewController {
     func setupConstraints() {
-        [titleLable,
+        [titleLabel,
          tableView,
          emptyImageView,
          emptyLabel,
@@ -171,13 +172,13 @@ private extension CategoriesListViewController {
         }
         
         NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: titleLable.bottomAnchor, constant: 38),
+            tableView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 38),
             tableView.bottomAnchor.constraint(equalTo: button.topAnchor, constant: -38),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             
-            titleLable.topAnchor.constraint(equalTo: view.topAnchor, constant: 30),
-            titleLable.widthAnchor.constraint(equalToConstant: view.bounds.width),
+            titleLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 30),
+            titleLabel.widthAnchor.constraint(equalToConstant: view.bounds.width),
             
             emptyImageView.heightAnchor.constraint(equalToConstant: 80),
             emptyImageView.widthAnchor.constraint(equalToConstant: 80),
