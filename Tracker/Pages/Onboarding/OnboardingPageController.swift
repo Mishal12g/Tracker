@@ -60,6 +60,7 @@ private extension OnboardingPageController {
         pageControl.currentPage = 0
         pageControl.currentPageIndicatorTintColor = .black
         pageControl.pageIndicatorTintColor = .gray.withAlphaComponent(0.5)
+        pageControl.isUserInteractionEnabled = false
     }
     
     @objc func onTapDoneButton() {

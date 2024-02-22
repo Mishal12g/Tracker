@@ -43,6 +43,7 @@ private extension CategoriesListViewController {
     
     func commonSetup() {
         view.backgroundColor = .white
+        setUI()
         setupConstraints()
         hideEmptyError()
         
