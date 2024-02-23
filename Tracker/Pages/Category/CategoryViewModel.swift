@@ -9,10 +9,14 @@ import Foundation
 
 typealias Binding<T> = (T) -> Void
 
-final class CategoryViewModel {
-    //MARK: - piblic properties
-    weak var delegate: CategoriesListViewControllerDelegate?
-    
+protocol CategoryViewModelProtocol {
+    var categories: [TrackerCategory] { get }
+    var categoriesBinding: Binding<[TrackerCategory]>? { get set }
+    var categorySelectedBinding: Binding<TrackerCategory>? { get set }
+    func didSelected(at indexPath: IndexPath)
+}
+
+final class CategoryViewModel: CategoryViewModelProtocol {
     //MARK: - privates properties
     private lazy var categoryStore = TrackerCategoryStore(delegate: self)
     private(set) var categories: [TrackerCategory] = [] {
@@ -22,9 +26,9 @@ final class CategoryViewModel {
     }
     
     var categoriesBinding: Binding<[TrackerCategory]>?
+    var categorySelectedBinding: Binding<TrackerCategory>?
     
-    init(delegate: CategoriesListViewControllerDelegate) {
-        self.delegate = delegate
+    init() {
         categories = getAllCategoriesFromStore()
     }
     
@@ -33,7 +37,7 @@ final class CategoryViewModel {
     }
     
     func didSelected(at indexPath: IndexPath) {
-        delegate?.selectedCategory(categories[indexPath.item])
+        categorySelectedBinding?(categories[indexPath.item])
     }
 }
 

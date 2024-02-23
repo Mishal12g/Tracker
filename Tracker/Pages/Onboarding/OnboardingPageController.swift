@@ -8,16 +8,37 @@
 import UIKit
 
 class OnboardingPageController: UIPageViewController {
+    //MARK: - public properties
+    weak var sceneDelegate: SceneDelegate?
+    
     //MARK: - privates properties
     private let pageControl = UIPageControl()
     private let doneButton = Button(type: .system)
     
-    private lazy var pages: [UIViewController] = {
-        let vcOne = OnboardingOneViewController()
-        let vcTwo = OnboardingTwoViewController()
+    private lazy var vcOne: OnboardingViewController = {
+        let text = "Отслеживайте только то, что хотите"
+        guard let image = UIImage(named: "OnboardingOne") else { return OnboardingViewController(image: UIImage(), text: text)}
         
-        return [vcOne, vcTwo]
+        return OnboardingViewController(
+            image: image,
+            text: text
+        )
     }()
+    
+    private lazy var vcTwo: OnboardingViewController = {
+        let text = "Даже если это не литры воды и йога"
+        guard
+            let image = UIImage(named: "OnboardingTwo")
+        else {
+            return OnboardingViewController(image: UIImage(), text: text)
+        }
+        
+        return OnboardingViewController(image: image, text: text)
+    }()
+    
+    private var pages: [UIViewController] {
+        [vcOne, vcTwo]
+    }
     
     //MARK: - overrides methods
     override func viewDidLoad() {
@@ -64,11 +85,8 @@ private extension OnboardingPageController {
     }
     
     @objc func onTapDoneButton() {
-        guard let window = UIApplication.shared.windows.first else { return }
-        let vc = TabBarController()
-        OnboardingStore.shared.isAuth = true
-        
-        window.rootViewController = vc
+        guard let sceneDelegate = sceneDelegate else { return }
+        sceneDelegate.transitionWithOnboarding()
     }
 }
 

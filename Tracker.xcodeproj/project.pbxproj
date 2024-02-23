@@ -48,7 +48,6 @@
 		87A334DC2B6239CC00B4791D /* TwoButtonsDataSourceTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87A334DB2B6239CC00B4791D /* TwoButtonsDataSourceTableView.swift */; };
 		87A674D32B860A070095C2D5 /* OnboardingPageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87A674D22B860A070095C2D5 /* OnboardingPageController.swift */; };
 		87A674D52B860E6D0095C2D5 /* OnboardingOneViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87A674D42B860E6D0095C2D5 /* OnboardingOneViewController.swift */; };
-		87A674D72B860E800095C2D5 /* OnboardingTwoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87A674D62B860E800095C2D5 /* OnboardingTwoViewController.swift */; };
 		87D488DA2B7101EF00489422 /* TrackersModule.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 87D488D82B7101EF00489422 /* TrackersModule.xcdatamodeld */; };
 		87D489132B72640600489422 /* TrackerStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87D489122B72640600489422 /* TrackerStore.swift */; };
 		87D489152B72641300489422 /* TrackerCategoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87D489142B72641300489422 /* TrackerCategoryStore.swift */; };
@@ -99,7 +98,6 @@
 		87A334DB2B6239CC00B4791D /* TwoButtonsDataSourceTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwoButtonsDataSourceTableView.swift; sourceTree = "<group>"; };
 		87A674D22B860A070095C2D5 /* OnboardingPageController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPageController.swift; sourceTree = "<group>"; };
 		87A674D42B860E6D0095C2D5 /* OnboardingOneViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingOneViewController.swift; sourceTree = "<group>"; };
-		87A674D62B860E800095C2D5 /* OnboardingTwoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingTwoViewController.swift; sourceTree = "<group>"; };
 		87D488D92B7101EF00489422 /* Trackers.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Trackers.xcdatamodel; sourceTree = "<group>"; };
 		87D489122B72640600489422 /* TrackerStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerStore.swift; sourceTree = "<group>"; };
 		87D489142B72641300489422 /* TrackerCategoryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCategoryStore.swift; sourceTree = "<group>"; };
@@ -307,7 +305,6 @@
 			children = (
 				87A674D22B860A070095C2D5 /* OnboardingPageController.swift */,
 				87A674D42B860E6D0095C2D5 /* OnboardingOneViewController.swift */,
-				87A674D62B860E800095C2D5 /* OnboardingTwoViewController.swift */,
 			);
 			path = Onboarding;
 			sourceTree = "<group>";
@@ -400,7 +397,6 @@
 				87988B282B5FB14C00342625 /* EmojiCell.swift in Sources */,
 				8738D8EF2B57F02E00D6975E /* TrackerCell.swift in Sources */,
 				8719D5B92B87476000A0F0D6 /* OnboardingStore.swift in Sources */,
-				87A674D72B860E800095C2D5 /* OnboardingTwoViewController.swift in Sources */,
 				8772052F2B4BE87E0075D94F /* ViewController.swift in Sources */,
 				8783CC322B61043300184F73 /* ColorsCollectionView.swift in Sources */,
 				87988B152B5E985800342625 /* TextField.swift in Sources */,

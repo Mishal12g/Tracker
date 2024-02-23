@@ -7,16 +7,28 @@
 
 import UIKit
 
-class OnboardingOneViewController: UIViewController {
+class OnboardingViewController: UIViewController {
     //MARK: - privates properties
     private let onboardingImageView = UIImageView()
     private let label = UILabel()
+    private let image: UIImage
+    private let text: String
     
     //MARK: - overrides methods
     override func viewDidLoad() {
         super.viewDidLoad()
         setUI()
         setConstraints()
+    }
+    
+    init(image: UIImage, text: String) {
+        self.image = image
+        self.text = text
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     //MARK: Privates methods
@@ -28,11 +40,10 @@ class OnboardingOneViewController: UIViewController {
         }
         
         //ImageView
-        guard let image = UIImage(named: "OnboardingOne") else { return }
         onboardingImageView.image = image
         
         //label
-        label.text = "Отслеживайте только то, что хотите"
+        label.text = text
         label.numberOfLines = 3
         label.font = UIFont.systemFont(ofSize: 32, weight: .bold)
         label.textAlignment = .center

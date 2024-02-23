@@ -17,6 +17,7 @@ final class NotRegularEventFormViewController: UIViewController {
     private var color: UIColor?
     private var category: TrackerCategory?
     
+    private let viewModel = CategoryViewModel()
     private let dataSource: TwoButtonsDataSourceTableView = {
         let dataSource = TwoButtonsDataSourceTableView()
         dataSource.countButtons = 1
@@ -24,7 +25,7 @@ final class NotRegularEventFormViewController: UIViewController {
         return dataSource
     }()
     
-    private let titleLabel: UILabel = {
+    private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Новое нерегулярное событие"
@@ -34,7 +35,7 @@ final class NotRegularEventFormViewController: UIViewController {
         return label
     }()
     
-    private let scrollView: UIScrollView = {
+    private lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.keyboardDismissMode = .onDrag
@@ -92,7 +93,7 @@ final class NotRegularEventFormViewController: UIViewController {
         return button
     }()
     
-    private let stackH: UIStackView = {
+    private lazy var stackH: UIStackView = {
         let stack = UIStackView()
         stack.axis = .horizontal
         stack.distribution = .fillEqually
@@ -114,8 +115,15 @@ private extension NotRegularEventFormViewController {
         view.backgroundColor = .white
         setupContraints()
         hideKeyBoard()
+        
+        viewModel.categorySelectedBinding = { [weak self] category in
+            guard let self = self else { return }
+            self.category = category
+            self.dataSource.textOne = category.title
+            self.categoryButton.reloadData()
+        }
     }
-       
+    
     //MARK: action methods
     @objc func didTapCancelButton() {
         dismiss(animated: true)
@@ -161,7 +169,6 @@ extension NotRegularEventFormViewController: HabitFormViewControllerProtocol {
 //MARK: - TableView Delegate
 extension NotRegularEventFormViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let viewModel = CategoryViewModel(delegate: self)
         let vc = CategoriesListViewController(viewModel: viewModel)
         vc.isEnabledDelegate = self
         present(vc, animated: true)
@@ -171,13 +178,8 @@ extension NotRegularEventFormViewController: UITableViewDelegate {
 }
 
 //MARK: - HelpersDelegate
-extension NotRegularEventFormViewController: HelperColorsCollectionViewDelegate, HelperEmojiCollectionViewDelegate, CategoriesListViewControllerDelegate {
-    func selectedCategory(_ category: TrackerCategory) {
-        self.category = category
-        dataSource.textOne = category.title
-        categoryButton.reloadData()
-    }
-    
+extension NotRegularEventFormViewController: HelperColorsCollectionViewDelegate, HelperEmojiCollectionViewDelegate {
+
     func setEmoji(_ emoji: String) {
         self.emoji = emoji
     }

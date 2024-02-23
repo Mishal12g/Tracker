@@ -7,23 +7,68 @@
 
 import UIKit
 
-protocol CategoriesListViewControllerDelegate: AnyObject {
-    func selectedCategory(_ category: TrackerCategory)
-}
-
 final class CategoriesListViewController: UIViewController {
     //MARK: - public properties
     weak var isEnabledDelegate: HabitFormViewControllerProtocol?
     
     //MARK: - privates properties
-    private let viewModel: CategoryViewModel
+    private var viewModel: CategoryViewModelProtocol
     
     //MARK: UI
-    private let tableView = UITableView()
-    private let titleLabel = UILabel()
-    private let emptyImageView = UIImageView()
-    private let emptyLabel = UILabel()
-    private let button = Button(type: .system)
+    private lazy var tableView: UITableView = {
+        let tableView = UITableView()
+        tableView.rowHeight = 75
+        tableView.layer.cornerRadius = 16
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.register(CategoryCell.self, forCellReuseIdentifier: CategoryCell.identity)
+        
+        return tableView
+    }()
+    
+    private lazy var titleLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Категория"
+        label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        label.textAlignment = .center
+        
+        return label
+    }()
+    
+    private lazy var emptyImageView: UIImageView = {
+        guard let image = UIImage(named: "il_error_1") else {
+            return UIImageView()
+        }
+        let imageView = UIImageView(image: image)
+        
+        return imageView
+    }()
+    
+    private lazy var emptyLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Привычки и события можно объединить по смыслу"
+        label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
+        label.textAlignment = .center
+        label.numberOfLines = 2
+        
+        return label
+    }()
+    
+    private lazy var button: Button = {
+        let button = Button(type: .system)
+        button.setStyle(
+            color: .black,
+            tintColor: .white,
+            title: "Добавить категорию"
+        )
+        button.addTarget(
+            self,
+            action: #selector(didTapCreateNewCategory),
+            for: .touchUpInside
+        )
+        
+        return button
+    }()
     
     //MARK: - overrides methods
     override func viewDidLoad() {
@@ -31,7 +76,7 @@ final class CategoriesListViewController: UIViewController {
         commonSetup()
     }
     
-    init(viewModel: CategoryViewModel) {
+    init(viewModel: CategoryViewModelProtocol) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
@@ -51,11 +96,11 @@ private extension CategoriesListViewController {
     
     func commonSetup() {
         view.backgroundColor = .white
-        setUI()
         setupConstraints()
         hideEmptyError()
         
-        viewModel.categoriesBinding = { _ in
+        viewModel.categoriesBinding = { [weak self] _ in
+            guard let self = self else { return }
             self.tableView.reloadData()
             self.hideEmptyError()
         }
@@ -64,42 +109,6 @@ private extension CategoriesListViewController {
     func hideEmptyError() {
         emptyLabel.isHidden = !viewModel.categories.isEmpty
         emptyImageView.isHidden = !viewModel.categories.isEmpty
-    }
-    
-    func setUI() {
-        //tableView
-        tableView.delegate = self
-        tableView.dataSource = self
-        tableView.register(CategoryCell.self, forCellReuseIdentifier: CategoryCell.identity)
-        tableView.rowHeight = 75
-        tableView.layer.cornerRadius = 16
-        
-        //titleLabel
-        titleLabel.text = "Категория"
-        titleLabel.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        titleLabel.textAlignment = .center
-        
-        //emptyImageView
-        guard let image = UIImage(named: "il_error_1") else { return }
-        emptyImageView.image = image
-        
-        //emptyLabel
-        emptyLabel.text = "Привычки и события можно объединить по смыслу"
-        emptyLabel.font = UIFont.systemFont(ofSize: 12, weight: .medium)
-        emptyLabel.textAlignment = .center
-        emptyLabel.numberOfLines = 2
-        
-        //button
-        button.setStyle(
-            color: .black,
-            tintColor: .white,
-            title: "Добавить категорию"
-        )
-        button.addTarget(
-            self,
-            action: #selector(didTapCreateNewCategory),
-            for: .touchUpInside
-        )
     }
 }
 

@@ -17,7 +17,7 @@ final class HabitFormViewController: UIViewController {
     private var color: UIColor?
     private var category: TrackerCategory?
     private var schedule: Array<Weekday>?
-    
+    private let viewModel = CategoryViewModel()
     private let dataSource = TwoButtonsDataSourceTableView()
     
     private let titleLabel: UILabel = {
@@ -109,6 +109,13 @@ private extension HabitFormViewController {
         view.backgroundColor = .white
         setupContraints()
         hideKeyBoard()
+        
+        viewModel.categorySelectedBinding = { [weak self] category in
+            guard let self = self else { return }
+            self.category = category
+            self.dataSource.textOne = category.title
+            self.twoButtonsVertical.reloadData()
+        }
     }
     
     //MARK: action methods
@@ -159,7 +166,6 @@ extension HabitFormViewController: HabitFormViewControllerProtocol {
 extension HabitFormViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.item == 0 {
-            let viewModel = CategoryViewModel(delegate: self)
             let vc = CategoriesListViewController(viewModel: viewModel)
             vc.isEnabledDelegate = self
             present(vc, animated: true)
@@ -182,7 +188,7 @@ extension HabitFormViewController: UITableViewDelegate {
 }
 
 //MARK: - HelpersDelegate
-extension HabitFormViewController: HelperColorsCollectionViewDelegate, HelperEmojiCollectionViewDelegate, CategoriesListViewControllerDelegate, ScheduleViewControllerDelegate {
+extension HabitFormViewController: HelperColorsCollectionViewDelegate, HelperEmojiCollectionViewDelegate, ScheduleViewControllerDelegate {
     func setSchedule(_ weekdays: Set<Weekday>) {
         var selectedDays: String?
         schedule = Array(weekdays)
@@ -199,12 +205,6 @@ extension HabitFormViewController: HelperColorsCollectionViewDelegate, HelperEmo
         } else { return }
         
         dataSource.textTwo = selectedDays
-        twoButtonsVertical.reloadData()
-    }
-    
-    func selectedCategory(_ category: TrackerCategory) {
-        self.category = category
-        dataSource.textOne = category.title
         twoButtonsVertical.reloadData()
     }
     
