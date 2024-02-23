@@ -1,14 +1,14 @@
 import UIKit
 
-protocol NotRegularEventFormViewControllerDelegate: AnyObject {
-    func createTracker(_ tracker: Tracker, _ categoryName: String)
+protocol HabitFormViewControllerDelegate: AnyObject {
+    func createTracker(_ tracker: Tracker, _ category: TrackerCategory)
 }
 
-protocol NotRegularEventFormViewControllerProtocol: AnyObject {
+protocol HabitFormViewControllerProtocol: AnyObject {
     func isEnabled()
 }
 
-final class NotRegularEventFormViewController: UIViewController {
+final class HabitFormViewController: UIViewController {
     //MARK: - public properties
     weak var delegate: HabitFormViewControllerDelegate?
     
@@ -16,18 +16,14 @@ final class NotRegularEventFormViewController: UIViewController {
     private var emoji: String?
     private var color: UIColor?
     private var category: TrackerCategory?
-    
-    private let dataSource: TwoButtonsDataSourceTableView = {
-        let dataSource = TwoButtonsDataSourceTableView()
-        dataSource.countButtons = 1
-        
-        return dataSource
-    }()
+    private var schedule: Array<Weekday>?
+    private let viewModel = CategoryViewModel()
+    private let dataSource = TwoButtonsDataSourceTableView()
     
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Новое нерегулярное событие"
+        label.text = "Новая привычка"
         label.textAlignment = .center
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         
@@ -50,11 +46,10 @@ final class NotRegularEventFormViewController: UIViewController {
         return textField
     }()
     
-    private lazy var categoryButton: UITableView = {
+    private lazy var twoButtonsVertical: UITableView = {
         let table = TableView(dataSource: dataSource)
         table.delegate = self
         table.register(UITableViewCell.self, forCellReuseIdentifier: "TwoButtonsCell")
-        table.separatorStyle = .none
         
         return table
     }()
@@ -109,13 +104,20 @@ final class NotRegularEventFormViewController: UIViewController {
 }
 
 //MARK: - privates methods
-private extension NotRegularEventFormViewController {
+private extension HabitFormViewController {
     func common() {
         view.backgroundColor = .white
         setupContraints()
         hideKeyBoard()
+        
+        viewModel.categorySelectedBinding = { [weak self] category in
+            guard let self = self else { return }
+            self.category = category
+            self.dataSource.textOne = category.title
+            self.twoButtonsVertical.reloadData()
+        }
     }
-       
+    
     //MARK: action methods
     @objc func didTapCancelButton() {
         dismiss(animated: true)
@@ -131,21 +133,23 @@ private extension NotRegularEventFormViewController {
               let color = color,
               let emoji = emoji,
               let category = category,
+              let schedule = schedule,
               !text.isEmpty
         else { return }
-        let tracker = Tracker(id: UUID(), name: text, color: color, emoji: emoji, schedule: nil)
-        delegate?.createTracker(tracker, category.title)
+        let tracker = Tracker(id: UUID(), name: text, color: color, emoji: emoji, schedule: schedule)
+        delegate?.createTracker(tracker, category)
         dismiss(animated: true)
     }
 }
 
 //MARK: - is enabled button
-extension NotRegularEventFormViewController: HabitFormViewControllerProtocol {
+extension HabitFormViewController: HabitFormViewControllerProtocol {
     func isEnabled() {
         guard let text = textField.text,
               let _ = color,
               let _ = emoji,
               let _ = category,
+              let _ = schedule,
               !text.isEmpty
         else {
             doneButton.isEnabled = false
@@ -159,23 +163,49 @@ extension NotRegularEventFormViewController: HabitFormViewControllerProtocol {
 }
 
 //MARK: - TableView Delegate
-extension NotRegularEventFormViewController: UITableViewDelegate {
+extension HabitFormViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-            let vc = CategoriesListViewController()
+        if indexPath.item == 0 {
+            let vc = CategoriesListViewController(viewModel: viewModel)
+            vc.isEnabledDelegate = self
+            present(vc, animated: true)
+        } else if indexPath.item == 1 {
+            let vc = ScheduleViewController()
             vc.delegate = self
             vc.isEnabledDelegate = self
             present(vc, animated: true)
-        
+        }
         tableView.deselectRow(at: indexPath, animated: true)
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if indexPath.row == tableView.numberOfRows(inSection: indexPath.section) - 1 {
+            cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: tableView.bounds.width)
+        } else {
+            cell.separatorInset = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 15)
+        }
     }
 }
 
 //MARK: - HelpersDelegate
-extension NotRegularEventFormViewController: HelperColorsCollectionViewDelegate, HelperEmojiCollectionViewDelegate, CategoriesListViewControllerDelegate {
-    func selectedCategory(_ category: TrackerCategory) {
-        self.category = category
-        dataSource.textOne = category.title
-        categoryButton.reloadData()
+extension HabitFormViewController: HelperColorsCollectionViewDelegate, HelperEmojiCollectionViewDelegate, ScheduleViewControllerDelegate {
+    func setSchedule(_ weekdays: Set<Weekday>) {
+        var selectedDays: String?
+        schedule = Array(weekdays)
+        
+        if let schedule = schedule, !schedule.isEmpty {
+            selectedDays = schedule.count == 7 ? "Каждый день" : schedule
+                .sorted { $0.rawValue < $1.rawValue }
+                .map { $0.short }
+                .joined(separator: ", ")
+            
+            self.schedule = schedule
+                .sorted { $0.rawValue < $1.rawValue }
+                .map { $0 }
+        } else { return }
+        
+        dataSource.textTwo = selectedDays
+        twoButtonsVertical.reloadData()
     }
     
     func setEmoji(_ emoji: String) {
@@ -188,7 +218,7 @@ extension NotRegularEventFormViewController: HelperColorsCollectionViewDelegate,
 }
 
 //MARK: - TextFieldDelegate
-extension NotRegularEventFormViewController: UITextFieldDelegate {
+extension HabitFormViewController: UITextFieldDelegate {
     private func hideKeyBoard() {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(hideKeyboard))
         tapGesture.cancelsTouchesInView = false
@@ -204,7 +234,7 @@ extension NotRegularEventFormViewController: UITextFieldDelegate {
 }
 
 //MARK: - setup constraints
-private extension NotRegularEventFormViewController {
+private extension HabitFormViewController {
     func setupContraints() {
         //addSubviews
         [scrollView, titleLabel].forEach {
@@ -213,7 +243,7 @@ private extension NotRegularEventFormViewController {
         }
         
         [textField,
-         categoryButton,
+         twoButtonsVertical,
          emojiCollection,
          colorsCollection,
          stackH].forEach {
@@ -239,12 +269,12 @@ private extension NotRegularEventFormViewController {
             textField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             textField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             
-            categoryButton.topAnchor.constraint(equalTo: textField.bottomAnchor, constant: 24),
-            categoryButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            categoryButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            categoryButton.heightAnchor.constraint(equalToConstant: 75),
+            twoButtonsVertical.topAnchor.constraint(equalTo: textField.bottomAnchor, constant: 24),
+            twoButtonsVertical.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            twoButtonsVertical.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            twoButtonsVertical.heightAnchor.constraint(equalToConstant: 150),
             
-            emojiCollection.topAnchor.constraint(equalTo: categoryButton.bottomAnchor, constant: 32),
+            emojiCollection.topAnchor.constraint(equalTo: twoButtonsVertical.bottomAnchor, constant: 32),
             emojiCollection.heightAnchor.constraint(equalToConstant: 250),
             emojiCollection.widthAnchor.constraint(equalTo: view.widthAnchor),
             

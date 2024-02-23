@@ -8,6 +8,6 @@
 import UIKit
 
 struct TrackerRecord {
-    let id: UUID
-    let date: Date
+    let trackerId: UUID
+    let completedDate: Date
 }

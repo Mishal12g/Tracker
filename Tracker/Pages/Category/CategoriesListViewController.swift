@@ -7,31 +7,26 @@
 
 import UIKit
 
-protocol CategoriesListViewControllerDelegate: AnyObject {
-    func selectedCategory(_ category: TrackerCategory)
-}
-
 final class CategoriesListViewController: UIViewController {
-    //MARK: public properties
-    weak var delegate: CategoriesListViewControllerDelegate?
+    //MARK: - public properties
     weak var isEnabledDelegate: HabitFormViewControllerProtocol?
     
-    //MARK: privates properties
-    private var categories = CategoriesStorageService.shared.categories
-    private var categoriesListObserver: NSObjectProtocol?
+    //MARK: - privates properties
+    private var viewModel: CategoryViewModelProtocol
     
+    //MARK: UI
     private lazy var tableView: UITableView = {
-        let table = UITableView()
-        table.delegate = self
-        table.dataSource = self
-        table.register(CategoryCell.self, forCellReuseIdentifier: CategoryCell.identity)
-        table.rowHeight = 75
-        table.layer.cornerRadius = 16
+        let tableView = UITableView()
+        tableView.rowHeight = 75
+        tableView.layer.cornerRadius = 16
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.register(CategoryCell.self, forCellReuseIdentifier: CategoryCell.identity)
         
-        return table
+        return tableView
     }()
     
-    private let titleLable: UILabel = {
+    private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.text = "Категория"
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
@@ -40,14 +35,16 @@ final class CategoriesListViewController: UIViewController {
         return label
     }()
     
-    private let emptyImageView: UIImageView = {
-        guard let image = UIImage(named: "il_error_1") else { return UIImageView()}
+    private lazy var emptyImageView: UIImageView = {
+        guard let image = UIImage(named: "il_error_1") else {
+            return UIImageView()
+        }
         let imageView = UIImageView(image: image)
         
         return imageView
     }()
     
-    private let emptyLabel: UILabel = {
+    private lazy var emptyLabel: UILabel = {
         let label = UILabel()
         label.text = "Привычки и события можно объединить по смыслу"
         label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
@@ -59,8 +56,16 @@ final class CategoriesListViewController: UIViewController {
     
     private lazy var button: Button = {
         let button = Button(type: .system)
-        button.setStyle(color: .black, tintColor: .white, title: "Добавить категорию")
-        button.addTarget(self, action: #selector(didTapCreateNewCategory), for: .touchUpInside)
+        button.setStyle(
+            color: .black,
+            tintColor: .white,
+            title: "Добавить категорию"
+        )
+        button.addTarget(
+            self,
+            action: #selector(didTapCreateNewCategory),
+            for: .touchUpInside
+        )
         
         return button
     }()
@@ -69,6 +74,15 @@ final class CategoriesListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         commonSetup()
+    }
+    
+    init(viewModel: CategoryViewModelProtocol) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }
 
@@ -80,28 +94,21 @@ private extension CategoriesListViewController {
         present(vc, animated: true)
     }
     
-    func updatesTableView() {
-        self.categories = CategoriesStorageService.shared.categories
-        hideEmptyError()
-        tableView.reloadData()
-    }
-    
     func commonSetup() {
         view.backgroundColor = .white
         setupConstraints()
         hideEmptyError()
         
-        categoriesListObserver = NotificationCenter.default.addObserver(forName: CategoriesStorageService.didChangeNotification,
-                                                                        object: nil,
-                                                                        queue: .main) { [weak self] _ in
+        viewModel.categoriesBinding = { [weak self] _ in
             guard let self = self else { return }
-            self.updatesTableView()
+            self.tableView.reloadData()
+            self.hideEmptyError()
         }
     }
     
     func hideEmptyError() {
-        emptyLabel.isHidden = !categories.isEmpty
-        emptyImageView.isHidden = !categories.isEmpty
+        emptyLabel.isHidden = !viewModel.categories.isEmpty
+        emptyImageView.isHidden = !viewModel.categories.isEmpty
     }
 }
 
@@ -109,19 +116,19 @@ private extension CategoriesListViewController {
 extension CategoriesListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        return categories.count
+        return viewModel.categories.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: CategoryCell.identity, for: indexPath) as? CategoryCell else { return UITableViewCell()}
         
-        cell.textLabel?.text = categories[indexPath.row].title
+        cell.textLabel?.text = viewModel.categories[indexPath.row].title
         cell.backgroundColor = .ypWhite
         
         let isTopCell = indexPath.row == 0
         let isBottomCell = indexPath.row == tableView.numberOfRows(inSection: indexPath.section) - 1
         
-        if isTopCell, categories.count == 1 {
+        if isTopCell, viewModel.categories.count == 1 {
             cell.layer.cornerRadius = 16
         } else if isTopCell {
             cell.layer.cornerRadius = 16
@@ -142,7 +149,7 @@ extension CategoriesListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let cell = tableView.cellForRow(at: indexPath) as? CategoryCell else { return }
         cell.hideButton(false)
-        delegate?.selectedCategory(categories[indexPath.item])
+        viewModel.didSelected(at: indexPath)
         isEnabledDelegate?.isEnabled()
     }
     
@@ -153,9 +160,19 @@ extension CategoriesListViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if indexPath.row == tableView.numberOfRows(inSection: indexPath.section) - 1 {
-            cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: tableView.bounds.width)
+            cell.separatorInset = UIEdgeInsets(
+                top: 0,
+                left: 0,
+                bottom: 0,
+                right: tableView.bounds.width
+            )
         } else {
-            cell.separatorInset = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 15)
+            cell.separatorInset = UIEdgeInsets(
+                top: 0,
+                left: 15,
+                bottom: 0,
+                right: 15
+            )
         }
     }
 }
@@ -163,7 +180,7 @@ extension CategoriesListViewController: UITableViewDelegate {
 //MARK: - setup constraints
 private extension CategoriesListViewController {
     func setupConstraints() {
-        [titleLable,
+        [titleLabel,
          tableView,
          emptyImageView,
          emptyLabel,
@@ -173,13 +190,13 @@ private extension CategoriesListViewController {
         }
         
         NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: titleLable.bottomAnchor, constant: 38),
+            tableView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 38),
             tableView.bottomAnchor.constraint(equalTo: button.topAnchor, constant: -38),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             
-            titleLable.topAnchor.constraint(equalTo: view.topAnchor, constant: 30),
-            titleLable.widthAnchor.constraint(equalToConstant: view.bounds.width),
+            titleLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 30),
+            titleLabel.widthAnchor.constraint(equalToConstant: view.bounds.width),
             
             emptyImageView.heightAnchor.constraint(equalToConstant: 80),
             emptyImageView.widthAnchor.constraint(equalToConstant: 80),
