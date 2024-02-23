@@ -59,7 +59,6 @@ final class ScheduleCell: UITableViewCell {
 extension ScheduleCell {
     func config(_ selectDay: Weekday) {
         selectedDay = selectDay
-        print(selectDay)
     }
 }
 

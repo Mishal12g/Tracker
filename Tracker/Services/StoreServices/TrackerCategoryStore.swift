@@ -51,7 +51,7 @@ final class TrackerCategoryStore: NSObject {
 extension TrackerCategoryStore {
     func objects() -> [TrackerCategory] {
         guard let categoriesCD = fetchResultsController.fetchedObjects else { return [] }
-        print(categoriesCD)
+        
         let categories = categoriesCD.map { convert(categoryCD: $0)}
         
         return categories

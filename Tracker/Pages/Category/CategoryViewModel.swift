@@ -7,8 +7,6 @@
 
 import Foundation
 
-typealias Binding<T> = (T) -> Void
-
 protocol CategoryViewModelProtocol {
     var categories: [TrackerCategory] { get }
     var categoriesBinding: Binding<[TrackerCategory]>? { get set }
