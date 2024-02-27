@@ -62,7 +62,7 @@ final class TrackerCell: UICollectionViewCell {
     private lazy var countDaysLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "0 д."
+        label.text = "0 дней."
         label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
         label.textColor = .black
         
@@ -97,8 +97,11 @@ final class TrackerCell: UICollectionViewCell {
                 completedDays: Int) {
         self.isCompletedToday = isCompletedToday
         self.trackerID = tracker.id
-        
-        countDaysLabel.text = "\(completedDays) д."
+        let tasksString = String.localizedStringWithFormat(
+            NSLocalizedString("numberOfDays", comment: "Number of remaining tasks"),
+            completedDays
+        )
+        countDaysLabel.text = tasksString
         emojiLabel.text = tracker.emoji
         trackerNameLabel.text = tracker.name
         view.backgroundColor = tracker.color
