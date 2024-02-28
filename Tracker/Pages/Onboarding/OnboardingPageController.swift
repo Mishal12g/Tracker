@@ -16,7 +16,7 @@ class OnboardingPageController: UIPageViewController {
     private let doneButton = Button(type: .system)
     
     private lazy var vcOne: OnboardingViewController = {
-        let text = "Отслеживайте только то, что хотите"
+        let text = NSLocalizedString("onboarding.text.first", comment: "")
         guard let image = UIImage(named: "OnboardingOne") else { return OnboardingViewController(image: UIImage(), text: text)}
         
         return OnboardingViewController(
@@ -26,7 +26,7 @@ class OnboardingPageController: UIPageViewController {
     }()
     
     private lazy var vcTwo: OnboardingViewController = {
-        let text = "Даже если это не литры воды и йога"
+        let text = NSLocalizedString("onboarding.text.second", comment: "")
         guard
             let image = UIImage(named: "OnboardingTwo")
         else {
@@ -72,7 +72,7 @@ private extension OnboardingPageController {
         doneButton.setStyle(
             color: .black,
             tintColor: .white,
-            title: "Вот это технологии!"
+            title: NSLocalizedString("onboarding.button", comment: "")
         )
         doneButton.addTarget(self, action: #selector(onTapDoneButton), for: .touchDown)
         

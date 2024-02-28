@@ -13,7 +13,7 @@ final class CategoryFormViewController: UIViewController {
     //MARK: - Privates properties
     private let titleLable: UILabel = {
         let label = UILabel()
-        label.text = "Новая категория"
+        label.text = NSLocalizedString("category.form.title", comment: "")
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         label.textAlignment = .center
         
@@ -22,7 +22,7 @@ final class CategoryFormViewController: UIViewController {
     
     private lazy var button: Button = {
         let button = Button(type: .system)
-        button.setStyle(color: .gray, tintColor: .white, title: "Готово")
+        button.setStyle(color: .gray, tintColor: .white, title: NSLocalizedString("category.form.button", comment: ""))
         button.addTarget(self, action: #selector(didTapDoneButton), for: .touchUpInside)
         button.isEnabled = false
         
@@ -30,7 +30,7 @@ final class CategoryFormViewController: UIViewController {
     }()
     
     private lazy var textField: TextField = {
-        let textField = TextField(placeholder: "Введите название категории")
+        let textField = TextField(placeholder: NSLocalizedString("category.form..textfield", comment: ""))
         textField.delegate = self
         textField.addTarget(self, action: #selector(editingChanged(_:)), for: .editingChanged)
         textField.becomeFirstResponder()

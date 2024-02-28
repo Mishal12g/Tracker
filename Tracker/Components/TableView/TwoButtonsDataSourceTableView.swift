@@ -14,7 +14,7 @@ final class TwoButtonsDataSourceTableView: NSObject, UITableViewDataSource {
     var countButtons = 2
     
     //MARK: - privates properties
-    private let words = ["Категория", "Расписание"]
+    private let words = [NSLocalizedString("category.title.table.view", comment: ""), NSLocalizedString("schedule.title.table.view", comment: "")]
     
     //MARK: UITableViewDataSurce
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

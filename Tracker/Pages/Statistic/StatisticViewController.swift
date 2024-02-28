@@ -10,7 +10,7 @@ final class StatisticViewController: UIViewController {
     
     let emptyLabel: UILabel = {
         let label = UILabel()
-        label.text = "Анализировать пока нечего"
+        label.text = NSLocalizedString("statistic.empty.state", comment: "")
         label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
         label.textAlignment = .center
         
@@ -18,7 +18,7 @@ final class StatisticViewController: UIViewController {
     }()
     
     override func viewDidLoad() {
-        navigationItem.title = "Статистика"
+        navigationItem.title = NSLocalizedString("statistic.title", comment: "")
         navigationController?.navigationBar.prefersLargeTitles = true
         view.backgroundColor = .white
         setConstraints()

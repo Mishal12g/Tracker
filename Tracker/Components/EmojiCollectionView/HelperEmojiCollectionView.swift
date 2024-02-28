@@ -38,7 +38,7 @@ extension HelperEmojiCollectionView: UICollectionViewDataSource {
         switch kind {
         case UICollectionView.elementKindSectionHeader:
             id = "header"
-            text = "Emoji"
+            text = NSLocalizedString("collection.emoji", comment: "")
         case UICollectionView.elementKindSectionFooter:
             id = "footer"
             text = "Footer"

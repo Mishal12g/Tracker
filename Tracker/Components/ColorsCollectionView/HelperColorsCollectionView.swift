@@ -43,7 +43,7 @@ extension HelperColorsCollectionView: UICollectionViewDataSource {
         switch kind {
         case UICollectionView.elementKindSectionHeader:
             id = "header"
-            text = "Цвет"
+            text = NSLocalizedString("collection.color", comment: "")
         case UICollectionView.elementKindSectionFooter:
             id = "footer"
             text = "Footer"

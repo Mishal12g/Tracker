@@ -29,7 +29,7 @@ final class CreatedTrackerViewController: UIViewController {
     //MARK: - privates properties
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Создание трекера"
+        label.text = NSLocalizedString("created.tracker", comment: "")
         label.textAlignment = .center
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         
@@ -39,7 +39,7 @@ final class CreatedTrackerViewController: UIViewController {
     private lazy var buttonOne: UIButton = {
         let button = ButtonForTextField(type: .system)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        button.setTitle("Привычка", for: .normal)
+        button.setTitle(NSLocalizedString("created.tracker.habit", comment: ""), for: .normal)
         button.addTarget(self, action: #selector(habitDidTapButton), for: .touchUpInside)
         
         return button
@@ -48,7 +48,7 @@ final class CreatedTrackerViewController: UIViewController {
     private lazy var buttonTwo: UIButton = {
         let button = ButtonForTextField(type: .system)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        button.setTitle("Нерегулярные событие", for: .normal)
+        button.setTitle(NSLocalizedString("created.tracker.not.regular.event", comment: ""), for: .normal)
         button.addTarget(self, action: #selector(NotRegularEventTapButton), for: .touchUpInside)
         
         return button

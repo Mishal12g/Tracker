@@ -25,7 +25,7 @@ final class TrackersViewController: UIViewController {
     private lazy var searchFiled: UISearchController = {
         let search = UISearchController()
         search.searchResultsUpdater = self
-        search.searchBar.placeholder = "Поиск"
+        search.searchBar.placeholder = NSLocalizedString("trackers.searchTextFieldPlaceholder", comment: "")
         
         return search
     }()
@@ -34,7 +34,7 @@ final class TrackersViewController: UIViewController {
         let picker = UIDatePicker()
         picker.datePickerMode = .date
         picker.preferredDatePickerStyle = .compact
-        picker.locale = Locale(identifier: "ru_Ru")
+        picker.locale = Locale.current
         picker.calendar.firstWeekday = 2
         picker.addTarget(self, action: #selector(datePickerValueChanged(_:)), for: .valueChanged)
         
@@ -73,7 +73,7 @@ final class TrackersViewController: UIViewController {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
         label.textAlignment = .center
-        label.text = "Что будем отслеживать?"
+        label.text = NSLocalizedString("trackers.emptyPlaceholderView", comment: "")
         
         return label
     }()
@@ -106,7 +106,7 @@ private extension TrackersViewController {
     }
     
     func setupNavigationBar() {
-        navigationItem.title = "Трекеры"
+        navigationItem.title = NSLocalizedString("trackers.title", comment: "")
         addTrackerButton.addTarget(self, action: #selector(addTrackerDidTap), for: .touchUpInside)
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: addTrackerButton)
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)

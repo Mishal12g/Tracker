@@ -6,10 +6,10 @@ final class TabBarController: UITabBarController {
         tabbarAppearance()
         
         let trackersListVC = UINavigationController(rootViewController: TrackersViewController())
-        trackersListVC.tabBarItem = UITabBarItem(title: "Трекеры", image: UIImage(named: "tracker"), selectedImage: nil)
+        trackersListVC.tabBarItem = UITabBarItem(title: NSLocalizedString("tabbar.trackers.title", comment: ""), image: UIImage(named: "tracker"), selectedImage: nil)
         
         let statisticVC = UINavigationController(rootViewController: StatisticViewController())
-        statisticVC.tabBarItem = UITabBarItem(title: "Статистика", image: UIImage(named: "statistic"), selectedImage: nil)
+        statisticVC.tabBarItem = UITabBarItem(title: NSLocalizedString("tabbar.statistic.title", comment: ""), image: UIImage(named: "statistic"), selectedImage: nil)
         
         self.viewControllers = [trackersListVC, statisticVC]
     }

@@ -28,7 +28,7 @@ final class CategoriesListViewController: UIViewController {
     
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Категория"
+        label.text = NSLocalizedString("category.title", comment: "")
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         label.textAlignment = .center
         
@@ -46,7 +46,7 @@ final class CategoriesListViewController: UIViewController {
     
     private lazy var emptyLabel: UILabel = {
         let label = UILabel()
-        label.text = "Привычки и события можно объединить по смыслу"
+        label.text = NSLocalizedString("category.empty.state", comment: "")
         label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
         label.textAlignment = .center
         label.numberOfLines = 2
@@ -59,7 +59,7 @@ final class CategoriesListViewController: UIViewController {
         button.setStyle(
             color: .black,
             tintColor: .white,
-            title: "Добавить категорию"
+            title: NSLocalizedString("category.add.button", comment: "")
         )
         button.addTarget(
             self,

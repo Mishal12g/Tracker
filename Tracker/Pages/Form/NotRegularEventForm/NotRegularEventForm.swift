@@ -28,7 +28,7 @@ final class NotRegularEventFormViewController: UIViewController {
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Новое нерегулярное событие"
+        label.text = NSLocalizedString("not.regular.event.form", comment: "")
         label.textAlignment = .center
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         
@@ -44,7 +44,7 @@ final class NotRegularEventFormViewController: UIViewController {
     }()
     
     private lazy var textField: TextField = {
-        let textField = TextField(placeholder: "Введите название трекера")
+        let textField = TextField(placeholder: NSLocalizedString("habit.form.textfield.placeholder", comment: ""))
         textField.delegate = self
         textField.becomeFirstResponder()
         
@@ -78,7 +78,7 @@ final class NotRegularEventFormViewController: UIViewController {
     
     private lazy var cancelButton: Button = {
         let button = Button(type: .system)
-        button.setStyle(borderColor: .ypRed, tintColor: .ypRed, borderWidth: 1, title: "Отменить")
+        button.setStyle(borderColor: .ypRed, tintColor: .ypRed, borderWidth: 1, title: NSLocalizedString("habit.form.cancel.button", comment: ""))
         button.addTarget(self, action: #selector(didTapCancelButton), for: .touchUpInside)
         
         return button
@@ -86,7 +86,7 @@ final class NotRegularEventFormViewController: UIViewController {
     
     private lazy var doneButton: UIButton = {
         let button = Button(type: .system)
-        button.setStyle(color: .ypGray1, tintColor: .white, title: "Создать")
+        button.setStyle(color: .ypGray1, tintColor: .white, title: NSLocalizedString("habit.form.create.button", comment: ""))
         button.isEnabled = false
         button.addTarget(self, action: #selector(didTapCreatedButton), for: .touchUpInside)
         
