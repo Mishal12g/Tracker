@@ -64,16 +64,14 @@ final class TrackerCell: UICollectionViewCell {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "0 дней."
         label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
-        label.textColor = .black
+        label.textColor = .label
         
         return label
     }()
     
     private lazy var addButton: UIButton = {
-        let image = UIImage(named: "add_icon")
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setImage(image, for: .normal)
         button.addTarget(self, action: #selector(didTapAddButton), for: .touchUpInside)
         button.layer.cornerRadius = 34 / 2
         
@@ -105,15 +103,15 @@ final class TrackerCell: UICollectionViewCell {
         emojiLabel.text = tracker.emoji
         trackerNameLabel.text = tracker.name
         view.backgroundColor = tracker.color
-        addButton.tintColor = tracker.color
-        let image = UIImage(named: !isCompletedToday ? "add_icon" : "done")
+        
+        let image = UIImage(named: !isCompletedToday ? "add_icon" : "done_two")
         
         if isCompletedToday {
             addButton.backgroundColor = view.backgroundColor?.withAlphaComponent(0.5)
-            addButton.tintColor = .white
+            addButton.tintColor = .systemBackground
         }       else {
-            addButton.tintColor = view.backgroundColor
-            addButton.backgroundColor = .white
+            addButton.tintColor = .systemBackground
+            addButton.backgroundColor = view.backgroundColor
         }
         
         addButton.setImage(image, for: .normal)

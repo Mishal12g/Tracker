@@ -20,7 +20,7 @@ final class StatisticViewController: UIViewController {
     override func viewDidLoad() {
         navigationItem.title = NSLocalizedString("statistic.title", comment: "")
         navigationController?.navigationBar.prefersLargeTitles = true
-        view.backgroundColor = .white
+        view.backgroundColor = .ypBackground
         setConstraints()
     }
 }

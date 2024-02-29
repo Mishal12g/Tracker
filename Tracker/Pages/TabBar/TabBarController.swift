@@ -17,7 +17,7 @@ final class TabBarController: UITabBarController {
 
 private extension TabBarController {
     func tabbarAppearance() {
-        tabBar.backgroundColor = .white
+        tabBar.backgroundColor = .ypBackground
         let topLine = UIView(frame: CGRect(x: 0, y: 0, width: tabBar.frame.width, height: 1))
         topLine.backgroundColor = UIColor.gray.withAlphaComponent(0.5)
         tabBar.addSubview(topLine)

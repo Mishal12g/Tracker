@@ -32,6 +32,7 @@ final class ScheduleViewController: UIViewController {
         let table = UITableView()
         table.delegate = self
         table.dataSource = self
+        table.separatorColor = .label.withAlphaComponent(0.3)
         table.register(ScheduleCell.self, forCellReuseIdentifier: ScheduleCell.identity)
         table.rowHeight = 75
         table.layer.cornerRadius = 16
@@ -42,7 +43,7 @@ final class ScheduleViewController: UIViewController {
     
     private lazy var doneButton: Button = {
         let button = Button(type: .system)
-        button.setStyle(color: .black, tintColor: .white, title: NSLocalizedString("schedule.done.button", comment: ""))
+        button.setStyle(color: .label, tintColor: .systemBackground, title: NSLocalizedString("schedule.done.button", comment: ""))
         button.addTarget(self, action: #selector(didTapDoneButton), for: .touchUpInside)
         
         return button
@@ -51,7 +52,7 @@ final class ScheduleViewController: UIViewController {
     //MARK: - overrides methods
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = .ypBackground
         setConstraint()
     }
     

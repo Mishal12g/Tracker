@@ -41,7 +41,7 @@ final class CategoryFormViewController: UIViewController {
     //MARK: - Overrides methods
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = .ypBackground
         setupConstraints()
         hideKeyBoard()
     }
@@ -57,9 +57,11 @@ final class CategoryFormViewController: UIViewController {
     @objc func editingChanged(_ sender: TextField) {
         if let text = sender.text, !text.isEmpty {
             button.isEnabled = true
-            button.backgroundColor = .black
+            button.backgroundColor = .label
+            button.tintColor = .systemBackground
         } else {
             button.isEnabled = false
+            button.tintColor = .white
             button.backgroundColor = .gray
         }
     }

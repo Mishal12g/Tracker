@@ -78,7 +78,7 @@ final class NotRegularEventFormViewController: UIViewController {
     
     private lazy var cancelButton: Button = {
         let button = Button(type: .system)
-        button.setStyle(borderColor: .ypRed, tintColor: .ypRed, borderWidth: 1, title: NSLocalizedString("habit.form.cancel.button", comment: ""))
+        button.setStyle(color: .ypBackground, borderColor: .ypRed, tintColor: .ypRed, borderWidth: 1, title: NSLocalizedString("habit.form.cancel.button", comment: ""))
         button.addTarget(self, action: #selector(didTapCancelButton), for: .touchUpInside)
         
         return button
@@ -112,7 +112,7 @@ final class NotRegularEventFormViewController: UIViewController {
 //MARK: - privates methods
 private extension NotRegularEventFormViewController {
     func common() {
-        view.backgroundColor = .white
+        view.backgroundColor = .ypBackground
         setupContraints()
         hideKeyBoard()
         
@@ -158,12 +158,15 @@ extension NotRegularEventFormViewController: HabitFormViewControllerProtocol {
         else {
             doneButton.isEnabled = false
             doneButton.backgroundColor = .ypGray1
+            doneButton.tintColor = .white
             return
         }
         
-        doneButton.backgroundColor = .black
+        doneButton.backgroundColor = .label
+        doneButton.tintColor = .systemBackground
         doneButton.isEnabled = true
     }
+
 }
 
 //MARK: - TableView Delegate

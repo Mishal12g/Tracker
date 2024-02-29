@@ -19,10 +19,10 @@ final class CategoriesListViewController: UIViewController {
         let tableView = UITableView()
         tableView.rowHeight = 75
         tableView.layer.cornerRadius = 16
+        tableView.separatorColor = .label.withAlphaComponent(0.3)
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(CategoryCell.self, forCellReuseIdentifier: CategoryCell.identity)
-        
         return tableView
     }()
     
@@ -57,8 +57,8 @@ final class CategoriesListViewController: UIViewController {
     private lazy var button: Button = {
         let button = Button(type: .system)
         button.setStyle(
-            color: .black,
-            tintColor: .white,
+            color: .label,
+            tintColor: .systemBackground,
             title: NSLocalizedString("category.add.button", comment: "")
         )
         button.addTarget(
@@ -95,7 +95,7 @@ private extension CategoriesListViewController {
     }
     
     func commonSetup() {
-        view.backgroundColor = .white
+        view.backgroundColor = .ypBackground
         setupConstraints()
         hideEmptyError()
         

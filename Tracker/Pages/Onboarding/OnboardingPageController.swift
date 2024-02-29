@@ -48,6 +48,10 @@ class OnboardingPageController: UIPageViewController {
         setUI()
         setConstraints()
     }
+    
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return UIStatusBarStyle.darkContent
+    }
 }
 
 //MARK: - for private methods

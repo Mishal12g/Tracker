@@ -20,7 +20,7 @@ class OnboardingViewController: UIViewController {
         setUI()
         setConstraints()
     }
-    
+        
     init(image: UIImage, text: String) {
         self.image = image
         self.text = text
@@ -46,6 +46,7 @@ class OnboardingViewController: UIViewController {
         label.text = text
         label.numberOfLines = 3
         label.font = UIFont.systemFont(ofSize: 32, weight: .bold)
+        label.textColor = .black
         label.textAlignment = .center
     }
     

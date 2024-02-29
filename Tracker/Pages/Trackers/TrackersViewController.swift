@@ -46,20 +46,27 @@ final class TrackersViewController: UIViewController {
         let collection = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collection.dataSource = self
         collection.delegate = self
+        collection.backgroundColor = .ypBackground
         collection.register(TrackerCell.self, forCellWithReuseIdentifier: TrackerCell.identity)
         collection.register(SupplementaryView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "TrackerVCheader")
         
         return collection
     }()
     
-    private let addTrackerButton: UIButton = {
-        let button = UIButton()
-        button.translatesAutoresizingMaskIntoConstraints = false
-        let image = UIImage(named: "YP_add")
-        button.setImage(image, for: .normal)
-        button.imageView?.contentMode = .scaleToFill
+    private lazy var addTrackerButton: UIBarButtonItem = {
+      let item = UIBarButtonItem(
+            image: UIImage(
+                systemName: "plus",
+                withConfiguration: UIImage.SymbolConfiguration(weight: .semibold)
+            ),
+            style: .plain,
+            target: self,
+            action: #selector(addTrackerDidTap)
+        )
         
-        return button
+        item.tintColor = .label
+        
+        return item
     }()
     
     private let emptyImageView: UIImageView = {
@@ -87,7 +94,7 @@ final class TrackersViewController: UIViewController {
 //MARK: - privates methods
 private extension TrackersViewController {
     func common() {
-        view.backgroundColor = .white
+        view.backgroundColor = .ypBackground
         setupNavigationBar()
         addConstraint()
         applyFilter()
@@ -107,8 +114,7 @@ private extension TrackersViewController {
     
     func setupNavigationBar() {
         navigationItem.title = NSLocalizedString("trackers.title", comment: "")
-        addTrackerButton.addTarget(self, action: #selector(addTrackerDidTap), for: .touchUpInside)
-        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: addTrackerButton)
+        navigationItem.leftBarButtonItem = addTrackerButton
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)
         navigationItem.searchController = searchFiled
         navigationController?.navigationBar.prefersLargeTitles = true

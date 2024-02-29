@@ -30,6 +30,7 @@ final class ScheduleCell: UITableViewCell {
         switchButton.isEnabled = true
         switchButton.onTintColor = .ypBlue
         
+        
         return switchButton
     }()
     

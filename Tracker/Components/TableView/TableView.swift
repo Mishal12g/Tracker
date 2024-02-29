@@ -12,6 +12,7 @@ final class TableView: UITableView {
     init(dataSource: UITableViewDataSource) {
         super.init(frame: .zero, style: .plain)
         translatesAutoresizingMaskIntoConstraints = false
+        separatorColor = .label.withAlphaComponent(0.3)
         layer.cornerRadius = 16
         rowHeight = 150 / 2
         self.dataSource = dataSource

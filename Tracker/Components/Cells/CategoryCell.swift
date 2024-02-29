@@ -14,7 +14,7 @@ final class CategoryCell: UITableViewCell {
     //MARK: - public properties
     private let doneImage: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "done")
+        imageView.image = UIImage(named: "done")?.withRenderingMode(.alwaysTemplate)
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.isHidden = true
         

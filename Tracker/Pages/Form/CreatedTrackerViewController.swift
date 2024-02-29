@@ -36,19 +36,27 @@ final class CreatedTrackerViewController: UIViewController {
         return label
     }()
 
-    private lazy var buttonOne: UIButton = {
-        let button = ButtonForTextField(type: .system)
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        button.setTitle(NSLocalizedString("created.tracker.habit", comment: ""), for: .normal)
+    private lazy var buttonOne: Button = {
+        let button = Button(type: .system)
+        button.setStyle(
+            color: .label,
+            tintColor: .systemBackground,
+            title: NSLocalizedString("created.tracker.habit", comment: "")
+        )
+        
         button.addTarget(self, action: #selector(habitDidTapButton), for: .touchUpInside)
         
         return button
     }()
     
     private lazy var buttonTwo: UIButton = {
-        let button = ButtonForTextField(type: .system)
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        button.setTitle(NSLocalizedString("created.tracker.not.regular.event", comment: ""), for: .normal)
+        let button = Button(type: .system)
+        button.setStyle(
+            color: .label,
+            tintColor: .systemBackground,
+            title: NSLocalizedString("created.tracker.not.regular.event", comment: "")
+        )
+
         button.addTarget(self, action: #selector(NotRegularEventTapButton), for: .touchUpInside)
         
         return button
@@ -64,7 +72,7 @@ final class CreatedTrackerViewController: UIViewController {
 //MARK: private methods
 private extension CreatedTrackerViewController {
     func common() {
-        view.backgroundColor = .white
+        view.backgroundColor = .ypBackground
         addConstraints()
     }
     
