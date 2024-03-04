@@ -65,7 +65,7 @@ extension HelperEmojiCollectionView: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
         guard let cell = collectionView.cellForItem(at: indexPath) as? EmojiCell else { return }
         cell.layer.cornerRadius = 16
-        cell.backgroundColor = .white
+        cell.backgroundColor = .systemBackground
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
