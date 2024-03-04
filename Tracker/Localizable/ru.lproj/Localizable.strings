@@ -36,6 +36,10 @@
 "category.form.button" = "Готово";
 "schedule.title" = "Расписание";
 "schedule.done.button" = "Готово";
+"context.menu.delete" = "Удалить";
+"context.menu.edit" = "Редактировать";
+"context.menu.pinned" = "Закрепить";
+"context.menu.unpin" = "Открепить";
 "every.day" = "Каждый день";
 "weekday.monday" = "Понедельник";
 "weekday.tuesday" = "Вторник";

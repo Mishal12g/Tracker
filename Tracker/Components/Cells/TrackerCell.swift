@@ -18,7 +18,7 @@ final class TrackerCell: UICollectionViewCell {
     
     //MARK: - privates properties
     private var isCompletedToday: Bool = false
-    private var trackerID: UUID?
+    private(set) var trackerID: UUID?
     
     //MARK: - public properties
     weak var delegate: TrackerCellDelegate?
@@ -113,7 +113,6 @@ final class TrackerCell: UICollectionViewCell {
             addButton.tintColor = .systemBackground
             addButton.backgroundColor = view.backgroundColor
         }
-        
         addButton.setImage(image, for: .normal)
     }
     

@@ -121,6 +121,24 @@ private extension TrackersViewController {
         navigationController?.navigationItem.largeTitleDisplayMode = .always
     }
     
+    func makeContextMenu(by indexPath: IndexPath) -> UIMenu? {
+        guard let tracker = collectionView.cellForItem(at: indexPath) as? TrackerCell else { return nil }
+        let deleteAction = UIAction(title: NSLocalizedString("context.menu.delete", comment: "")) { _ in
+        print("delete")
+            self.trackerStore.deleteTracker(trackerID: tracker.trackerID)
+        }
+        
+        let pinnedAction = UIAction(title: NSLocalizedString("context.menu.pinned", comment: "")) { _ in
+        print("pinnedAction")
+        }
+        
+        let editAction = UIAction(title: NSLocalizedString("context.menu.edit", comment: "")) { _ in
+        print("editAction")
+        }
+        
+        return UIMenu(children: [pinnedAction, editAction, deleteAction])
+    }
+    
     //MARK: action methods
     @objc func datePickerValueChanged(_ sender: UIDatePicker) {
         applyFilter()
@@ -207,7 +225,7 @@ extension TrackersViewController: UICollectionViewDataSource {
         
         let isCompletedTracker = recordStore.isTrackerCompletedToday(by: tracker.id, and: currentDate)
         let completedDays = recordStore.completedTrackers(by: tracker.id)
-        
+
         cell.delegate = self
         cell.config(
             with: tracker,
@@ -246,6 +264,13 @@ extension TrackersViewController: UICollectionViewDataSource {
 
 //MARK: - UICollectionViewDelegateFlowLayout
 extension TrackersViewController: UICollectionViewDelegateFlowLayout {
+    
+    func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+        UIContextMenuConfiguration(identifier: indexPath as NSCopying, previewProvider: nil) { _ in
+            self.makeContextMenu(by: indexPath)
+        }
+    }
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let availableWidth = collectionView.frame.width - params.paddingWidth
         let cellWidth = availableWidth / CGFloat(params.cellCount)
@@ -272,14 +297,14 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
     }
 }
 
-//MARK: serach delegate
+//MARK: - serach delegate
 extension TrackersViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         searchText = searchController.searchBar.text ?? ""
     }
 }
 
-//MARK: setup constraint
+//MARK: - setup constraint
 private extension TrackersViewController {
     func addSubViews() {
         [collectionView,

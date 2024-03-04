@@ -37,6 +37,10 @@
 "category.form.button" = "Done";
 "schedule.title" = "schedule";
 "schedule.done.button" = "Done";
+"context.menu.delete" = "Delete";
+"context.menu.edit" = "Edit";
+"context.menu.pinned" = "to fix";
+"context.menu.unpin" = "unpin";
 "every.day" = "Every day";
 "weekday.monday" = "Monday";
 "weekday.tuesday" = "Tuesday";

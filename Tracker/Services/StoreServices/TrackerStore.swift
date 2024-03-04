@@ -111,6 +111,24 @@ extension TrackerStore {
         }
     }
     
+    func deleteTracker(trackerID: UUID?) {
+        guard let trackerID = trackerID else { return }
+        let fetchTrackersCD = TrackerCD.fetchRequest()
+        fetchTrackersCD.predicate = NSPredicate(format: "id == %@",
+                                         trackerID as CVarArg)
+        
+        guard let trackerCD = try? context.fetch(fetchTrackersCD).first else { return }
+        
+        context.delete(trackerCD)
+        
+        do {
+            try context.save()
+        }
+        catch {
+            print(error)
+        }
+    }
+    
     func filter(by date: Date, and searchText: String) {
         var predicates: [NSPredicate] = []
         let weekDay = Calendar.current.component(.weekday, from: date)
