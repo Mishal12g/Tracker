@@ -56,16 +56,16 @@ final class HabitFormViewController: UIViewController {
     
     private lazy var emojiCollection: EmojiCollectionView = {
         let collection = EmojiCollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
-        collection.delegateAndDataSource.delegate = self
-        collection.delegateAndDataSource.isEnabledDelegate = self
+        collection.setEmojidelegate = self
+        collection.isEnabledDelegate = self
         
         return collection
     }()
     
     private lazy var colorsCollection: ColorsCollectionView = {
         let collection = ColorsCollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
-        collection.delegateAndDataSource.delegate = self
-        collection.delegateAndDataSource.isEnabledDelegate = self
+        collection.delegateEdit = self
+        collection.isEnabledDelegate = self
         
         return collection
     }()

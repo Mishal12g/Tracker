@@ -65,6 +65,30 @@ extension TrackerStore {
         return convert(managedObject: trackerManagedObject)
     }
     
+    func getTracker(id: UUID) -> Tracker? {
+        let fetchTrackersCD = TrackerCD.fetchRequest()
+        fetchTrackersCD.predicate = NSPredicate(format: "id == %@", id as CVarArg)
+        
+        guard let tracker = try? context.fetch(fetchTrackersCD).first else { return nil}
+        
+        return convert(managedObject: tracker)
+    }
+    
+    func category(at indexPath: IndexPath) -> TrackerCategory? {
+        let trackerManagedObject = fetchedResultsController.object(at: indexPath)
+        
+        let fetchCategory = CategoryCD.fetchRequest()
+        fetchCategory.predicate = NSPredicate(format: "title == %@", trackerManagedObject.category?.title ?? "")
+        
+        guard 
+            let category = try? context.fetch(fetchCategory).first,
+            let id = category.id,
+            let title = category.title
+        else { return nil }
+        
+        return TrackerCategory(id: id, title: title, trackers: [])
+    }
+    
     func header(at indexPath: IndexPath) -> String? {
         fetchedResultsController.sections?[indexPath.section].name
     }
@@ -128,7 +152,34 @@ extension TrackerStore {
             print(error)
         }
     }
-    
+
+    func updateTracker(tracker: Tracker, category: TrackerCategory, trackerID: UUID) {
+        let fetchTrackersCD = TrackerCD.fetchRequest()
+        fetchTrackersCD.predicate = NSPredicate(format: "id == %@",
+                                         trackerID as CVarArg)
+        
+        guard let trackerCD = try? context.fetch(fetchTrackersCD).first else { return }
+        
+        let fetchCategoriesCD = CategoryCD.fetchRequest()
+        fetchCategoriesCD.predicate = NSPredicate(format: "id == %@",
+                                                category.id as CVarArg)
+        
+        guard let categoryCD = try? context.fetch(fetchCategoriesCD).first else { return }
+        
+        trackerCD.category = categoryCD
+        trackerCD.emoji = tracker.emoji
+        trackerCD.hexColor = ColorMarshall.encode(color: tracker.color)
+        trackerCD.name = tracker.name
+        trackerCD.schedule = WeekDayMarshall.encode(weekDays: tracker.schedule)
+        
+        do {
+            try context.save()
+        }
+        catch {
+            print(error)
+        }
+    }
+
     func filter(by date: Date, and searchText: String) {
         var predicates: [NSPredicate] = []
         let weekDay = Calendar.current.component(.weekday, from: date)

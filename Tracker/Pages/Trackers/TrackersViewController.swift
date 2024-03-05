@@ -123,17 +123,20 @@ private extension TrackersViewController {
     
     func makeContextMenu(by indexPath: IndexPath) -> UIMenu? {
         guard let tracker = collectionView.cellForItem(at: indexPath) as? TrackerCell else { return nil }
-        let deleteAction = UIAction(title: NSLocalizedString("context.menu.delete", comment: "")) { _ in
-        print("delete")
+        let deleteAction = UIAction(title: NSLocalizedString("context.menu.delete", comment: ""), attributes: .destructive) { _ in
             self.trackerStore.deleteTracker(trackerID: tracker.trackerID)
         }
         
         let pinnedAction = UIAction(title: NSLocalizedString("context.menu.pinned", comment: "")) { _ in
-        print("pinnedAction")
         }
         
         let editAction = UIAction(title: NSLocalizedString("context.menu.edit", comment: "")) { _ in
-        print("editAction")
+            let editForm = EditHabitFormViewController()
+            editForm.delegate = self
+            editForm.trackerID = tracker.trackerID
+            editForm.getIndexPath(indexPath)
+
+            self.present(editForm, animated: true)
         }
         
         return UIMenu(children: [pinnedAction, editAction, deleteAction])
@@ -176,6 +179,12 @@ extension TrackersViewController: CreatedTrackerViewControllerDelegate {
         
         dismiss(animated: true)
         present(vc, animated: true)
+    }
+}
+
+extension TrackersViewController: EditHabitFormViewControllerDelegate {
+    func didUpdateTracjer(_ tracker: Tracker, _ category: TrackerCategory, _ trackerID: UUID) {
+            trackerStore.updateTracker(tracker: tracker, category: category, trackerID: trackerID)
     }
 }
 

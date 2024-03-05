@@ -41,6 +41,9 @@
 "context.menu.edit" = "Edit";
 "context.menu.pinned" = "to fix";
 "context.menu.unpin" = "unpin";
+"edit.form.save.button" = "Save";
+"edit.form.cancel.button" = "Cancel";
+"edit.form.title" = "Editing a habit";
 "every.day" = "Every day";
 "weekday.monday" = "Monday";
 "weekday.tuesday" = "Tuesday";

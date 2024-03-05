@@ -96,8 +96,10 @@ final class TrackerCell: UICollectionViewCell {
         self.isCompletedToday = isCompletedToday
         self.trackerID = tracker.id
         let tasksString = String.localizedStringWithFormat(
-            NSLocalizedString("numberOfDays", comment: "Number of remaining days"),
-            completedDays
+            NSLocalizedString(
+                "numberOfDays",
+                comment: "Number of remaining days"),
+                completedDays
         )
         countDaysLabel.text = tasksString
         emojiLabel.text = tracker.emoji
