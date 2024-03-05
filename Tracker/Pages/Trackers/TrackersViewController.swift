@@ -186,8 +186,7 @@ extension TrackersViewController: CreatedTrackerViewControllerDelegate {
     func didTapAddTrackerButton() {
         let vc = HabitFormViewController()
         vc.delegate = self
-        vc.title = "Новая привычка"
-        
+                
         dismiss(animated: true)
         present(vc, animated: true)
     }
@@ -195,7 +194,6 @@ extension TrackersViewController: CreatedTrackerViewControllerDelegate {
     func didTapAddNotRegularEvent() {
         let vc = NotRegularEventFormViewController()
         vc.delegate = self
-        vc.title = "Новое нерегулярное событие"
         
         dismiss(animated: true)
         present(vc, animated: true)
