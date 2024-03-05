@@ -22,6 +22,19 @@ final class TrackersViewController: UIViewController {
     private let recordStore = TrackerRecordStore()
     private let params = GeometricParams(cellCount: 2, leftInset: 16, rightInset: 16, cellSpacing: 9)
     
+    private lazy var filterButton: Button = {
+        let button = Button(type: .system)
+        button.setStyle(
+            color: .systemBlue,
+            tintColor: .white,
+            title: NSLocalizedString("filters", comment: "")
+        )
+        
+        button.addTarget(self, action: #selector(didTapFilterButton), for: .touchUpInside)
+        
+        return button
+    }()
+    
     private lazy var searchFiled: UISearchController = {
         let search = UISearchController()
         search.searchResultsUpdater = self
@@ -99,6 +112,11 @@ private extension TrackersViewController {
         addConstraint()
         applyFilter()
         hideErrorViews()
+        isHiddenFilterButton()
+    }
+    
+    func isHiddenFilterButton() {
+        filterButton.isHidden = trackerStore.isEmpty
     }
     
     //filter
@@ -163,8 +181,16 @@ private extension TrackersViewController {
     }
     
     //MARK: action methods
-    @objc func datePickerValueChanged(_ sender: UIDatePicker) {
+    
+    @objc func didTapFilterButton() {
+        let filterVC = FiltersViewController()
+        
+        present(filterVC, animated: true)
+    }
+    
+        @objc func datePickerValueChanged(_ sender: UIDatePicker) {
         applyFilter()
+        isHiddenFilterButton()
     }
     
     @objc func addTrackerDidTap() {
@@ -328,6 +354,7 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
 extension TrackersViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         searchText = searchController.searchBar.text ?? ""
+        isHiddenFilterButton()
     }
 }
 
@@ -336,7 +363,8 @@ private extension TrackersViewController {
     func addSubViews() {
         [collectionView,
          emptyImageView,
-         emptyLabel].forEach {
+         emptyLabel,
+         filterButton].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview($0)
         }
@@ -359,7 +387,12 @@ private extension TrackersViewController {
             emptyLabel.topAnchor.constraint(equalTo: emptyImageView.bottomAnchor, constant: 8),
             emptyLabel.centerXAnchor.constraint(equalTo: emptyImageView.centerXAnchor),
             
-            datePicker.widthAnchor.constraint(equalToConstant: 120)
+            datePicker.widthAnchor.constraint(equalToConstant: 120),
+            
+            filterButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
+            filterButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            filterButton.heightAnchor.constraint(equalToConstant: 50),
+            filterButton.widthAnchor.constraint(equalToConstant: 115),
         ])
     }
 }

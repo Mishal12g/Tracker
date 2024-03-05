@@ -41,6 +41,11 @@
 "context.menu.edit" = "Edit";
 "context.menu.pinned" = "to fix";
 "context.menu.unpin" = "unpin";
+"filters.all" = "All trackers";
+"filters.today" = "Trackers for today";
+"filters.completed" = "Completed";
+"filters.not.completed" = "Not completed";
+"filters" = "Filters";
 "edit.form.save.button" = "Save";
 "edit.form.cancel.button" = "Cancel";
 "edit.form.title" = "Editing a habit";
