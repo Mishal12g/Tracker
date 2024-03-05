@@ -31,6 +31,15 @@ final class TrackerCell: UICollectionViewCell {
         return view
     }()
     
+    private lazy var pinnedImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "icon-pinned")
+        imageView.contentMode = .center
+        imageView.isHidden = true
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    }()
+    
     private let emojiView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -105,6 +114,7 @@ final class TrackerCell: UICollectionViewCell {
         emojiLabel.text = tracker.emoji
         trackerNameLabel.text = tracker.name
         view.backgroundColor = tracker.color
+        pinnedImageView.isHidden = !tracker.isPinned
         
         let image = UIImage(named: !isCompletedToday ? "add_icon" : "done_two")
         
@@ -136,6 +146,7 @@ private extension TrackerCell {
         view.addSubview(emojiView)
         view.addSubview(emojiLabel)
         view.addSubview(trackerNameLabel)
+        view.addSubview(pinnedImageView)
         contentView.addSubview(countDaysLabel)
         contentView.addSubview(addButton)
         
@@ -165,6 +176,9 @@ private extension TrackerCell {
             addButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -12),
             addButton.heightAnchor.constraint(equalToConstant: 34),
             addButton.widthAnchor.constraint(equalToConstant: 34),
+            
+            pinnedImageView.topAnchor.constraint(equalTo: view.topAnchor, constant: 12),
+            pinnedImageView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -4)
         ])
     }
 }

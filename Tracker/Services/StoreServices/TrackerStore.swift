@@ -100,13 +100,15 @@ extension TrackerStore {
             let emoji = managedObject.emoji,
             let hexColor = managedObject.hexColor,
             let scheduleString = managedObject.schedule
+            
         else { return nil }
         return Tracker(
             id: id,
             name: name,
             color: ColorMarshall.decode(hexColor: hexColor),
             emoji: emoji,
-            schedule: WeekDayMarshall.decode(weekDays: scheduleString)
+            schedule: WeekDayMarshall.decode(weekDays: scheduleString), 
+            isPinned: managedObject.isPinned
         )
     }
     
@@ -132,6 +134,24 @@ extension TrackerStore {
         }
         catch {
             print(error.localizedDescription)
+        }
+    }
+    
+    func pinnedTracker(trackerID: UUID, shouldPin: Bool) {
+        let fetchTrackersCD = TrackerCD.fetchRequest()
+        
+        fetchTrackersCD.predicate = NSPredicate(format: "id == %@",
+                                                trackerID as CVarArg)
+        
+        guard let trackerCD = try? context.fetch(fetchTrackersCD).first else { return }
+        
+        trackerCD.isPinned = shouldPin
+        
+        do {
+            try context.save()
+        }
+        catch {
+            print(error)
         }
     }
     

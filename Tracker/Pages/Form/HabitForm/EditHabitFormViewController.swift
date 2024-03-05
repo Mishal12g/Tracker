@@ -18,7 +18,7 @@ final class EditHabitFormViewController: UIViewController {
     weak var editEmojiDelegate: DidEditEmojiCollection?
     weak var editColorDelegate: DidEditColorCollection?
     var trackerID: UUID?
-
+    
     //MARK: - privates properties
     private var selectedTracker: Tracker?
     private var emoji: String?
@@ -141,7 +141,7 @@ private extension EditHabitFormViewController {
             NSLocalizedString(
                 "numberOfDays",
                 comment: "Number of remaining days"),
-                storeRecord.completedTrackers(by: trackerID ?? UUID())
+            storeRecord.completedTrackers(by: trackerID ?? UUID())
         )
         
         viewModel.categorySelectedBinding = { [weak self] category in
@@ -204,7 +204,14 @@ private extension EditHabitFormViewController {
               let trackerID = trackerID,
               !text.isEmpty
         else { return }
-        let tracker = Tracker(id: UUID(), name: text, color: color, emoji: emoji, schedule: schedule)
+        let tracker = Tracker(
+            id: UUID(),
+            name: text,
+            color: color,
+            emoji: emoji,
+            schedule: schedule,
+            isPinned: false
+        )
         delegate?.didUpdateTracjer(tracker, category, trackerID)
         dismiss(animated: true)
     }

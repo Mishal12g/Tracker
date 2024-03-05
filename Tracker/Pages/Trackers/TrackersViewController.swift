@@ -122,11 +122,18 @@ private extension TrackersViewController {
     }
     
     func makeContextMenu(by indexPath: IndexPath) -> UIMenu? {
-        guard let tracker = collectionView.cellForItem(at: indexPath) as? TrackerCell else { return nil }
+        guard 
+            let trackerCell = collectionView.cellForItem(at: indexPath) as? TrackerCell,
+            let tracker = self.trackerStore.object(at: indexPath)
+        else { return nil }
+        
+        let titlePinnedAction = tracker.isPinned ? NSLocalizedString("context.menu.unpin", comment: "") :
+            NSLocalizedString("context.menu.pinned", comment: "")
+        
         let deleteAction = UIAction(title: NSLocalizedString("context.menu.delete", comment: ""), attributes: .destructive) { _ in
             
             let deleteAction = UIAlertAction(title: NSLocalizedString("alert.delete.tracker", comment: ""), style: .destructive) { _ in
-                self.trackerStore.deleteTracker(trackerID: tracker.trackerID)
+                self.trackerStore.deleteTracker(trackerID: trackerCell.trackerID)
             }
             
             let cancelAction = UIAlertAction(title: NSLocalizedString("alert.delete.cancel.tracker", comment: ""), style: .cancel)
@@ -137,13 +144,16 @@ private extension TrackersViewController {
             self.present(alert, animated: true)
         }
         
-        let pinnedAction = UIAction(title: NSLocalizedString("context.menu.pinned", comment: "")) { _ in
+        let pinnedAction = UIAction(title: titlePinnedAction) { _ in
+            guard let id = trackerCell.trackerID else { return }
+            
+            self.trackerStore.pinnedTracker(trackerID: id, shouldPin: !tracker.isPinned)
         }
         
         let editAction = UIAction(title: NSLocalizedString("context.menu.edit", comment: "")) { _ in
             let editForm = EditHabitFormViewController()
             editForm.delegate = self
-            editForm.trackerID = tracker.trackerID
+            editForm.trackerID = trackerCell.trackerID
             editForm.getIndexPath(indexPath)
 
             self.present(editForm, animated: true)

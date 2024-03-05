@@ -136,7 +136,14 @@ private extension HabitFormViewController {
               let schedule = schedule,
               !text.isEmpty
         else { return }
-        let tracker = Tracker(id: UUID(), name: text, color: color, emoji: emoji, schedule: schedule)
+        let tracker = Tracker(
+            id: UUID(),
+            name: text,
+            color: color,
+            emoji: emoji,
+            schedule: schedule,
+            isPinned: false
+        )
         delegate?.createTracker(tracker, category)
         dismiss(animated: true)
     }
