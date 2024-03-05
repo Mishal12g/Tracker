@@ -44,6 +44,9 @@
 "edit.form.save.button" = "Save";
 "edit.form.cancel.button" = "Cancel";
 "edit.form.title" = "Editing a habit";
+"alert.delete.tracker" = "Delete";
+"alert.delete.cancel.tracker" = "Cancel";
+"alert.delete.message.tracker" = "Are you sure you want to delete the tracker?";
 "every.day" = "Every day";
 "weekday.monday" = "Monday";
 "weekday.tuesday" = "Tuesday";

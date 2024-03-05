@@ -124,7 +124,17 @@ private extension TrackersViewController {
     func makeContextMenu(by indexPath: IndexPath) -> UIMenu? {
         guard let tracker = collectionView.cellForItem(at: indexPath) as? TrackerCell else { return nil }
         let deleteAction = UIAction(title: NSLocalizedString("context.menu.delete", comment: ""), attributes: .destructive) { _ in
-            self.trackerStore.deleteTracker(trackerID: tracker.trackerID)
+            
+            let deleteAction = UIAlertAction(title: NSLocalizedString("alert.delete.tracker", comment: ""), style: .destructive) { _ in
+                self.trackerStore.deleteTracker(trackerID: tracker.trackerID)
+            }
+            
+            let cancelAction = UIAlertAction(title: NSLocalizedString("alert.delete.cancel.tracker", comment: ""), style: .cancel)
+            
+            let alert = UIAlertController(title: NSLocalizedString("alert.delete.message.tracker", comment: ""), message: nil, preferredStyle: .actionSheet)
+            alert.addAction(deleteAction)
+            alert.addAction(cancelAction)
+            self.present(alert, animated: true)
         }
         
         let pinnedAction = UIAction(title: NSLocalizedString("context.menu.pinned", comment: "")) { _ in

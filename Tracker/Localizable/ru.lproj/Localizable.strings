@@ -43,6 +43,9 @@
 "edit.form.save.button" = "Сохранить";
 "edit.form.cancel.button" = "Отменить";
 "edit.form.title" = "Редактирование привычки";
+"alert.delete.tracker" = "Удалить";
+"alert.delete.cancel.tracker" = "Отменить";
+"alert.delete.message.tracker" = "Уверены что хотите удалить трекер?";
 "every.day" = "Каждый день";
 "weekday.monday" = "Понедельник";
 "weekday.tuesday" = "Вторник";
