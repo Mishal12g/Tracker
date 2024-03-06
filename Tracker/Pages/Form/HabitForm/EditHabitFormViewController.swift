@@ -153,10 +153,9 @@ private extension EditHabitFormViewController {
         
         guard
             let trackerID = trackerID,
-            let indexPath = indexPath,
             let tracker = trackerStore.getTracker(id: trackerID),
             let schedule = tracker.schedule,
-            let category = trackerStore.category(at: indexPath)
+            let category = trackerStore.category(id: tracker.id)
         else { return }
         
         self.category = category

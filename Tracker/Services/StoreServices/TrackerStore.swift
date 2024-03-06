@@ -30,7 +30,6 @@ final class TrackerStore: NSObject {
         let fetchRequest = TrackerCD.fetchRequest()
         
         let pinnedSortDescriptor = NSSortDescriptor(keyPath: \TrackerCD.isPinned, ascending: false)
-        // Затем сортируем по категории (если требуется)
         let categorySortDescriptor = NSSortDescriptor(keyPath: \TrackerCD.category?.title, ascending: true)
         
         fetchRequest.sortDescriptors = [pinnedSortDescriptor, categorySortDescriptor]
@@ -54,7 +53,11 @@ final class TrackerStore: NSObject {
     
     private lazy var isPinnedfetchedResultsController: NSFetchedResultsController<TrackerCD> = {
         let fetchTrackerCD = TrackerCD.fetchRequest()
-        fetchTrackerCD.predicate = NSPredicate(format: "isPinned == YES")
+        
+        let isPinnedPredicate = NSPredicate(format: "isPinned == YES")
+        
+        fetchTrackerCD.predicate = isPinnedPredicate
+        
         fetchTrackerCD.sortDescriptors = [
             NSSortDescriptor(keyPath: \TrackerCD.name, ascending: true)
         ]
@@ -94,7 +97,7 @@ extension TrackerStore {
     
     var numberOfSections: Int {
         if !pinnedTrackersIsEmpty {
-            return (isPinnedfetchedResultsController.sections?.count ?? 0) + 1
+            return (fetchedResultsController.sections?.count ?? 0) + 1
         }
         
         return fetchedResultsController.sections?.count ?? 0
@@ -136,11 +139,14 @@ extension TrackerStore {
         return convert(managedObject: tracker)
     }
     
-    func category(at indexPath: IndexPath) -> TrackerCategory? {
-        let trackerManagedObject = fetchedResultsController.object(at: indexPath)
+    func category(id: UUID) -> TrackerCategory? {
+        let fetchTrackersCD = TrackerCD.fetchRequest()
+        fetchTrackersCD.predicate = NSPredicate(format: "id == %@", id as CVarArg)
+        
+        guard let tracker = try? context.fetch(fetchTrackersCD).first else { return nil}
         
         let fetchCategory = CategoryCD.fetchRequest()
-        fetchCategory.predicate = NSPredicate(format: "title == %@", trackerManagedObject.category?.title ?? "")
+        fetchCategory.predicate = NSPredicate(format: "title == %@", tracker.category?.title ?? "")
         
         guard 
             let category = try? context.fetch(fetchCategory).first,
@@ -150,6 +156,20 @@ extension TrackerStore {
         
         return TrackerCategory(id: id, title: title, trackers: [])
     }
+//    func category(at indexPath: IndexPath) -> TrackerCategory? {
+//        let trackerManagedObject = fetchedResultsController.object(at: indexPath)
+//        
+//        let fetchCategory = CategoryCD.fetchRequest()
+//        fetchCategory.predicate = NSPredicate(format: "title == %@", trackerManagedObject.category?.title ?? "")
+//        
+//        guard 
+//            let category = try? context.fetch(fetchCategory).first,
+//            let id = category.id,
+//            let title = category.title
+//        else { return nil }
+//        
+//        return TrackerCategory(id: id, title: title, trackers: [])
+//    }
     
     func header(at indexPath: IndexPath) -> String? {
         if !pinnedTrackersIsEmpty {
@@ -303,6 +323,22 @@ extension TrackerStore {
         catch {
             print(error.localizedDescription)
         }
+    }
+    
+    func filterPinnedTracker(date: Date) {
+        let weekDay = Calendar.current.component(.weekday, from: date)
+        let weekDayIndex = String(weekDay)
+        
+        
+        let currentDatePredicate = NSPredicate(format: "%K CONTAINS[cd] %@", "schedule", weekDayIndex)
+        
+        let isPinnedPredicate = NSPredicate(format: "isPinned == YES")
+        
+        let components = NSCompoundPredicate(andPredicateWithSubpredicates: [currentDatePredicate, isPinnedPredicate])
+        
+        isPinnedfetchedResultsController.fetchRequest.predicate = components
+        
+        try? isPinnedfetchedResultsController.performFetch()
     }
 }
 

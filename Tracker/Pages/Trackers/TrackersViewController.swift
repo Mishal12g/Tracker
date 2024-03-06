@@ -122,6 +122,8 @@ private extension TrackersViewController {
     //filter
     func applyFilter() {
         trackerStore.filter(by: currentDate, and: searchText)
+        trackerStore.filterPinnedTracker(date: currentDate)
+        hideErrorViews()
     }
     
     //views setup
