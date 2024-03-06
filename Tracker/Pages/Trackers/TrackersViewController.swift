@@ -154,6 +154,7 @@ private extension TrackersViewController {
             
             let deleteAction = UIAlertAction(title: NSLocalizedString("alert.delete.tracker", comment: ""), style: .destructive) { _ in
                 self.trackerStore.deleteTracker(trackerID: trackerCell.trackerID)
+                self.isHiddenFilterButton()
             }
             
             let cancelAction = UIAlertAction(title: NSLocalizedString("alert.delete.cancel.tracker", comment: ""), style: .cancel)
@@ -215,14 +216,15 @@ extension TrackersViewController: FiltersViewControllerDelegate {
     
     func todayTrackersUpdate() {
         datePicker.date = Calendar.current.startOfDay(for: Date())
+        applyFilter()
     }
     
     func completedTrackersUpdate() {
-//        <#code#>
+        trackerStore.filterIsCompletedTrackers(true, date: currentDate)
     }
     
     func notCompletedTrackersUpdate() {
-//        <#code#>
+        trackerStore.filterIsCompletedTrackers(false, date: currentDate)
     }
 }
 
@@ -256,6 +258,7 @@ extension TrackersViewController: HabitFormViewControllerDelegate {
     func createTracker(_ tracker: Tracker, _ category: TrackerCategory) {
         do {
             try trackerStore.addTracker(tracker: tracker, category: category)
+            isHiddenFilterButton()
         }
         catch {
             print(error.localizedDescription)
@@ -266,11 +269,17 @@ extension TrackersViewController: HabitFormViewControllerDelegate {
 //MARK: - TrackerCellDelegate
 extension TrackersViewController: TrackerCellDelegate {
     func completeTracker(id: UUID) {
-        
         if currentDate < Date() {
             let record = TrackerRecord(trackerId: id, completedDate: currentDate)
             recordStore.add(record)
             collectionView.reloadData()
+            
+            guard
+                let tracker = trackerStore.getTracker(id: id)
+            else { return
+            }
+            
+            trackerStore.completedTracker(true, trackerID: tracker.id)
         }
     }
     
@@ -278,6 +287,13 @@ extension TrackersViewController: TrackerCellDelegate {
         if let record = recordStore.fetchRecord(by: id, and: currentDate) {
             recordStore.delete(record)
             collectionView.reloadData()
+            
+            guard
+                let tracker = trackerStore.getTracker(id: id)
+            else { return
+            }
+            
+            trackerStore.completedTracker(false, trackerID: tracker.id)
         }
     }
 }

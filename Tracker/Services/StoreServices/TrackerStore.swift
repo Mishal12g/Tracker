@@ -156,20 +156,6 @@ extension TrackerStore {
         
         return TrackerCategory(id: id, title: title, trackers: [])
     }
-    //    func category(at indexPath: IndexPath) -> TrackerCategory? {
-    //        let trackerManagedObject = fetchedResultsController.object(at: indexPath)
-    //
-    //        let fetchCategory = CategoryCD.fetchRequest()
-    //        fetchCategory.predicate = NSPredicate(format: "title == %@", trackerManagedObject.category?.title ?? "")
-    //
-    //        guard
-    //            let category = try? context.fetch(fetchCategory).first,
-    //            let id = category.id,
-    //            let title = category.title
-    //        else { return nil }
-    //
-    //        return TrackerCategory(id: id, title: title, trackers: [])
-    //    }
     
     func header(at indexPath: IndexPath) -> String? {
         if !pinnedTrackersIsEmpty {
@@ -198,7 +184,8 @@ extension TrackerStore {
             color: ColorMarshall.decode(hexColor: hexColor),
             emoji: emoji,
             schedule: WeekDayMarshall.decode(weekDays: scheduleString),
-            isPinned: managedObject.isPinned
+            isPinned: managedObject.isPinned, 
+            isCompleted: managedObject.isCompleted
         )
     }
     
@@ -210,6 +197,7 @@ extension TrackerStore {
         trackerCD.emoji = tracker.emoji
         trackerCD.name = tracker.name
         trackerCD.isPinned = tracker.isPinned
+        trackerCD.isCompleted = tracker.isCompleted
         
         let fetchRequest = CategoryCD.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "id == %@", category.id as CVarArg)
@@ -219,6 +207,23 @@ extension TrackerStore {
         }
         
         trackerCD.category = categoryCD
+        
+        do {
+            try context.save()
+        }
+        catch {
+            print(error.localizedDescription)
+        }
+    }
+    
+    func completedTracker(_ isComplete: Bool, trackerID: UUID) {
+        let fetchTrackersCD = TrackerCD.fetchRequest()
+        fetchTrackersCD.predicate = NSPredicate(format: "id == %@",
+                                                trackerID as CVarArg)
+        
+        guard let trackerCD = try? context.fetch(fetchTrackersCD).first else { return }
+    
+        trackerCD.isCompleted = isComplete
         
         do {
             try context.save()
@@ -314,6 +319,35 @@ extension TrackerStore {
         }
         
         fetchedResultsController.fetchRequest.predicate = NSCompoundPredicate(orPredicateWithSubpredicates: predicates)
+        
+        do{
+            try fetchedResultsController.performFetch()
+            
+            delegate?.didUpdate()
+        }
+        catch {
+            print(error.localizedDescription)
+        }
+    }
+    
+    func filterIsCompletedTrackers(_ isCompleted: Bool, date: Date) {
+        let predicates: NSCompoundPredicate
+        let weekDay = Calendar.current.component(.weekday, from: date)
+        let weekDayIndex = String(weekDay)
+        
+        if isCompleted {
+            predicates = NSCompoundPredicate(andPredicateWithSubpredicates: [
+                NSPredicate(format: "isCompleted == YES"),
+                NSPredicate(format: "%K CONTAINS[cd] %@", "schedule", weekDayIndex)
+])
+        } else {
+            predicates = NSCompoundPredicate(andPredicateWithSubpredicates: [
+                NSPredicate(format: "isCompleted == NO"),
+                NSPredicate(format: "%K CONTAINS[cd] %@", "schedule", weekDayIndex)
+            ])
+        }
+        
+        fetchedResultsController.fetchRequest.predicate = predicates
         
         do{
             try fetchedResultsController.performFetch()

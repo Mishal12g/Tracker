@@ -147,7 +147,8 @@ private extension NotRegularEventFormViewController {
             color: color,
             emoji: emoji,
             schedule: nil,
-            isPinned: false
+            isPinned: false, 
+            isCompleted: false
         )
         delegate?.createTracker(tracker, category)
         dismiss(animated: true)

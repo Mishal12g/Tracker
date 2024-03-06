@@ -17,6 +17,14 @@ protocol FiltersViewControllerDelegate: AnyObject {
 final class FiltersViewController: UIViewController {
     weak var delegate: FiltersViewControllerDelegate?
     private let trackerStore = TrackerStore()
+    private var filterTitle: String {
+        get {
+            UserDefaults.standard.string(forKey: "Filters") ?? ""
+        }
+        set {
+            UserDefaults.standard.setValue(newValue, forKey: "Filters")
+        }
+    }
     
     //MARK: - UI
     private lazy var tableView: UITableView = {
@@ -43,6 +51,8 @@ final class FiltersViewController: UIViewController {
     //MARK: - overrides methods
     override func viewDidLoad() {
         super.viewDidLoad()
+        let defaults = ["filters": FiltersList.allTrackers.rawValue]
+        UserDefaults.standard.register(defaults: defaults)
         commonSetup()
     }
 }
@@ -74,6 +84,12 @@ extension FiltersViewController: UITableViewDataSource {
         cell.textLabel?.text = FiltersList.allCases[indexPath.row].title
         cell.backgroundColor = .ypWhite
         
+        if filterTitle == FiltersList.allCases[indexPath.item].rawValue {
+            cell.hideButton(false)
+        } else {
+            cell.hideButton(true)
+        }
+        
         let isTopCell = indexPath.row == 0
         let isBottomCell = indexPath.row == tableView.numberOfRows(inSection: indexPath.section) - 1
         
@@ -96,19 +112,26 @@ extension FiltersViewController: UITableViewDataSource {
 //MARK: - tableView delegate
 extension FiltersViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let cell = tableView.cellForRow(at: indexPath) as? FilterCell else { return }
+        guard
+            let cell = tableView.cellForRow(at: indexPath) as? FilterCell
+        else { return }
         cell.hideButton(false)
+        
+        tableView.reloadData()
+        
         switch FiltersList.allCases[indexPath.item] {
         case .allTrackers:
+            filterTitle = FiltersList.allTrackers.rawValue
             delegate?.allTrackersUpdate()
         case .todayTrackers:
+            filterTitle = FiltersList.todayTrackers.rawValue
             delegate?.todayTrackersUpdate()
         case .completedTrackers:
-//            delegate?.didUpdateTrackers()
-            print("")
+            filterTitle = FiltersList.completedTrackers.rawValue
+            delegate?.completedTrackersUpdate()
         case .notCompletedTrackers:
-//            delegate?.didUpdateTrackers()
-            print("")
+            filterTitle = FiltersList.notCompletedTrackers.rawValue
+            delegate?.notCompletedTrackersUpdate()
         }
     }
     
