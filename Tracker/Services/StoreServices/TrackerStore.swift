@@ -148,7 +148,7 @@ extension TrackerStore {
         let fetchCategory = CategoryCD.fetchRequest()
         fetchCategory.predicate = NSPredicate(format: "title == %@", tracker.category?.title ?? "")
         
-        guard 
+        guard
             let category = try? context.fetch(fetchCategory).first,
             let id = category.id,
             let title = category.title
@@ -156,20 +156,20 @@ extension TrackerStore {
         
         return TrackerCategory(id: id, title: title, trackers: [])
     }
-//    func category(at indexPath: IndexPath) -> TrackerCategory? {
-//        let trackerManagedObject = fetchedResultsController.object(at: indexPath)
-//        
-//        let fetchCategory = CategoryCD.fetchRequest()
-//        fetchCategory.predicate = NSPredicate(format: "title == %@", trackerManagedObject.category?.title ?? "")
-//        
-//        guard 
-//            let category = try? context.fetch(fetchCategory).first,
-//            let id = category.id,
-//            let title = category.title
-//        else { return nil }
-//        
-//        return TrackerCategory(id: id, title: title, trackers: [])
-//    }
+    //    func category(at indexPath: IndexPath) -> TrackerCategory? {
+    //        let trackerManagedObject = fetchedResultsController.object(at: indexPath)
+    //
+    //        let fetchCategory = CategoryCD.fetchRequest()
+    //        fetchCategory.predicate = NSPredicate(format: "title == %@", trackerManagedObject.category?.title ?? "")
+    //
+    //        guard
+    //            let category = try? context.fetch(fetchCategory).first,
+    //            let id = category.id,
+    //            let title = category.title
+    //        else { return nil }
+    //
+    //        return TrackerCategory(id: id, title: title, trackers: [])
+    //    }
     
     func header(at indexPath: IndexPath) -> String? {
         if !pinnedTrackersIsEmpty {
@@ -190,14 +190,14 @@ extension TrackerStore {
             let emoji = managedObject.emoji,
             let hexColor = managedObject.hexColor,
             let scheduleString = managedObject.schedule
-            
+                
         else { return nil }
         return Tracker(
             id: id,
             name: name,
             color: ColorMarshall.decode(hexColor: hexColor),
             emoji: emoji,
-            schedule: WeekDayMarshall.decode(weekDays: scheduleString), 
+            schedule: WeekDayMarshall.decode(weekDays: scheduleString),
             isPinned: managedObject.isPinned
         )
     }
@@ -249,13 +249,13 @@ extension TrackerStore {
             print(error)
         }
     }
-
+    
     
     func deleteTracker(trackerID: UUID?) {
         guard let trackerID = trackerID else { return }
         let fetchTrackersCD = TrackerCD.fetchRequest()
         fetchTrackersCD.predicate = NSPredicate(format: "id == %@",
-                                         trackerID as CVarArg)
+                                                trackerID as CVarArg)
         
         guard let trackerCD = try? context.fetch(fetchTrackersCD).first else { return }
         
@@ -268,17 +268,17 @@ extension TrackerStore {
             print(error)
         }
     }
-
+    
     func updateTracker(tracker: Tracker, category: TrackerCategory, trackerID: UUID) {
         let fetchTrackersCD = TrackerCD.fetchRequest()
         fetchTrackersCD.predicate = NSPredicate(format: "id == %@",
-                                         trackerID as CVarArg)
+                                                trackerID as CVarArg)
         
         guard let trackerCD = try? context.fetch(fetchTrackersCD).first else { return }
         
         let fetchCategoriesCD = CategoryCD.fetchRequest()
         fetchCategoriesCD.predicate = NSPredicate(format: "id == %@",
-                                                category.id as CVarArg)
+                                                  category.id as CVarArg)
         
         guard let categoryCD = try? context.fetch(fetchCategoriesCD).first else { return }
         
@@ -295,7 +295,7 @@ extension TrackerStore {
             print(error)
         }
     }
-
+    
     func filter(by date: Date, and searchText: String) {
         var predicates: [NSPredicate] = []
         let weekDay = Calendar.current.component(.weekday, from: date)
@@ -340,6 +340,19 @@ extension TrackerStore {
         
         try? isPinnedfetchedResultsController.performFetch()
     }
+    
+    func filterZero() {
+        
+        fetchedResultsController.fetchRequest.predicate = NSCompoundPredicate(orPredicateWithSubpredicates: [ NSPredicate(format: "%K CONTAINS[cd] %@", "name", "searchText"), NSPredicate(format: "%K CONTAINS[cd] %@", "schedule", "weekDayIndex")])
+        
+        do {
+            try fetchedResultsController.performFetch()
+            
+            delegate?.didUpdate()
+        }
+        catch {
+            print(error.localizedDescription)
+        }}
 }
 
 extension TrackerStore: NSFetchedResultsControllerDelegate {

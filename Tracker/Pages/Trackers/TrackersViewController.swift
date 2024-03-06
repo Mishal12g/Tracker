@@ -184,7 +184,7 @@ private extension TrackersViewController {
     
     @objc func didTapFilterButton() {
         let filterVC = FiltersViewController()
-        
+        filterVC.delegate = self
         present(filterVC, animated: true)
     }
     
@@ -204,6 +204,25 @@ extension TrackersViewController: StoreDelegate {
     func didUpdate() {
         hideErrorViews()
         collectionView.reloadData()
+    }
+}
+
+//MARK: -
+extension TrackersViewController: FiltersViewControllerDelegate {
+    func allTrackersUpdate() {
+        trackerStore.filter(by: currentDate, and: searchText)
+    }
+    
+    func todayTrackersUpdate() {
+        datePicker.date = Calendar.current.startOfDay(for: Date())
+    }
+    
+    func completedTrackersUpdate() {
+//        <#code#>
+    }
+    
+    func notCompletedTrackersUpdate() {
+//        <#code#>
     }
 }
 

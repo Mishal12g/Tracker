@@ -6,8 +6,18 @@
 //
 
 import UIKit
-//TODO: прописать логику...
+//TODO: - Delegate под вопросом
+protocol FiltersViewControllerDelegate: AnyObject {
+    func allTrackersUpdate()
+    func todayTrackersUpdate()
+    func completedTrackersUpdate()
+    func notCompletedTrackersUpdate()
+}
+
 final class FiltersViewController: UIViewController {
+    weak var delegate: FiltersViewControllerDelegate?
+    private let trackerStore = TrackerStore()
+    
     //MARK: - UI
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
@@ -88,6 +98,18 @@ extension FiltersViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let cell = tableView.cellForRow(at: indexPath) as? FilterCell else { return }
         cell.hideButton(false)
+        switch FiltersList.allCases[indexPath.item] {
+        case .allTrackers:
+            delegate?.allTrackersUpdate()
+        case .todayTrackers:
+            delegate?.todayTrackersUpdate()
+        case .completedTrackers:
+//            delegate?.didUpdateTrackers()
+            print("")
+        case .notCompletedTrackers:
+//            delegate?.didUpdateTrackers()
+            print("")
+        }
     }
     
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
