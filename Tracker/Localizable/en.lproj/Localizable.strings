@@ -41,6 +41,7 @@
 "context.menu.edit" = "Edit";
 "context.menu.pinned" = "to fix";
 "context.menu.unpin" = "unpin";
+"pinned.category" = "Fixed";
 "filters.all" = "All trackers";
 "filters.today" = "Trackers for today";
 "filters.completed" = "Completed";

@@ -17,6 +17,7 @@ final class FiltersViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(FilterCell.self, forCellReuseIdentifier: FilterCell.identity)
+        
         return tableView
     }()
     

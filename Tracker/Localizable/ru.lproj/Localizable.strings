@@ -40,6 +40,7 @@
 "context.menu.edit" = "Редактировать";
 "context.menu.pinned" = "Закрепить";
 "context.menu.unpin" = "Открепить";
+"pinned.category" = "Закрепленные";
 "edit.form.save.button" = "Сохранить";
 "edit.form.cancel.button" = "Отменить";
 "edit.form.title" = "Редактирование привычки";

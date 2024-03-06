@@ -16,19 +16,55 @@ final class TrackerStore: NSObject {
         return appDelegate.persistentContainer.viewContext
     }
     
+    private var pinnedTrackers: [Tracker]? {
+        guard 
+            let trackersCD = isPinnedfetchedResultsController.fetchedObjects
+        else { return nil}
+        
+        return trackersCD.compactMap({ convert(managedObject: $0) })
+    }
+    
     private weak var delegate: StoreDelegate?
     
     private lazy var fetchedResultsController: NSFetchedResultsController<TrackerCD> = {
         let fetchRequest = TrackerCD.fetchRequest()
         
-        fetchRequest.sortDescriptors = [
-            NSSortDescriptor(keyPath: \TrackerCD.category?.title, ascending: true)
-        ]
+        let pinnedSortDescriptor = NSSortDescriptor(keyPath: \TrackerCD.isPinned, ascending: false)
+        // Затем сортируем по категории (если требуется)
+        let categorySortDescriptor = NSSortDescriptor(keyPath: \TrackerCD.category?.title, ascending: true)
+        
+        fetchRequest.sortDescriptors = [pinnedSortDescriptor, categorySortDescriptor]
         
         let frc = NSFetchedResultsController(fetchRequest: fetchRequest,
                                              managedObjectContext: context,
                                              sectionNameKeyPath: "category.title",
                                              cacheName: nil)
+        
+        frc.delegate = self
+        
+        do {
+            try frc.performFetch()
+        }
+        catch {
+            print(error.localizedDescription)
+        }
+        
+        return frc
+    }()
+    
+    private lazy var isPinnedfetchedResultsController: NSFetchedResultsController<TrackerCD> = {
+        let fetchTrackerCD = TrackerCD.fetchRequest()
+        fetchTrackerCD.predicate = NSPredicate(format: "isPinned == YES")
+        fetchTrackerCD.sortDescriptors = [
+            NSSortDescriptor(keyPath: \TrackerCD.name, ascending: true)
+        ]
+        
+        let frc = NSFetchedResultsController(
+            fetchRequest: fetchTrackerCD,
+            managedObjectContext: context,
+            sectionNameKeyPath: nil,
+            cacheName: nil
+        )
         
         frc.delegate = self
         
@@ -52,15 +88,41 @@ extension TrackerStore {
         fetchedResultsController.sections?.isEmpty ?? true
     }
     
+    var pinnedTrackersIsEmpty: Bool {
+        pinnedTrackers?.isEmpty ?? true
+    }
+    
     var numberOfSections: Int {
+        if !pinnedTrackersIsEmpty {
+            return (isPinnedfetchedResultsController.sections?.count ?? 0) + 1
+        }
+        
         return fetchedResultsController.sections?.count ?? 0
     }
     
     func numberOfRowsInSection(_ section: Int) -> Int {
-        fetchedResultsController.sections?[section].numberOfObjects ?? 0
+        if !pinnedTrackersIsEmpty {
+            if section == 0 {
+                return isPinnedfetchedResultsController.fetchedObjects?.count ?? 0
+            } else {
+                return fetchedResultsController.sections?[section - 1].numberOfObjects ?? 0
+            }
+        }
+        
+        return fetchedResultsController.sections?[section].numberOfObjects ?? 0
     }
     
     func object(at indexPath: IndexPath) -> Tracker? {
+        if !pinnedTrackersIsEmpty {
+            if indexPath.section == 0 {
+                return convert(managedObject: isPinnedfetchedResultsController.object(at: indexPath))
+            } else {
+                let newIndexPath = IndexPath(item: indexPath.item, section: indexPath.section - 1)
+                let trackerCD = fetchedResultsController.object(at: newIndexPath)
+                return convert(managedObject: trackerCD)
+            }
+        }
+        
         let trackerManagedObject = fetchedResultsController.object(at: indexPath)
         return convert(managedObject: trackerManagedObject)
     }
@@ -90,7 +152,15 @@ extension TrackerStore {
     }
     
     func header(at indexPath: IndexPath) -> String? {
-        fetchedResultsController.sections?[indexPath.section].name
+        if !pinnedTrackersIsEmpty {
+            if indexPath.section == 0 {
+                return NSLocalizedString("pinned.category", comment: "")
+            } else {
+                return fetchedResultsController.sections?[indexPath.section - 1].name
+            }
+        }
+        
+        return fetchedResultsController.sections?[indexPath.section].name
     }
     
     func convert(managedObject: TrackerCD) -> Tracker? {
@@ -119,6 +189,7 @@ extension TrackerStore {
         trackerCD.schedule = WeekDayMarshall.encode(weekDays: tracker.schedule ?? Weekday.allCases)
         trackerCD.emoji = tracker.emoji
         trackerCD.name = tracker.name
+        trackerCD.isPinned = tracker.isPinned
         
         let fetchRequest = CategoryCD.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "id == %@", category.id as CVarArg)
@@ -137,16 +208,20 @@ extension TrackerStore {
         }
     }
     
-    func pinnedTracker(trackerID: UUID, shouldPin: Bool) {
-        let fetchTrackersCD = TrackerCD.fetchRequest()
-        
-        fetchTrackersCD.predicate = NSPredicate(format: "id == %@",
-                                                trackerID as CVarArg)
-        
-        guard let trackerCD = try? context.fetch(fetchTrackersCD).first else { return }
-        
-        trackerCD.isPinned = shouldPin
-        
+    func pinnedTracker(indexPath: IndexPath) {
+        if !pinnedTrackersIsEmpty {
+            if indexPath.section == 0 {
+                let pinnedTracker = isPinnedfetchedResultsController.object(at: indexPath)
+                pinnedTracker.isPinned.toggle()
+            } else {
+                let newIndexPath = IndexPath(item: indexPath.item, section: indexPath.section - 1)
+                let trackerCD = fetchedResultsController.object(at: newIndexPath)
+                trackerCD.isPinned.toggle()
+            }
+        } else {
+            let trackerCD = fetchedResultsController.object(at: indexPath)
+            trackerCD.isPinned.toggle()
+        }
         do {
             try context.save()
         }
@@ -154,6 +229,7 @@ extension TrackerStore {
             print(error)
         }
     }
+
     
     func deleteTracker(trackerID: UUID?) {
         guard let trackerID = trackerID else { return }
@@ -218,6 +294,7 @@ extension TrackerStore {
         }
         
         fetchedResultsController.fetchRequest.predicate = NSCompoundPredicate(orPredicateWithSubpredicates: predicates)
+        
         do{
             try fetchedResultsController.performFetch()
             

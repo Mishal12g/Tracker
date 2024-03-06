@@ -23,7 +23,7 @@ final class TrackerCell: UICollectionViewCell {
     //MARK: - public properties
     weak var delegate: TrackerCellDelegate?
     
-    private let view: UIView = {
+    private(set) var view: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = .ypGreen
@@ -108,7 +108,7 @@ final class TrackerCell: UICollectionViewCell {
             NSLocalizedString(
                 "numberOfDays",
                 comment: "Number of remaining days"),
-                completedDays
+            completedDays
         )
         countDaysLabel.text = tasksString
         emojiLabel.text = tracker.emoji

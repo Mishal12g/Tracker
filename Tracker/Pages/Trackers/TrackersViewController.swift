@@ -67,7 +67,7 @@ final class TrackersViewController: UIViewController {
     }()
     
     private lazy var addTrackerButton: UIBarButtonItem = {
-      let item = UIBarButtonItem(
+        let item = UIBarButtonItem(
             image: UIImage(
                 systemName: "plus",
                 withConfiguration: UIImage.SymbolConfiguration(weight: .semibold)
@@ -140,13 +140,13 @@ private extension TrackersViewController {
     }
     
     func makeContextMenu(by indexPath: IndexPath) -> UIMenu? {
-        guard 
+        guard
             let trackerCell = collectionView.cellForItem(at: indexPath) as? TrackerCell,
             let tracker = self.trackerStore.object(at: indexPath)
         else { return nil }
         
         let titlePinnedAction = tracker.isPinned ? NSLocalizedString("context.menu.unpin", comment: "") :
-            NSLocalizedString("context.menu.pinned", comment: "")
+        NSLocalizedString("context.menu.pinned", comment: "")
         
         let deleteAction = UIAction(title: NSLocalizedString("context.menu.delete", comment: ""), attributes: .destructive) { _ in
             
@@ -163,9 +163,7 @@ private extension TrackersViewController {
         }
         
         let pinnedAction = UIAction(title: titlePinnedAction) { _ in
-            guard let id = trackerCell.trackerID else { return }
-            
-            self.trackerStore.pinnedTracker(trackerID: id, shouldPin: !tracker.isPinned)
+            self.trackerStore.pinnedTracker(indexPath: indexPath)
         }
         
         let editAction = UIAction(title: NSLocalizedString("context.menu.edit", comment: "")) { _ in
@@ -173,7 +171,7 @@ private extension TrackersViewController {
             editForm.delegate = self
             editForm.trackerID = trackerCell.trackerID
             editForm.getIndexPath(indexPath)
-
+            
             self.present(editForm, animated: true)
         }
         
@@ -188,7 +186,7 @@ private extension TrackersViewController {
         present(filterVC, animated: true)
     }
     
-        @objc func datePickerValueChanged(_ sender: UIDatePicker) {
+    @objc func datePickerValueChanged(_ sender: UIDatePicker) {
         applyFilter()
         isHiddenFilterButton()
     }
@@ -212,7 +210,7 @@ extension TrackersViewController: CreatedTrackerViewControllerDelegate {
     func didTapAddTrackerButton() {
         let vc = HabitFormViewController()
         vc.delegate = self
-                
+        
         dismiss(animated: true)
         present(vc, animated: true)
     }
@@ -228,7 +226,7 @@ extension TrackersViewController: CreatedTrackerViewControllerDelegate {
 
 extension TrackersViewController: EditHabitFormViewControllerDelegate {
     func didUpdateTracjer(_ tracker: Tracker, _ category: TrackerCategory, _ trackerID: UUID) {
-            trackerStore.updateTracker(tracker: tracker, category: category, trackerID: trackerID)
+        trackerStore.updateTracker(tracker: tracker, category: category, trackerID: trackerID)
     }
 }
 
@@ -278,7 +276,7 @@ extension TrackersViewController: UICollectionViewDataSource {
         
         let isCompletedTracker = recordStore.isTrackerCompletedToday(by: tracker.id, and: currentDate)
         let completedDays = recordStore.completedTrackers(by: tracker.id)
-
+        
         cell.delegate = self
         cell.config(
             with: tracker,
@@ -322,6 +320,14 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
         UIContextMenuConfiguration(identifier: indexPath as NSCopying, previewProvider: nil) { _ in
             self.makeContextMenu(by: indexPath)
         }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, previewForHighlightingContextMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview? {
+        guard
+            let indexPath = configuration.identifier as? IndexPath,
+            let cell = collectionView.cellForItem(at: indexPath) as? TrackerCell
+        else { return nil }
+        return UITargetedPreview(view: cell.view)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
