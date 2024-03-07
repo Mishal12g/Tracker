@@ -201,7 +201,6 @@ private extension EditHabitFormViewController {
               let category = category,
               let schedule = schedule,
               let trackerID = trackerID,
-              let isCompleted = trackerStore.getTracker(id: trackerID)?.isCompleted,
               !text.isEmpty
         else { return }
         
@@ -211,8 +210,7 @@ private extension EditHabitFormViewController {
             color: color,
             emoji: emoji,
             schedule: schedule,
-            isPinned: false, 
-            isCompleted: isCompleted
+            isPinned: false
         )
         delegate?.didUpdateTracjer(tracker, category, trackerID)
         dismiss(animated: true)

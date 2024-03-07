@@ -9,6 +9,7 @@ import UIKit
 import CoreData
 
 final class TrackerStore: NSObject {
+    private let recogdStore = TrackerRecordStore()
     private var context: NSManagedObjectContext {
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
             fatalError("Не удалось получить AppDelegate")
@@ -17,7 +18,7 @@ final class TrackerStore: NSObject {
     }
     
     private var pinnedTrackers: [Tracker]? {
-        guard 
+        guard
             let trackersCD = isPinnedfetchedResultsController.fetchedObjects
         else { return nil}
         
@@ -184,8 +185,7 @@ extension TrackerStore {
             color: ColorMarshall.decode(hexColor: hexColor),
             emoji: emoji,
             schedule: WeekDayMarshall.decode(weekDays: scheduleString),
-            isPinned: managedObject.isPinned, 
-            isCompleted: managedObject.isCompleted
+            isPinned: managedObject.isPinned
         )
     }
     
@@ -197,7 +197,6 @@ extension TrackerStore {
         trackerCD.emoji = tracker.emoji
         trackerCD.name = tracker.name
         trackerCD.isPinned = tracker.isPinned
-        trackerCD.isCompleted = tracker.isCompleted
         
         let fetchRequest = CategoryCD.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "id == %@", category.id as CVarArg)
@@ -220,10 +219,6 @@ extension TrackerStore {
         let fetchTrackersCD = TrackerCD.fetchRequest()
         fetchTrackersCD.predicate = NSPredicate(format: "id == %@",
                                                 trackerID as CVarArg)
-        
-        guard let trackerCD = try? context.fetch(fetchTrackersCD).first else { return }
-    
-        trackerCD.isCompleted = isComplete
         
         do {
             try context.save()
@@ -330,24 +325,24 @@ extension TrackerStore {
         }
     }
     
-    func filterIsCompletedTrackers(_ isCompleted: Bool, date: Date) {
-        let predicates: NSCompoundPredicate
-        let weekDay = Calendar.current.component(.weekday, from: date)
-        let weekDayIndex = String(weekDay)
+    func filterIsCompletedTrackers(isCompleted: Bool, date: Date) {
+        let predicate: NSPredicate
+        guard let records = recogdStore.filterRecord(currentDate: date) else { return }
+        
+        let trackerIds = records.map { $0.trackerId }
         
         if isCompleted {
-            predicates = NSCompoundPredicate(andPredicateWithSubpredicates: [
-                NSPredicate(format: "isCompleted == YES"),
-                NSPredicate(format: "%K CONTAINS[cd] %@", "schedule", weekDayIndex)
-])
+            predicate = NSPredicate(format: "id IN %@", trackerIds)
+            fetchedResultsController.fetchRequest.predicate = predicate
         } else {
-            predicates = NSCompoundPredicate(andPredicateWithSubpredicates: [
-                NSPredicate(format: "isCompleted == NO"),
-                NSPredicate(format: "%K CONTAINS[cd] %@", "schedule", weekDayIndex)
-            ])
+            let weekDay = Calendar.current.component(.weekday, from: date)
+            let weekDayIndex = String(weekDay)
+            
+            let currentDatePredicate = NSPredicate(format: "%K CONTAINS[cd] %@", "schedule", weekDayIndex)
+            
+            predicate = NSPredicate(format: "NOT (id IN %@)", trackerIds)
+            fetchedResultsController.fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, currentDatePredicate])
         }
-        
-        fetchedResultsController.fetchRequest.predicate = predicates
         
         do{
             try fetchedResultsController.performFetch()
@@ -374,19 +369,6 @@ extension TrackerStore {
         
         try? isPinnedfetchedResultsController.performFetch()
     }
-    
-    func filterZero() {
-        
-        fetchedResultsController.fetchRequest.predicate = NSCompoundPredicate(orPredicateWithSubpredicates: [ NSPredicate(format: "%K CONTAINS[cd] %@", "name", "searchText"), NSPredicate(format: "%K CONTAINS[cd] %@", "schedule", "weekDayIndex")])
-        
-        do {
-            try fetchedResultsController.performFetch()
-            
-            delegate?.didUpdate()
-        }
-        catch {
-            print(error.localizedDescription)
-        }}
 }
 
 extension TrackerStore: NSFetchedResultsControllerDelegate {

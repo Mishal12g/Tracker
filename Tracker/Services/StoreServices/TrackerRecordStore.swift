@@ -54,6 +54,17 @@ extension TrackerRecordStore {
         guard let recordCD = try? context.fetch(fetchRequest).first else { return nil }
        
         return convert(recordCD: recordCD)
+    }   
+    
+    func filterRecord(currentDate: Date) -> [TrackerRecord]? {
+        let fetchRequest = RecordCD.fetchRequest()
+        let datePredicate = NSPredicate(format: "completedDate == %@", currentDate as NSDate)
+        
+        fetchRequest.predicate = datePredicate
+        
+        guard let recordCD = try? context.fetch(fetchRequest) else { return nil }
+        
+        return recordCD.compactMap({ convert(recordCD: $0)})
     }
     
     func add(_ record: TrackerRecord) {

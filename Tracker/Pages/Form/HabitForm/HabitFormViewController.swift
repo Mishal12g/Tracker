@@ -142,8 +142,7 @@ private extension HabitFormViewController {
             color: color,
             emoji: emoji,
             schedule: schedule,
-            isPinned: false, 
-            isCompleted: false
+            isPinned: false
         )
         delegate?.createTracker(tracker, category)
         dismiss(animated: true)

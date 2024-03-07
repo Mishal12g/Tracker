@@ -2,6 +2,12 @@ import UIKit
 
 final class TrackersViewController: UIViewController {
     //MARK: - privates properties
+    private var filterStatus: FiltersList = .allTrackers {
+        didSet {
+            applyFilter()
+        }
+    }
+    
     private lazy var trackerStore = TrackerStore(delegate: self)
     
     private var currentDate: Date {
@@ -100,6 +106,7 @@ final class TrackersViewController: UIViewController {
     
     //MARK: - overrides methods
     override func viewDidLoad() {
+        super.viewDidLoad()
         common()
     }
 }
@@ -121,7 +128,18 @@ private extension TrackersViewController {
     
     //filter
     func applyFilter() {
-        trackerStore.filter(by: currentDate, and: searchText)
+        switch filterStatus {
+        case .allTrackers:
+            trackerStore.filter(by: currentDate, and: searchText)
+        case .todayTrackers:
+            trackerStore.filter(by: currentDate, and: searchText)
+        case .completedTrackers:
+            trackerStore.filterIsCompletedTrackers(isCompleted: true, date: currentDate)
+
+        case .notCompletedTrackers:
+            trackerStore.filterIsCompletedTrackers(isCompleted: false, date: currentDate)
+        }
+        
         trackerStore.filterPinnedTracker(date: currentDate)
         hideErrorViews()
     }
@@ -211,20 +229,20 @@ extension TrackersViewController: StoreDelegate {
 //MARK: -
 extension TrackersViewController: FiltersViewControllerDelegate {
     func allTrackersUpdate() {
-        trackerStore.filter(by: currentDate, and: searchText)
+        filterStatus = FiltersList.allTrackers
     }
     
     func todayTrackersUpdate() {
         datePicker.date = Calendar.current.startOfDay(for: Date())
-        applyFilter()
+        filterStatus = FiltersList.todayTrackers
     }
     
     func completedTrackersUpdate() {
-        trackerStore.filterIsCompletedTrackers(true, date: currentDate)
+        filterStatus = FiltersList.completedTrackers
     }
     
     func notCompletedTrackersUpdate() {
-        trackerStore.filterIsCompletedTrackers(false, date: currentDate)
+        filterStatus = FiltersList.notCompletedTrackers
     }
 }
 
