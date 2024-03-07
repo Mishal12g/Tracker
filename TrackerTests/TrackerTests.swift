@@ -3,10 +3,27 @@ import SnapshotTesting
 @testable import Tracker
 
 final class AlpabetTests: XCTestCase {
-    func testViewController() {
-        let vc = TrackersViewController()
-        
-        assertSnapshot(matching: vc, as: .image)
-        
+    func testLigthTrackersViewController() throws {
+        let vc = TabBarController()
+        assertSnapshot(
+            matching: vc,
+            as: .image(
+                traits: .init(
+                    userInterfaceStyle: .light
+                )
+            )
+        )
+    }
+    
+    func testDarkTrackersViewController() throws {
+        let vc = TabBarController()
+        assertSnapshot(
+            matching: vc,
+            as: .image(
+                traits: .init(
+                    userInterfaceStyle: .dark
+                )
+            )
+        )
     }
 }

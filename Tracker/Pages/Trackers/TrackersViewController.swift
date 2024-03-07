@@ -109,6 +109,16 @@ final class TrackersViewController: UIViewController {
         super.viewDidLoad()
         common()
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        Analysis.report(event: .open, screen: .main)
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        Analysis.report(event: .close, screen: .main)
+    }
 }
 
 //MARK: - privates methods
@@ -179,6 +189,7 @@ private extension TrackersViewController {
             let deleteAction = UIAlertAction(title: NSLocalizedString("alert.delete.tracker", comment: ""), style: .destructive) { _ in
                 self.trackerStore.deleteTracker(trackerID: trackerCell.trackerID)
                 self.isHiddenFilterButton()
+                Analysis.report(event: .click, screen: .main, item: .delete)
             }
             
             let cancelAction = UIAlertAction(title: NSLocalizedString("alert.delete.cancel.tracker", comment: ""), style: .cancel)
@@ -198,7 +209,7 @@ private extension TrackersViewController {
             editForm.delegate = self
             editForm.trackerID = trackerCell.trackerID
             editForm.getIndexPath(indexPath)
-            
+            Analysis.report(event: .click, screen: .main, item: .edit)
             self.present(editForm, animated: true)
         }
         
@@ -208,6 +219,7 @@ private extension TrackersViewController {
     //MARK: action methods
     
     @objc func didTapFilterButton() {
+        Analysis.report(event: .click, screen: .main, item: .filter)
         let filterVC = FiltersViewController()
         filterVC.delegate = self
         present(filterVC, animated: true)
@@ -218,6 +230,8 @@ private extension TrackersViewController {
     }
     
     @objc func addTrackerDidTap() {
+        Analysis.report(event: .click, screen: .main, item: .addTracker)
+
         let trackerSelectionVC = CreatedTrackerViewController(delegate: self)
         
         self.present(trackerSelectionVC, animated: true)
@@ -304,6 +318,8 @@ extension TrackersViewController: TrackerCellDelegate {
             
             trackerStore.completedTracker(true, trackerID: tracker.id)
         }
+        
+        Analysis.report(event: .click, screen: .main, item: .track)
     }
     
     func uncompleteTracker(id: UUID) {
@@ -318,6 +334,8 @@ extension TrackersViewController: TrackerCellDelegate {
             
             trackerStore.completedTracker(false, trackerID: tracker.id)
         }
+        
+        Analysis.report(event: .click, screen: .main, item: .track)
     }
 }
 
