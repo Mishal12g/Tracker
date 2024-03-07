@@ -133,6 +133,7 @@ extension FiltersViewController: UITableViewDelegate {
             filterTitle = FiltersList.notCompletedTrackers.rawValue
             delegate?.notCompletedTrackersUpdate()
         }
+        dismiss(animated: true)
     }
     
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
