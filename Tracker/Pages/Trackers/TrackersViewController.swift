@@ -128,6 +128,12 @@ private extension TrackersViewController {
     
     //filter
     func applyFilter() {
+        if filterStatus != .allTrackers {
+            filterButton.tintColor = .systemRed
+        } else {
+            filterButton.tintColor = .white
+        }
+        
         switch filterStatus {
         case .allTrackers:
             trackerStore.filter(by: currentDate, and: searchText)
@@ -209,7 +215,6 @@ private extension TrackersViewController {
     
     @objc func datePickerValueChanged(_ sender: UIDatePicker) {
         applyFilter()
-        isHiddenFilterButton()
     }
     
     @objc func addTrackerDidTap() {
