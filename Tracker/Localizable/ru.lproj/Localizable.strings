@@ -5,7 +5,6 @@
   Created by mihail on 28.02.2024.
   
 */
-
 "onboarding.button" = "Вот это технологии!";
 "onboarding.text.first" = "Отслеживайте только то, что хотите";
 "onboarding.text.second" = "Даже если это не литры воды и йога";
@@ -14,6 +13,7 @@
 "trackers.emptyPlaceholderView" = "Что будем отслеживать?";
 "tabbar.trackers.title" = "Трекеры";
 "tabbar.statistic.title" = "Статистика";
+"statistic.cell.title" = "Трекеров завершено";
 "statistic.title" = "Статистика";
 "statistic.empty.state" = "Анализировать пока нечего";
 "created.tracker" = "Создание трекера";

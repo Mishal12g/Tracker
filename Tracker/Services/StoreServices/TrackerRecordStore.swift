@@ -40,6 +40,14 @@ extension TrackerRecordStore {
         guard let objects = try? context.fetch(fetchRequest) else { return 0 }
         
         return objects.count
+    }   
+    
+    func countCompleted() -> Int {
+        let fetchRequest = RecordCD.fetchRequest()
+        
+        guard let objects = try? context.fetch(fetchRequest) else { return 0 }
+        
+        return objects.count
     }
     
     func fetchRecord(by trackerID: UUID, and currentDate: Date) -> TrackerRecord? {

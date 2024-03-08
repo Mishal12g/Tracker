@@ -1,6 +1,12 @@
 import UIKit
 
+protocol TrackersViewControllerDelegate: AnyObject {
+    func updateStatistic()
+}
+
 final class TrackersViewController: UIViewController {
+    weak var delegate: TrackersViewControllerDelegate?
+    
     //MARK: - privates properties
     private var filterStatus: FiltersList = .allTrackers {
         didSet {
@@ -309,6 +315,7 @@ extension TrackersViewController: TrackerCellDelegate {
         if currentDate < Date() {
             let record = TrackerRecord(trackerId: id, completedDate: currentDate)
             recordStore.add(record)
+            delegate?.updateStatistic()
             collectionView.reloadData()
             
             guard
@@ -325,6 +332,7 @@ extension TrackersViewController: TrackerCellDelegate {
     func uncompleteTracker(id: UUID) {
         if let record = recordStore.fetchRecord(by: id, and: currentDate) {
             recordStore.delete(record)
+            delegate?.updateStatistic()
             collectionView.reloadData()
             
             guard

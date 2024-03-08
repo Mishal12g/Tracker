@@ -15,6 +15,7 @@
 "trackers.emptyPlaceholderView" = "What are we going to track?";
 "tabbar.trackers.title" = "Trackers";
 "tabbar.statistic.title" = "Statistics";
+"statistic.cell.title" = "Trackers completed";
 "statistic.title" = "Statistics";
 "statistic.empty.state" = "There is nothing to analyze yet";
 "created.tracker" = "Creating a tracker";

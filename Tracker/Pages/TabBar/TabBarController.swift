@@ -5,13 +5,18 @@ final class TabBarController: UITabBarController {
     override func viewDidLoad() {
         tabbarAppearance()
         
-        let trackersListVC = UINavigationController(rootViewController: TrackersViewController())
-        trackersListVC.tabBarItem = UITabBarItem(title: NSLocalizedString("tabbar.trackers.title", comment: ""), image: UIImage(named: "tracker"), selectedImage: nil)
+        let statisticVC = StatisticViewController()
         
-        let statisticVC = UINavigationController(rootViewController: StatisticViewController())
+        let trackersVC = TrackersViewController()
+        trackersVC.delegate = statisticVC
+        
+        let navTrackersListVC = UINavigationController(rootViewController: trackersVC)
+        navTrackersListVC.tabBarItem = UITabBarItem(title: NSLocalizedString("tabbar.trackers.title", comment: ""), image: UIImage(named: "tracker"), selectedImage: nil)
+        
+        let navStatisticVC = UINavigationController(rootViewController: statisticVC )
         statisticVC.tabBarItem = UITabBarItem(title: NSLocalizedString("tabbar.statistic.title", comment: ""), image: UIImage(named: "statistic"), selectedImage: nil)
         
-        self.viewControllers = [trackersListVC, statisticVC]
+        self.viewControllers = [navTrackersListVC, navStatisticVC]
     }
 }
 
