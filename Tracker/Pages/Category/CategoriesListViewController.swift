@@ -151,6 +151,7 @@ extension CategoriesListViewController: UITableViewDelegate {
         cell.hideButton(false)
         viewModel.didSelected(at: indexPath)
         isEnabledDelegate?.isEnabled()
+        dismiss(animated: true)
     }
     
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
