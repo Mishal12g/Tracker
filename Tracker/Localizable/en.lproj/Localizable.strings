@@ -1,0 +1,72 @@
+/* 
+  Localizable.strings
+  Tracker
+
+  Created by mihail on 28.02.2024.
+  
+*/
+
+//ONBOARDING
+"onboarding.button" = "These are the technologies!";
+"onboarding.text.first" = "Track only what you want";
+"onboarding.text.second" = "Even if it's not liters of water and yoga";
+"search.empty.title" = "Nothing was found";
+"trackers.title" = "Trackers";
+"trackers.searchTextFieldPlaceholder" = "Search";
+"trackers.emptyPlaceholderView" = "What are we going to track?";
+"tabbar.trackers.title" = "Trackers";
+"tabbar.statistic.title" = "Statistics";
+"statistic.cell.title" = "Trackers completed";
+"statistic.title" = "Statistics";
+"statistic.empty.state" = "There is nothing to analyze yet";
+"created.tracker" = "Creating a tracker";
+"created.tracker.habit" = "Habit";
+"created.tracker.not.regular.event" = "An irregular event";
+"habit.form.title" = "A new habit";
+"habit.form.textfield.placeholder" = "Enter the name of the tracker";
+"habit.form.cancel.button" = "Cancel";
+"habit.form.create.button" = "To create";
+"category.title.table.view" = "Category";
+"schedule.title.table.view" = "Schedule";
+"not.regular.event.form" = "A new irregular event";
+"collection.emoji" = "Emoji";
+"collection.color" = "Color";
+"category.title" = "Category";
+"category.add.button" = "Add a category";
+"category.empty.state" = "Habits and events can be combined in meaning";
+"category.form.title" = "New category";
+"category.form..textfield" = "Enter the name of the category";
+"category.form.button" = "Done";
+"schedule.title" = "schedule";
+"schedule.done.button" = "Done";
+"context.menu.delete" = "Delete";
+"context.menu.edit" = "Edit";
+"context.menu.pinned" = "to fix";
+"context.menu.unpin" = "unpin";
+"pinned.category" = "Fixed";
+"filters.all" = "All trackers";
+"filters.today" = "Trackers for today";
+"filters.completed" = "Completed";
+"filters.not.completed" = "Not completed";
+"filters" = "Filters";
+"edit.form.save.button" = "Save";
+"edit.form.cancel.button" = "Cancel";
+"edit.form.title" = "Editing a habit";
+"alert.delete.tracker" = "Delete";
+"alert.delete.cancel.tracker" = "Cancel";
+"alert.delete.message.tracker" = "Are you sure you want to delete the tracker?";
+"every.day" = "Every day";
+"weekday.monday" = "Monday";
+"weekday.tuesday" = "Tuesday";
+"weekday.wednesday" = "Wednesday";
+"weekday.thursday" = "Thursday";
+"weekday.friday" = "Friday";
+"weekday.saturday" = "Saturday";
+"weekday.sunday" = "Sunday";
+"weekday.monday.short" = "Mon";
+"weekday.tuesday.short" = "Tue";
+"weekday.wednesday.short" = "Wed";
+"weekday.thursday.short" = "Thu";
+"weekday.friday.short" = "Fri";
+"weekday.saturday.short" = "Sat";
+"weekday.sunday.short" = "Sun";
