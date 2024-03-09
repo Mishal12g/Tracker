@@ -297,7 +297,8 @@ extension TrackerStore {
     }
     
     func filter(by date: Date, and searchText: String) {
-        var predicates: [NSPredicate] = []
+        let isNotPinnedPredicate = NSPredicate(format: "isPinned != YES")
+        var predicates: [NSPredicate] = [isNotPinnedPredicate]
         let weekDay = Calendar.current.component(.weekday, from: date)
         let weekDayIndex = String(weekDay)
         
@@ -313,7 +314,7 @@ extension TrackerStore {
             )
         }
         
-        fetchedResultsController.fetchRequest.predicate = NSCompoundPredicate(orPredicateWithSubpredicates: predicates)
+        fetchedResultsController.fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
         
         do{
             try fetchedResultsController.performFetch()
@@ -327,13 +328,16 @@ extension TrackerStore {
     
     func filterIsCompletedTrackers(isCompleted: Bool, date: Date) {
         let predicate: NSPredicate
+        
         guard let records = recogdStore.filterRecord(currentDate: date) else { return }
         
         let trackerIds = records.map { $0.trackerId }
         
         if isCompleted {
             predicate = NSPredicate(format: "id IN %@", trackerIds)
-            fetchedResultsController.fetchRequest.predicate = predicate
+            let isNotPinnedPredicate = NSPredicate(format: "isPinned != YES")
+            
+            fetchedResultsController.fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, isNotPinnedPredicate])
         } else {
             let weekDay = Calendar.current.component(.weekday, from: date)
             let weekDayIndex = String(weekDay)
@@ -341,7 +345,10 @@ extension TrackerStore {
             let currentDatePredicate = NSPredicate(format: "%K CONTAINS[cd] %@", "schedule", weekDayIndex)
             
             predicate = NSPredicate(format: "NOT (id IN %@)", trackerIds)
-            fetchedResultsController.fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, currentDatePredicate])
+            
+            let isNotPinnedPredicate = NSPredicate(format: "isPinned != YES")
+            
+            fetchedResultsController.fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [isNotPinnedPredicate, predicate, currentDatePredicate])
         }
         
         do{
@@ -354,16 +361,31 @@ extension TrackerStore {
         }
     }
     
-    func filterPinnedTracker(date: Date) {
+    func filterPinnedTracker(date: Date, filter: FiltersList) {
         let weekDay = Calendar.current.component(.weekday, from: date)
         let weekDayIndex = String(weekDay)
-        
-        
+        let filterStatusPredicate: NSPredicate
+        //predicates for pinned trackers
         let currentDatePredicate = NSPredicate(format: "%K CONTAINS[cd] %@", "schedule", weekDayIndex)
         
         let isPinnedPredicate = NSPredicate(format: "isPinned == YES")
         
-        let components = NSCompoundPredicate(andPredicateWithSubpredicates: [currentDatePredicate, isPinnedPredicate])
+        guard let records = recogdStore.filterRecord(currentDate: date) else { return }
+        
+        let trackerIds = records.map { $0.trackerId }
+        
+        switch filter {
+        case .allTrackers:
+            filterStatusPredicate = NSPredicate(format: "isPinned == YES")
+        case .todayTrackers:
+            filterStatusPredicate = NSPredicate(format: "isPinned == YES")
+        case .completedTrackers:
+            filterStatusPredicate = NSPredicate(format: "id IN %@", trackerIds)
+        case .notCompletedTrackers:
+            filterStatusPredicate = NSPredicate(format: "NOT (id IN %@)", trackerIds)
+        }
+        
+        let components = NSCompoundPredicate(andPredicateWithSubpredicates: [currentDatePredicate, isPinnedPredicate, filterStatusPredicate])
         
         isPinnedfetchedResultsController.fetchRequest.predicate = components
         

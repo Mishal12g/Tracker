@@ -139,7 +139,7 @@ private extension TrackersViewController {
     }
     
     func isHiddenFilterButton() {
-        filterButton.isHidden = trackerStore.isEmpty
+        filterButton.isHidden = trackerStore.isEmpty && trackerStore.pinnedTrackersIsEmpty
     }
     
     //filter
@@ -162,7 +162,7 @@ private extension TrackersViewController {
             trackerStore.filterIsCompletedTrackers(isCompleted: false, date: currentDate)
         }
         
-        trackerStore.filterPinnedTracker(date: currentDate)
+        trackerStore.filterPinnedTracker(date: currentDate, filter: filterStatus)
         hideErrorViews()
     }
     
@@ -392,7 +392,7 @@ extension TrackersViewController: UICollectionViewDataSource {
             id = ""
             text = ""
         }
-        guard let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: id, for: indexPath) as? SupplementaryView, !trackerStore.isEmpty
+        guard let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: id, for: indexPath) as? SupplementaryView
         else { return UICollectionReusableView()}
         view.titleLabel.text = text
         return view
