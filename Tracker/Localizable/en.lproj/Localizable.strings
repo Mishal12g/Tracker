@@ -10,6 +10,7 @@
 "onboarding.button" = "These are the technologies!";
 "onboarding.text.first" = "Track only what you want";
 "onboarding.text.second" = "Even if it's not liters of water and yoga";
+"search.empty.title" = "Nothing was found";
 "trackers.title" = "Trackers";
 "trackers.searchTextFieldPlaceholder" = "Search";
 "trackers.emptyPlaceholderView" = "What are we going to track?";

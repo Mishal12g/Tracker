@@ -28,6 +28,14 @@ final class TrackersViewController: UIViewController {
     private var searchText: String = "" {
         didSet {
             applyFilter()
+            
+            if searchText.isEmpty {
+                emptyLabel.text = NSLocalizedString("trackers.emptyPlaceholderView", comment: "")
+                emptyImageView.image = UIImage(named: "il_error_2")
+            } else {
+                emptyLabel.text = NSLocalizedString("search.empty.title", comment: "")
+                emptyImageView.image = UIImage(named: "il_error_3")
+            }
         }
     }
     
@@ -95,7 +103,7 @@ final class TrackersViewController: UIViewController {
     }()
     
     private let emptyImageView: UIImageView = {
-        let image = UIImage(named: "il_error_1")
+        let image = UIImage(named: "il_error_2")
         let imageView = UIImageView(image: image)
         
         return imageView
@@ -157,7 +165,7 @@ private extension TrackersViewController {
             trackerStore.filter(by: currentDate, and: searchText)
         case .completedTrackers:
             trackerStore.filterIsCompletedTrackers(isCompleted: true, date: currentDate)
-
+            
         case .notCompletedTrackers:
             trackerStore.filterIsCompletedTrackers(isCompleted: false, date: currentDate)
         }
@@ -237,7 +245,7 @@ private extension TrackersViewController {
     
     @objc func addTrackerDidTap() {
         Analysis.report(event: .click, screen: .main, item: .addTracker)
-
+        
         let trackerSelectionVC = CreatedTrackerViewController(delegate: self)
         
         self.present(trackerSelectionVC, animated: true)

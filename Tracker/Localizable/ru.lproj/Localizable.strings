@@ -8,6 +8,7 @@
 "onboarding.button" = "Вот это технологии!";
 "onboarding.text.first" = "Отслеживайте только то, что хотите";
 "onboarding.text.second" = "Даже если это не литры воды и йога";
+"search.empty.title" = "Ничего не найдено";
 "trackers.title" = "Трекеры";
 "trackers.searchTextFieldPlaceholder" = "Поиск";
 "trackers.emptyPlaceholderView" = "Что будем отслеживать?";
